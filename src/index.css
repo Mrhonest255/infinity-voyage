@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    /* Safari-inspired earthy palette */
+    --background: 40 20% 98%;
+    --foreground: 30 15% 15%;
+
+    --card: 40 25% 97%;
+    --card-foreground: 30 15% 15%;
+
+    --popover: 40 25% 97%;
+    --popover-foreground: 30 15% 15%;
+
+    /* Warm sunset orange/amber as primary */
+    --primary: 28 85% 45%;
+    --primary-foreground: 40 20% 98%;
+
+    /* Sandy beige secondary */
+    --secondary: 38 30% 90%;
+    --secondary-foreground: 30 15% 25%;
+
+    /* Muted sage tones */
+    --muted: 40 15% 92%;
+    --muted-foreground: 30 10% 45%;
+
+    /* Savanna accent gold */
+    --accent: 45 90% 50%;
+    --accent-foreground: 30 15% 15%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 40 20% 98%;
+
+    --border: 35 20% 88%;
+    --input: 35 20% 88%;
+    --ring: 28 85% 45%;
+
+    --radius: 0.75rem;
+
+    /* Custom safari colors */
+    --safari-gold: 45 90% 50%;
+    --safari-amber: 28 85% 45%;
+    --safari-brown: 25 40% 30%;
+    --safari-cream: 40 30% 95%;
+    --safari-sage: 80 20% 45%;
+    --safari-sunset: 15 85% 55%;
+    --safari-night: 220 30% 15%;
+
+    /* Gradients */
+    --gradient-sunset: linear-gradient(135deg, hsl(28 85% 45%), hsl(15 85% 55%));
+    --gradient-gold: linear-gradient(135deg, hsl(45 90% 50%), hsl(28 85% 45%));
+    --gradient-night: linear-gradient(180deg, hsl(220 30% 15%), hsl(220 30% 25%));
+    --gradient-hero-overlay: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%);
+
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -5px hsl(30 20% 20% / 0.1);
+    --shadow-elevated: 0 10px 40px -10px hsl(30 20% 20% / 0.2);
+    --shadow-glow: 0 0 40px hsl(45 90% 50% / 0.3);
+
+    --sidebar-background: 40 20% 98%;
+    --sidebar-foreground: 30 15% 25%;
+    --sidebar-primary: 28 85% 45%;
+    --sidebar-primary-foreground: 40 20% 98%;
+    --sidebar-accent: 38 30% 90%;
+    --sidebar-accent-foreground: 30 15% 25%;
+    --sidebar-border: 35 20% 88%;
+    --sidebar-ring: 28 85% 45%;
+  }
+
+  .dark {
+    --background: 220 30% 10%;
+    --foreground: 40 20% 95%;
+
+    --card: 220 25% 14%;
+    --card-foreground: 40 20% 95%;
+
+    --popover: 220 25% 14%;
+    --popover-foreground: 40 20% 95%;
+
+    --primary: 28 85% 50%;
+    --primary-foreground: 220 30% 10%;
+
+    --secondary: 220 20% 20%;
+    --secondary-foreground: 40 20% 90%;
+
+    --muted: 220 20% 18%;
+    --muted-foreground: 40 15% 60%;
+
+    --accent: 45 90% 55%;
+    --accent-foreground: 220 30% 10%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 40 20% 98%;
+
+    --border: 220 20% 22%;
+    --input: 220 20% 22%;
+    --ring: 28 85% 50%;
+
+    --sidebar-background: 220 25% 12%;
+    --sidebar-foreground: 40 20% 90%;
+    --sidebar-primary: 28 85% 50%;
+    --sidebar-primary-foreground: 220 30% 10%;
+    --sidebar-accent: 220 20% 18%;
+    --sidebar-accent-foreground: 40 20% 90%;
+    --sidebar-border: 220 20% 22%;
+    --sidebar-ring: 28 85% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-gold);
+  }
+
+  .bg-gradient-sunset {
+    background-image: var(--gradient-sunset);
+  }
+
+  .bg-gradient-night {
+    background-image: var(--gradient-night);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+}
+
+@layer components {
+  .safari-card {
+    @apply bg-card rounded-xl overflow-hidden shadow-soft transition-all duration-300 hover:shadow-elevated hover:-translate-y-1;
+  }
+
+  .section-padding {
+    @apply py-16 md:py-24 px-4 md:px-8;
+  }
+
+  .container-wide {
+    @apply max-w-7xl mx-auto;
+  }
+}

@@ -1,0 +1,4 @@
+project_id = "qpwluhzgdjxaqlwcvsjx"
+
+[functions.generate-tour-content]
+verify_jwt = true

@@ -47,6 +47,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           <div className="truncate"><strong>Loading:</strong> {String(loading)}</div>
           <div className="truncate"><strong>isAdmin:</strong> {String(isAdmin)}</div>
           <div className="truncate"><strong>User:</strong> {user?.email ?? 'null'}</div>
+          <div className="truncate"><strong>User ID:</strong> {user?.id ?? 'null'}</div>
         </div>
       )}
     </div>

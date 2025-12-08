@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -18,6 +19,11 @@ export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { data: settings } = useSiteSettings();
+  
+  const siteName = settings?.general?.siteName || "Infinity Voyage";
+  const phone = settings?.general?.phone || "+255 123 456 789";
+  const logo = settings?.general?.logo;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,17 +53,21 @@ export const Navbar = () => {
           <nav className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-sunset flex items-center justify-center">
-                <span className="text-primary-foreground font-display font-bold text-xl">
-                  IV
-                </span>
-              </div>
+              {logo ? (
+                <img src={logo} alt={siteName} className="w-10 h-10 object-contain" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gradient-sunset flex items-center justify-center">
+                  <span className="text-primary-foreground font-display font-bold text-xl">
+                    IV
+                  </span>
+                </div>
+              )}
               <span
                 className={`font-display text-xl font-semibold transition-colors ${
                   isScrolled ? "text-foreground" : "text-primary-foreground"
                 }`}
               >
-                Infinity Voyage
+                {siteName}
               </span>
             </Link>
 
@@ -85,13 +95,13 @@ export const Navbar = () => {
             {/* CTA Button */}
             <div className="hidden lg:flex items-center gap-4">
               <a
-                href="tel:+255123456789"
+                href={`tel:${phone.replace(/\s/g, '')}`}
                 className={`flex items-center gap-2 text-sm font-medium ${
                   isScrolled ? "text-foreground" : "text-primary-foreground"
                 }`}
               >
                 <Phone className="w-4 h-4" />
-                +255 123 456 789
+                {phone}
               </a>
               <Button variant={isScrolled ? "safari" : "heroSolid"} size="lg">
                 Book Now
@@ -156,11 +166,11 @@ export const Navbar = () => {
                 </div>
                 <div className="mt-6 pt-6 border-t border-border">
                   <a
-                    href="tel:+255123456789"
+                    href={`tel:${phone.replace(/\s/g, '')}`}
                     className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-4"
                   >
                     <Phone className="w-4 h-4" />
-                    +255 123 456 789
+                    {phone}
                   </a>
                   <Button variant="safari" size="lg" className="w-full">
                     Book Now

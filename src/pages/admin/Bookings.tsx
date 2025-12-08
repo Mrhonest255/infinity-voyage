@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
-import { Search, Loader2, CheckCircle, XCircle, Clock, Eye } from 'lucide-react';
+import { Search, Loader2, CheckCircle, XCircle, Clock, Eye, Trash2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -66,6 +66,20 @@ const AdminBookings = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-bookings'] });
       toast({ title: 'Status updated' });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('bookings').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-bookings'] });
+      toast({ title: 'Booking deleted', description: 'The booking has been deleted successfully.' });
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Delete failed', description: error.message, variant: 'destructive' });
     },
   });
 
@@ -173,6 +187,19 @@ const AdminBookings = () => {
                           </Button>
                         </>
                       )}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                        onClick={() => {
+                          if (confirm('Are you sure you want to delete this booking? This action cannot be undone.')) {
+                            deleteMutation.mutate(booking.id);
+                          }
+                        }}
+                        disabled={deleteMutation.isPending}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                 </CardContent>

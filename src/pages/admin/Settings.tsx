@@ -121,13 +121,33 @@ const AdminSettings = () => {
   const saveSettings = async (key: string, value: GeneralSettings | SocialSettings | HomepageSettings) => {
     setSaving(true);
     try {
-      const { error } = await supabase
+      // First check if the setting exists
+      const { data: existing } = await supabase
         .from('site_settings')
-        .upsert({ key, value: value as unknown as Json });
+        .select('id')
+        .eq('key', key)
+        .single();
       
-      if (error) throw error;
+      if (existing) {
+        // Update existing setting
+        const { error } = await supabase
+          .from('site_settings')
+          .update({ value: value as unknown as Json })
+          .eq('key', key);
+        
+        if (error) throw error;
+      } else {
+        // Insert new setting
+        const { error } = await supabase
+          .from('site_settings')
+          .insert({ key, value: value as unknown as Json });
+        
+        if (error) throw error;
+      }
       
       toast.success('Settings saved successfully');
+      // Refresh settings to show updated values
+      await fetchSettings();
     } catch (error) {
       console.error('Error saving settings:', error);
       toast.error('Failed to save settings');

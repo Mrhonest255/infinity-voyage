@@ -6,6 +6,8 @@ import BookingForm from '@/components/tours/BookingForm';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 
 const TourPage = () => {
   const { slug } = useParams();
@@ -110,6 +112,7 @@ const TourPage = () => {
     <>
       {/* SEO Structured Data is added via useEffect */}
       <div className="min-h-screen bg-gradient-to-br from-background via-card/30 to-background">
+        <Navbar />
         {/* Hero Image Section */}
         <div className="relative w-full h-[60vh] min-h-[500px] overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/50 to-transparent z-10" />
@@ -436,6 +439,7 @@ const TourPage = () => {
             </aside>
           </div>
         </div>
+        <Footer />
       </div>
     </>
   );

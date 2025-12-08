@@ -19,11 +19,26 @@ import {
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export const Footer = () => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: settings } = useSiteSettings();
+  
+  const siteName = settings?.general?.siteName || "Infinity Voyage";
+  const tagline = settings?.general?.tagline || "Tours & Safaris";
+  const logo = settings?.general?.logo;
+  const emailContact = settings?.general?.email || "info@infinityvoyage.com";
+  const phone = settings?.general?.phone || "+255 123 456 789";
+  const address = settings?.general?.address || "Arusha, Tanzania";
+  const socialLinks = [
+    { icon: Facebook, href: settings?.social?.facebook || "#", label: "Facebook" },
+    { icon: Instagram, href: settings?.social?.instagram || "#", label: "Instagram" },
+    { icon: Twitter, href: settings?.social?.twitter || "#", label: "Twitter" },
+    { icon: Youtube, href: settings?.social?.youtube || "#", label: "YouTube" },
+  ];
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,13 +90,6 @@ export const Footer = () => {
     "Tarangire Park",
     "Lake Manyara",
     "Stone Town",
-  ];
-
-  const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Youtube, href: "#", label: "YouTube" },
   ];
 
   return (
@@ -148,14 +156,18 @@ export const Footer = () => {
           {/* About */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-safari-gold to-safari-amber flex items-center justify-center shadow-lg">
-                <span className="text-safari-night font-display font-bold text-xl">
-                  IV
-                </span>
-              </div>
+              {logo ? (
+                <img src={logo} alt={siteName} className="w-12 h-12 object-contain" />
+              ) : (
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-safari-gold to-safari-amber flex items-center justify-center shadow-lg">
+                  <span className="text-safari-night font-display font-bold text-xl">
+                    IV
+                  </span>
+                </div>
+              )}
               <div>
-                <span className="font-display text-xl font-bold block">Infinity Voyage</span>
-                <span className="text-xs text-primary-foreground/60">Tours & Safaris</span>
+                <span className="font-display text-xl font-bold block">{siteName}</span>
+                <span className="text-xs text-primary-foreground/60">{tagline}</span>
               </div>
             </div>
             <p className="text-primary-foreground/80 mb-6 leading-relaxed">
@@ -230,26 +242,25 @@ export const Footer = () => {
               <li className="flex items-start gap-3 group">
                 <MapPin className="w-5 h-5 text-safari-gold shrink-0 mt-1 group-hover:scale-110 transition-transform" />
                 <span className="text-primary-foreground/80 leading-relaxed">
-                  123 Safari Avenue,<br />
-                  Arusha, Tanzania
+                  {address}
                 </span>
               </li>
               <li className="flex items-center gap-3 group">
                 <Phone className="w-5 h-5 text-safari-gold shrink-0 group-hover:scale-110 transition-transform" />
                 <a
-                  href="tel:+255123456789"
+                  href={`tel:${phone.replace(/\s/g, '')}`}
                   className="text-primary-foreground/80 hover:text-safari-gold transition-colors"
                 >
-                  +255 123 456 789
+                  {phone}
                 </a>
               </li>
               <li className="flex items-center gap-3 group">
                 <Mail className="w-5 h-5 text-safari-gold shrink-0 group-hover:scale-110 transition-transform" />
                 <a
-                  href="mailto:info@infinityvoyage.com"
+                  href={`mailto:${emailContact}`}
                   className="text-primary-foreground/80 hover:text-safari-gold transition-colors break-all"
                 >
-                  info@infinityvoyage.com
+                  {emailContact}
                 </a>
               </li>
               <li className="flex items-center gap-3 group pt-2">
@@ -269,7 +280,7 @@ export const Footer = () => {
         <div className="container-wide mx-auto px-4 md:px-8 py-6 md:py-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
             <div className="flex items-center gap-2 text-primary-foreground/70">
-              <p>© {new Date().getFullYear()} Infinity Voyage Tours & Safaris.</p>
+              <p>© {new Date().getFullYear()} {siteName}.</p>
               <span className="hidden sm:inline">All rights reserved.</span>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">

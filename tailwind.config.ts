@@ -14,8 +14,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Outfit', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'Poppins', 'Outfit', 'system-ui', 'sans-serif'],
         display: ['Playfair Display', 'Georgia', 'serif'],
+        heading: ['Poppins', 'Inter', 'sans-serif'],
+        body: ['Inter', 'Poppins', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

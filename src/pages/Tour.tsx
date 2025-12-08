@@ -103,6 +103,44 @@ const TourPage = () => {
     </div>
   );
 
+  // Combine featured image with gallery images (featured image first)
+  const allImages = tour?.featured_image 
+    ? [tour.featured_image, ...(tour.gallery || [])]
+    : (tour?.gallery || []);
+
+  const openLightbox = (index: number) => {
+    setSelectedImageIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const navigateImage = (direction: 'prev' | 'next') => {
+    const totalImages = allImages.length;
+    if (totalImages === 0) return;
+    
+    if (direction === 'prev') {
+      setSelectedImageIndex((prev) => (prev === 0 ? totalImages - 1 : prev - 1));
+    } else {
+      setSelectedImageIndex((prev) => (prev === totalImages - 1 ? 0 : prev + 1));
+    }
+  };
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    if (!lightboxOpen || allImages.length === 0) return;
+    const handleKeyPress = (e: KeyboardEvent) => {
+      const totalImages = allImages.length;
+      if (e.key === 'ArrowLeft') {
+        setSelectedImageIndex((prev) => (prev === 0 ? totalImages - 1 : prev - 1));
+      }
+      if (e.key === 'ArrowRight') {
+        setSelectedImageIndex((prev) => (prev === totalImages - 1 ? 0 : prev + 1));
+      }
+      if (e.key === 'Escape') setLightboxOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [lightboxOpen, allImages.length]);
+
   if (!tour) return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center space-y-4">
@@ -112,53 +150,26 @@ const TourPage = () => {
     </div>
   );
 
-  // Combine featured image with gallery images (featured image first)
-  const allImages = tour.featured_image 
-    ? [tour.featured_image, ...(tour.gallery || [])]
-    : (tour.gallery || []);
-
-  const openLightbox = (index: number) => {
-    setSelectedImageIndex(index);
-    setLightboxOpen(true);
-  };
-
-  const navigateImage = (direction: 'prev' | 'next') => {
-    if (direction === 'prev') {
-      setSelectedImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
-    } else {
-      setSelectedImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
-    }
-  };
-
-  // Handle keyboard navigation
-  useEffect(() => {
-    if (!lightboxOpen) return;
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') {
-        setSelectedImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
-      }
-      if (e.key === 'ArrowRight') {
-        setSelectedImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
-      }
-      if (e.key === 'Escape') setLightboxOpen(false);
-    };
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [lightboxOpen, allImages.length]);
-
   return (
     <>
       {/* SEO Structured Data is added via useEffect */}
       <div className="min-h-screen bg-gradient-to-br from-background via-card/30 to-background">
         <Navbar />
         {/* Hero Image Section */}
-        <div className="relative w-full h-[60vh] min-h-[500px] overflow-hidden">
+        <div className="relative w-full h-[60vh] min-h-[500px] overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
           <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/50 to-transparent z-10" />
-          <img 
-            src={tour.featured_image} 
-            alt={tour.title} 
-            className="w-full h-full object-cover"
-          />
+          {tour.featured_image ? (
+            <img 
+              src={tour.featured_image} 
+              alt={tour.title} 
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/10" />
+          )}
           <div className="absolute bottom-0 left-0 right-0 z-20 container-wide mx-auto px-4 pb-12">
             <div className="max-w-4xl">
               <Badge className="mb-4 bg-safari-gold/90 text-foreground hover:bg-safari-gold border-0">
@@ -313,7 +324,7 @@ const TourPage = () => {
               </motion.div>
 
               {/* Gallery Section */}
-              {allImages.length > 0 && (
+              {allImages && allImages.length > 0 && (
                 <Card className="border-2 border-border shadow-elevated overflow-hidden">
                   <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
                     <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
@@ -325,37 +336,42 @@ const TourPage = () => {
                   <CardContent className="p-6">
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                       {allImages.map((image: string, index: number) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.3, delay: index * 0.05 }}
-                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer group"
-                          onClick={() => openLightbox(index)}
-                        >
-                          <img
-                            src={image}
-                            alt={`${tour.title} - Image ${index + 1}`}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              whileHover={{ opacity: 1, scale: 1 }}
-                              className="text-white"
-                            >
-                              <Images className="w-8 h-8" />
-                            </motion.div>
-                          </div>
-                          {index === 0 && (
-                            <div className="absolute top-2 left-2">
-                              <Badge className="bg-safari-gold text-safari-night text-xs">
-                                Featured
-                              </Badge>
+                        image && (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.3, delay: index * 0.05 }}
+                            className="relative aspect-square rounded-lg overflow-hidden cursor-pointer group"
+                            onClick={() => openLightbox(index)}
+                          >
+                            <img
+                              src={image}
+                              alt={`${tour.title} - Image ${index + 1}`}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).style.display = 'none';
+                              }}
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                              <motion.div
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                whileHover={{ opacity: 1, scale: 1 }}
+                                className="text-white"
+                              >
+                                <Images className="w-8 h-8" />
+                              </motion.div>
                             </div>
-                          )}
-                        </motion.div>
+                            {index === 0 && tour.featured_image && (
+                              <div className="absolute top-2 left-2">
+                                <Badge className="bg-safari-gold text-safari-night text-xs">
+                                  Featured
+                                </Badge>
+                              </div>
+                            )}
+                          </motion.div>
+                        )
                       ))}
                     </div>
                     <p className="text-sm text-muted-foreground mt-4 text-center">
@@ -620,16 +636,18 @@ const TourPage = () => {
 
             {/* Image */}
             <AnimatePresence mode="wait">
-              <motion.img
-                key={selectedImageIndex}
-                src={allImages[selectedImageIndex]}
-                alt={`${tour.title} - Image ${selectedImageIndex + 1}`}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="max-w-full max-h-full object-contain"
-              />
+              {allImages[selectedImageIndex] && (
+                <motion.img
+                  key={selectedImageIndex}
+                  src={allImages[selectedImageIndex]}
+                  alt={`${tour.title} - Image ${selectedImageIndex + 1}`}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  className="max-w-full max-h-full object-contain"
+                />
+              )}
             </AnimatePresence>
 
             {/* Next Button */}
@@ -650,24 +668,29 @@ const TourPage = () => {
             )}
 
             {/* Thumbnail Strip */}
-            {allImages.length > 1 && (
+            {allImages && allImages.length > 1 && (
               <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-50 flex gap-2 max-w-4xl overflow-x-auto px-4 pb-2">
                 {allImages.map((image: string, index: number) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                      index === selectedImageIndex
-                        ? 'border-primary scale-110'
-                        : 'border-transparent opacity-60 hover:opacity-100'
-                    }`}
-                  >
-                    <img
-                      src={image}
-                      alt={`Thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
+                  image && (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImageIndex(index)}
+                      className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                        index === selectedImageIndex
+                          ? 'border-primary scale-110'
+                          : 'border-transparent opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <img
+                        src={image}
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    </button>
+                  )
                 ))}
               </div>
             )}

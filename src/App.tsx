@@ -18,6 +18,7 @@ import ActivityEditor from "./pages/admin/ActivityEditor";
 import AdminBookings from "./pages/admin/Bookings";
 import AdminSettings from "./pages/admin/Settings";
 import NotFound from "./pages/NotFound";
+import TourPage from "./pages/Tour";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route path="/safaris" element={<Safaris />} />
+            <Route path="/tour/:slug" element={<TourPage />} />
             <Route path="/zanzibar" element={<Zanzibar />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/auth" element={<Auth />} />

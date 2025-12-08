@@ -40,6 +40,15 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       <main className="lg:ml-64 min-h-screen p-4 lg:p-6 transition-all duration-300 pt-20 lg:pt-6">
         {children}
       </main>
+      {/* Debug overlay - enable by adding ?debug=1 to the URL */}
+      {typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === '1' && (
+        <div className="fixed right-4 bottom-4 z-50 bg-card border border-border p-3 rounded-lg text-xs w-64 shadow-lg">
+          <div className="font-semibold mb-2">Admin Debug</div>
+          <div className="truncate"><strong>Loading:</strong> {String(loading)}</div>
+          <div className="truncate"><strong>isAdmin:</strong> {String(isAdmin)}</div>
+          <div className="truncate"><strong>User:</strong> {user?.email ?? 'null'}</div>
+        </div>
+      )}
     </div>
   );
 };

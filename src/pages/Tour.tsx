@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Clock, Users, MapPin, Star, CheckCircle2, Calendar, Award, Zap, Heart } from 'lucide-react';
+import { Loader2, Clock, Users, MapPin, Star, CheckCircle2, Calendar, Award, Zap, Heart, Images, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import BookingForm from '@/components/tours/BookingForm';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 
@@ -13,6 +15,8 @@ const TourPage = () => {
   const { slug } = useParams();
   const [tour, setTour] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     if (!slug) return;
@@ -108,6 +112,40 @@ const TourPage = () => {
     </div>
   );
 
+  // Combine featured image with gallery images (featured image first)
+  const allImages = tour.featured_image 
+    ? [tour.featured_image, ...(tour.gallery || [])]
+    : (tour.gallery || []);
+
+  const openLightbox = (index: number) => {
+    setSelectedImageIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const navigateImage = (direction: 'prev' | 'next') => {
+    if (direction === 'prev') {
+      setSelectedImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
+    } else {
+      setSelectedImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
+    }
+  };
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        setSelectedImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
+      }
+      if (e.key === 'ArrowRight') {
+        setSelectedImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
+      }
+      if (e.key === 'Escape') setLightboxOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [lightboxOpen, allImages.length]);
+
   return (
     <>
       {/* SEO Structured Data is added via useEffect */}
@@ -143,49 +181,56 @@ const TourPage = () => {
             <div className="lg:col-span-2 space-y-10">
               {/* Quick Info Cards */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card className="border-2 border-border/50 hover:border-primary/50 transition-colors bg-gradient-to-br from-card to-card/50">
-                  <CardContent className="p-4 text-center">
-                    <Clock className="w-6 h-6 text-primary mx-auto mb-2" />
-                    <div className="font-heading text-2xl font-bold text-foreground">{tour.duration}</div>
-                    <div className="text-xs text-muted-foreground mt-1">Duration</div>
-                  </CardContent>
-                </Card>
-                <Card className="border-2 border-border/50 hover:border-primary/50 transition-colors bg-gradient-to-br from-card to-card/50">
-                  <CardContent className="p-4 text-center">
-                    <Users className="w-6 h-6 text-primary mx-auto mb-2" />
-                    <div className="font-heading text-2xl font-bold text-foreground">
-                      {tour.max_group_size || 12}
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-1">Max Group</div>
-                  </CardContent>
-                </Card>
-                <Card className="border-2 border-border/50 hover:border-primary/50 transition-colors bg-gradient-to-br from-card to-card/50">
-                  <CardContent className="p-4 text-center">
-                    <Star className="w-6 h-6 text-primary mx-auto mb-2" />
-                    <div className="font-heading text-2xl font-bold text-foreground">
-                      {tour.difficulty || 'Moderate'}
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-1">Difficulty</div>
-                  </CardContent>
-                </Card>
-                <Card className="border-2 border-border/50 hover:border-primary/50 transition-colors bg-gradient-to-br from-card to-card/50">
-                  <CardContent className="p-4 text-center">
-                    <MapPin className="w-6 h-6 text-primary mx-auto mb-2" />
-                    <div className="font-heading text-2xl font-bold text-foreground">TZ</div>
-                    <div className="text-xs text-muted-foreground mt-1">Location</div>
-                  </CardContent>
-                </Card>
+                {[
+                  { icon: Clock, value: tour.duration, label: 'Duration' },
+                  { icon: Users, value: tour.max_group_size || 12, label: 'Max Group' },
+                  { icon: Star, value: tour.difficulty || 'Moderate', label: 'Difficulty' },
+                  { icon: MapPin, value: 'TZ', label: 'Location' },
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                  >
+                    <Card className="border-2 border-border/50 hover:border-primary/50 transition-all bg-gradient-to-br from-card to-card/50 hover:shadow-lg cursor-pointer">
+                      <CardContent className="p-4 text-center">
+                        <motion.div
+                          whileHover={{ rotate: 360 }}
+                          transition={{ duration: 0.6 }}
+                        >
+                          <item.icon className="w-6 h-6 text-primary mx-auto mb-2" />
+                        </motion.div>
+                        <div className="font-heading text-2xl font-bold text-foreground">{item.value}</div>
+                        <div className="text-xs text-muted-foreground mt-1">{item.label}</div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
               </div>
 
               {/* Tour Information Table */}
-              <Card className="border-2 border-border shadow-elevated overflow-hidden">
-                <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
-                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
-                    <Zap className="w-6 h-6 text-primary" />
-                    Tour Information
-                  </h2>
-                  <p className="text-muted-foreground mt-2">Complete details about your adventure</p>
-                </div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <Card className="border-2 border-border shadow-elevated overflow-hidden hover:shadow-xl transition-shadow">
+                  <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
+                    <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
+                      <motion.div
+                        animate={{ rotate: [0, 10, -10, 0] }}
+                        transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                      >
+                        <Zap className="w-6 h-6 text-primary" />
+                      </motion.div>
+                      Tour Information
+                    </h2>
+                    <p className="text-muted-foreground mt-2">Complete details about your adventure</p>
+                  </div>
                 <Table>
                   <TableBody>
                     <TableRow className="hover:bg-muted/50 transition-colors">
@@ -236,15 +281,27 @@ const TourPage = () => {
                   </TableBody>
                 </Table>
               </Card>
+              </motion.div>
 
               {/* Overview Section */}
-              <Card className="border-2 border-border shadow-elevated">
-                <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
-                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
-                    <Heart className="w-6 h-6 text-primary" />
-                    Overview
-                  </h2>
-                </div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <Card className="border-2 border-border shadow-elevated hover:shadow-xl transition-shadow">
+                  <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
+                    <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
+                      <motion.div
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                      >
+                        <Heart className="w-6 h-6 text-primary" />
+                      </motion.div>
+                      Overview
+                    </h2>
+                  </div>
                 <CardContent className="p-6">
                   <div className="prose prose-lg max-w-none">
                     <p className="text-foreground/90 leading-relaxed whitespace-pre-line text-base md:text-lg font-body">
@@ -253,31 +310,101 @@ const TourPage = () => {
                   </div>
                 </CardContent>
               </Card>
+              </motion.div>
+
+              {/* Gallery Section */}
+              {allImages.length > 0 && (
+                <Card className="border-2 border-border shadow-elevated overflow-hidden">
+                  <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
+                    <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
+                      <Images className="w-6 h-6 text-primary" />
+                      Photo Gallery
+                    </h2>
+                    <p className="text-muted-foreground mt-2">Explore stunning images from this adventure</p>
+                  </div>
+                  <CardContent className="p-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {allImages.map((image: string, index: number) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.3, delay: index * 0.05 }}
+                          className="relative aspect-square rounded-lg overflow-hidden cursor-pointer group"
+                          onClick={() => openLightbox(index)}
+                        >
+                          <img
+                            src={image}
+                            alt={`${tour.title} - Image ${index + 1}`}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              whileHover={{ opacity: 1, scale: 1 }}
+                              className="text-white"
+                            >
+                              <Images className="w-8 h-8" />
+                            </motion.div>
+                          </div>
+                          {index === 0 && (
+                            <div className="absolute top-2 left-2">
+                              <Badge className="bg-safari-gold text-safari-night text-xs">
+                                Featured
+                              </Badge>
+                            </div>
+                          )}
+                        </motion.div>
+                      ))}
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-4 text-center">
+                      Click any image to view in full screen
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Highlights Section */}
               {tour.highlights && tour.highlights.length > 0 && (
-                <Card className="border-2 border-border shadow-elevated">
-                  <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
-                    <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
-                      <Star className="w-6 h-6 text-primary" />
-                      Tour Highlights
-                    </h2>
-                    <p className="text-muted-foreground mt-2">What makes this adventure special</p>
-                  </div>
-                  <CardContent className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {tour.highlights.map((highlight: string, index: number) => (
-                        <div 
-                          key={index}
-                          className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-muted/50 to-transparent hover:from-muted hover:to-muted/50 transition-all border border-border/50"
-                        >
-                          <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                          <span className="text-foreground font-medium">{highlight}</span>
-                        </div>
-                      ))}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Card className="border-2 border-border shadow-elevated">
+                    <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
+                      <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
+                        <Star className="w-6 h-6 text-primary" />
+                        Tour Highlights
+                      </h2>
+                      <p className="text-muted-foreground mt-2">What makes this adventure special</p>
                     </div>
-                  </CardContent>
-                </Card>
+                    <CardContent className="p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {tour.highlights.map((highlight: string, index: number) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.4, delay: index * 0.1 }}
+                            className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-muted/50 to-transparent hover:from-muted hover:to-muted/50 transition-all border border-border/50 hover:border-primary/50 hover:shadow-md"
+                          >
+                            <motion.div
+                              whileHover={{ scale: 1.2, rotate: 360 }}
+                              transition={{ duration: 0.5 }}
+                            >
+                              <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                            </motion.div>
+                            <span className="text-foreground font-medium">{highlight}</span>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               )}
 
               {/* Included/Excluded Table */}
@@ -336,50 +463,77 @@ const TourPage = () => {
 
               {/* Itinerary Section */}
               {tour.itinerary && tour.itinerary.length > 0 && (
-                <Card className="border-2 border-border shadow-elevated">
-                  <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
-                    <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
-                      <Calendar className="w-6 h-6 text-primary" />
-                      Detailed Itinerary
-                    </h2>
-                    <p className="text-muted-foreground mt-2">Day-by-day breakdown of your adventure</p>
-                  </div>
-                  <CardContent className="p-6">
-                    <div className="space-y-6">
-                      {tour.itinerary.map((day: any, index: number) => (
-                        <div 
-                          key={day.day || index}
-                          className="relative pl-8 pb-6 border-l-2 border-primary/30 last:border-l-0 last:pb-0"
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Card className="border-2 border-border shadow-elevated hover:shadow-xl transition-shadow">
+                    <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
+                      <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
+                        <motion.div
+                          animate={{ rotate: [0, 360] }}
+                          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                         >
-                          <div className="absolute -left-3 top-0 w-6 h-6 rounded-full bg-primary border-4 border-background shadow-lg flex items-center justify-center">
-                            <span className="text-xs font-bold text-primary-foreground">{day.day || index + 1}</span>
-                          </div>
-                          <div className="bg-gradient-to-br from-card to-card/50 rounded-xl p-6 border border-border/50 hover:shadow-md transition-shadow">
-                            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-3">
-                              <h3 className="font-heading text-xl font-bold text-foreground">
-                                Day {day.day || index + 1}: {day.title}
-                              </h3>
-                            </div>
-                            <p className="text-foreground/80 leading-relaxed mb-4">{day.description}</p>
-                            {day.activities && day.activities.length > 0 && (
-                              <div className="flex flex-wrap gap-2 mt-4">
-                                {day.activities.map((activity: string, actIndex: number) => (
-                                  <Badge 
-                                    key={actIndex} 
-                                    variant="outline" 
-                                    className="text-xs bg-primary/5 border-primary/20 text-primary"
-                                  >
-                                    {activity}
-                                  </Badge>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
+                          <Calendar className="w-6 h-6 text-primary" />
+                        </motion.div>
+                        Detailed Itinerary
+                      </h2>
+                      <p className="text-muted-foreground mt-2">Day-by-day breakdown of your adventure</p>
                     </div>
-                  </CardContent>
-                </Card>
+                    <CardContent className="p-6">
+                      <div className="space-y-6">
+                        {tour.itinerary.map((day: any, index: number) => (
+                          <motion.div
+                            key={day.day || index}
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.4, delay: index * 0.1 }}
+                            className="relative pl-8 pb-6 border-l-2 border-primary/30 last:border-l-0 last:pb-0"
+                          >
+                            <motion.div
+                              whileHover={{ scale: 1.2 }}
+                              className="absolute -left-3 top-0 w-6 h-6 rounded-full bg-primary border-4 border-background shadow-lg flex items-center justify-center"
+                            >
+                              <span className="text-xs font-bold text-primary-foreground">{day.day || index + 1}</span>
+                            </motion.div>
+                            <motion.div
+                              whileHover={{ scale: 1.02, x: 5 }}
+                              className="bg-gradient-to-br from-card to-card/50 rounded-xl p-6 border border-border/50 hover:shadow-md transition-shadow cursor-pointer"
+                            >
+                              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-3">
+                                <h3 className="font-heading text-xl font-bold text-foreground">
+                                  Day {day.day || index + 1}: {day.title}
+                                </h3>
+                              </div>
+                              <p className="text-foreground/80 leading-relaxed mb-4">{day.description}</p>
+                              {day.activities && day.activities.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                  {day.activities.map((activity: string, actIndex: number) => (
+                                    <motion.div
+                                      key={actIndex}
+                                      whileHover={{ scale: 1.1 }}
+                                      whileTap={{ scale: 0.95 }}
+                                    >
+                                      <Badge 
+                                        variant="outline" 
+                                        className="text-xs bg-primary/5 border-primary/20 text-primary cursor-pointer"
+                                      >
+                                        {activity}
+                                      </Badge>
+                                    </motion.div>
+                                  ))}
+                                </div>
+                              )}
+                            </motion.div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               )}
             </div>
 
@@ -441,6 +595,85 @@ const TourPage = () => {
         </div>
         <Footer />
       </div>
+
+      {/* Image Lightbox Modal */}
+      <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+        <DialogContent className="max-w-7xl w-full h-[90vh] p-0 bg-black/95 border-none">
+          <div className="relative w-full h-full flex items-center justify-center">
+            {/* Close Button */}
+            <button
+              onClick={() => setLightboxOpen(false)}
+              className="absolute top-4 right-4 z-50 text-white hover:text-primary transition-colors p-2 rounded-full hover:bg-white/10"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Previous Button */}
+            {allImages.length > 1 && (
+              <button
+                onClick={() => navigateImage('prev')}
+                className="absolute left-4 z-50 text-white hover:text-primary transition-colors p-3 rounded-full hover:bg-white/10 backdrop-blur-sm"
+              >
+                <ChevronLeft className="w-8 h-8" />
+              </button>
+            )}
+
+            {/* Image */}
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={selectedImageIndex}
+                src={allImages[selectedImageIndex]}
+                alt={`${tour.title} - Image ${selectedImageIndex + 1}`}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                className="max-w-full max-h-full object-contain"
+              />
+            </AnimatePresence>
+
+            {/* Next Button */}
+            {allImages.length > 1 && (
+              <button
+                onClick={() => navigateImage('next')}
+                className="absolute right-4 z-50 text-white hover:text-primary transition-colors p-3 rounded-full hover:bg-white/10 backdrop-blur-sm"
+              >
+                <ChevronRight className="w-8 h-8" />
+              </button>
+            )}
+
+            {/* Image Counter */}
+            {allImages.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50 bg-black/50 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm">
+                {selectedImageIndex + 1} / {allImages.length}
+              </div>
+            )}
+
+            {/* Thumbnail Strip */}
+            {allImages.length > 1 && (
+              <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 z-50 flex gap-2 max-w-4xl overflow-x-auto px-4 pb-2">
+                {allImages.map((image: string, index: number) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImageIndex(index)}
+                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                      index === selectedImageIndex
+                        ? 'border-primary scale-110'
+                        : 'border-transparent opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <img
+                      src={image}
+                      alt={`Thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

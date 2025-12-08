@@ -41,28 +41,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
-        // Defer admin check with setTimeout
-        if (session?.user) {
-          setTimeout(async () => {
-            const adminStatus = await checkAdminRole(session.user.id);
-            setIsAdmin(adminStatus);
-            setLoading(false);
-          }, 0);
-        } else {
-          setIsAdmin(false);
+        // Run admin check and only then clear loading to avoid race conditions
+        (async () => {
+          if (session?.user) {
+            try {
+              const adminStatus = await checkAdminRole(session.user.id);
+              setIsAdmin(adminStatus);
+            } catch (err) {
+              console.error('Error during onAuthStateChange admin check:', err);
+              setIsAdmin(false);
+            }
+          } else {
+            setIsAdmin(false);
+          }
           setLoading(false);
-        }
+        })();
       }
     );
 
-    // THEN check for existing session
+    // THEN check for existing session and wait for admin role resolution
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        const adminStatus = await checkAdminRole(session.user.id);
-        setIsAdmin(adminStatus);
+        try {
+          const adminStatus = await checkAdminRole(session.user.id);
+          setIsAdmin(adminStatus);
+        } catch (err) {
+          console.error('Error during initial session admin check:', err);
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
       }
       setLoading(false);
     });

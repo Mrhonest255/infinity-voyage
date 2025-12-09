@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import Index from "./pages/Index";
 import Safaris from "./pages/Safaris";
 import Zanzibar from "./pages/Zanzibar";
@@ -22,9 +23,16 @@ import AdminActivities from "./pages/admin/Activities";
 import ActivityEditor from "./pages/admin/ActivityEditor";
 import AdminBookings from "./pages/admin/Bookings";
 import AdminSettings from "./pages/admin/Settings";
+import AdminTransfers from "./pages/admin/Transfers";
+import TransferEditor from "./pages/admin/TransferEditor";
 import NotFound from "./pages/NotFound";
 import TourPage from "./pages/Tour";
 import ThankYou from "./pages/ThankYou";
+import SafariCalculator from "./pages/SafariCalculator";
+import Transfers from "./pages/Transfers";
+import PlanMyTrip from "./pages/PlanMyTrip";
+import Blog from "./pages/Blog";
+import TrackBooking from "./pages/TrackBooking";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +56,11 @@ const App = () => (
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/thank-you" element={<ThankYou />} />
+            <Route path="/safari-calculator" element={<SafariCalculator />} />
+            <Route path="/transfers" element={<Transfers />} />
+            <Route path="/plan-my-trip" element={<PlanMyTrip />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/track-booking" element={<TrackBooking />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/tours" element={<AdminTours />} />
@@ -55,9 +68,12 @@ const App = () => (
             <Route path="/admin/activities" element={<AdminActivities />} />
             <Route path="/admin/activities/:id" element={<ActivityEditor />} />
             <Route path="/admin/bookings" element={<AdminBookings />} />
+            <Route path="/admin/transfers" element={<AdminTransfers />} />
+            <Route path="/admin/transfers/:id" element={<TransferEditor />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <WhatsAppButton phoneNumber="255758241294" />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>

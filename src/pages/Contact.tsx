@@ -138,7 +138,7 @@ const Contact = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Visit Our Office</h3>
                     <p className="text-muted-foreground">
-                      123 Safari Avenue, Arusha<br />
+                      Kisauni, Zanzibar<br />
                       Tanzania, East Africa
                     </p>
                   </div>
@@ -151,8 +151,8 @@ const Contact = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Call Us</h3>
                     <p className="text-muted-foreground">
-                      +255 123 456 789<br />
-                      +255 987 654 321
+                      +255 758 241 294<br />
+                      WhatsApp Available
                     </p>
                   </div>
                 </div>
@@ -164,8 +164,8 @@ const Contact = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Email Us</h3>
                     <p className="text-muted-foreground">
-                      info@infinityvoyage.com<br />
-                      bookings@infinityvoyage.com
+                      info@infinityvoyagetours.com<br />
+                      bookings@infinityvoyagetours.com
                     </p>
                   </div>
                 </div>

@@ -10,7 +10,8 @@ import {
   ChevronLeft,
   Menu,
   ExternalLink,
-  X
+  X,
+  Car
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -20,6 +21,7 @@ const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
   { icon: Map, label: 'Safari Tours', path: '/admin/tours' },
   { icon: Compass, label: 'Activities', path: '/admin/activities' },
+  { icon: Car, label: 'Transfers', path: '/admin/transfers' },
   { icon: CalendarCheck, label: 'Bookings', path: '/admin/bookings' },
   { icon: Settings, label: 'Settings', path: '/admin/settings' },
 ];

@@ -9,13 +9,14 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
-import { Search, Loader2, CheckCircle, XCircle, Clock, Eye, Trash2 } from 'lucide-react';
+import { Search, Loader2, CheckCircle, XCircle, Clock, Eye, Trash2, Download } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { downloadBookingPDF } from '@/lib/generateBookingPDF';
 
 interface Booking {
   id: string;
@@ -30,6 +31,7 @@ interface Booking {
   created_at: string;
   tour_id: string | null;
   activity_id: string | null;
+  tracking_code: string | null;
   tours?: { title: string } | null;
   activities?: { title: string } | null;
 }
@@ -82,6 +84,21 @@ const AdminBookings = () => {
       toast({ title: 'Delete failed', description: error.message, variant: 'destructive' });
     },
   });
+
+  const handleDownloadPDF = (booking: Booking) => {
+    downloadBookingPDF({
+      trackingCode: booking.tracking_code || 'N/A',
+      customerName: booking.customer_name,
+      customerEmail: booking.customer_email,
+      customerPhone: booking.customer_phone || undefined,
+      tourName: booking.tours?.title || booking.activities?.title || 'General Inquiry',
+      travelDate: format(new Date(booking.travel_date), 'MMMM dd, yyyy'),
+      numberOfGuests: booking.number_of_guests,
+      specialRequests: booking.special_requests || undefined,
+      status: booking.status as 'pending' | 'confirmed' | 'completed' | 'cancelled',
+      totalPrice: booking.total_price || undefined,
+    }, booking.status === 'confirmed');
+  };
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
@@ -167,6 +184,14 @@ const AdminBookings = () => {
                       <Button variant="outline" size="sm" onClick={() => setSelectedBooking(booking)}>
                         <Eye className="h-4 w-4 mr-1" /> View
                       </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleDownloadPDF(booking)}
+                        title="Download PDF Voucher"
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
                       {booking.status === 'pending' && (
                         <>
                           <Button
@@ -216,6 +241,13 @@ const AdminBookings = () => {
             </DialogHeader>
             {selectedBooking && (
               <div className="space-y-4">
+                {/* Tracking Code */}
+                {selectedBooking.tracking_code && (
+                  <div className="bg-muted/50 rounded-lg p-3 text-center">
+                    <p className="text-sm text-muted-foreground">Tracking Code</p>
+                    <p className="text-xl font-mono font-bold text-primary">{selectedBooking.tracking_code}</p>
+                  </div>
+                )}
                 <div>
                   <p className="text-sm text-muted-foreground">Customer</p>
                   <p className="font-medium">{selectedBooking.customer_name}</p>
@@ -268,6 +300,15 @@ const AdminBookings = () => {
                     </SelectContent>
                   </Select>
                 </div>
+                {/* Download PDF Button */}
+                <Button 
+                  className="w-full" 
+                  variant="outline"
+                  onClick={() => handleDownloadPDF(selectedBooking)}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Download PDF Voucher
+                </Button>
               </div>
             )}
           </DialogContent>

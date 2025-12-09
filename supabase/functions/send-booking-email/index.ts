@@ -18,6 +18,7 @@ interface BookingEmailRequest {
   travelDate: string;
   numberOfGuests: number;
   specialRequests?: string;
+  trackingCode?: string;
 }
 
 function generateAdminEmailHtml(booking: BookingEmailRequest): string {
@@ -57,6 +58,12 @@ function generateAdminEmailHtml(booking: BookingEmailRequest): string {
             <td style="border: 1px solid #dee2e6; font-weight: bold;">Tour</td>
             <td style="border: 1px solid #dee2e6; color: #d4af37; font-weight: bold;">${booking.tourName}</td>
           </tr>
+          ${booking.trackingCode ? `
+          <tr style="background-color: #e8f4fd;">
+            <td style="border: 1px solid #dee2e6; font-weight: bold;">Tracking Code</td>
+            <td style="border: 1px solid #dee2e6; color: #1a73e8; font-weight: bold; font-family: monospace; font-size: 16px;">${booking.trackingCode}</td>
+          </tr>
+          ` : ''}
           <tr style="background-color: #f8f9fa;">
             <td style="border: 1px solid #dee2e6; font-weight: bold;">Travel Date</td>
             <td style="border: 1px solid #dee2e6;">${booking.travelDate}</td>
@@ -94,6 +101,14 @@ function generateAdminEmailHtml(booking: BookingEmailRequest): string {
 }
 
 function generateCustomerEmailHtml(booking: BookingEmailRequest): string {
+  // Generate Google Calendar link
+  const calendarTitle = encodeURIComponent(`${booking.tourName} - Infinity Voyage`);
+  const calendarDetails = encodeURIComponent(`Your ${booking.tourName} adventure with Infinity Voyage Tours.\\n\\nTracking Code: ${booking.trackingCode || 'N/A'}\\nGuests: ${booking.numberOfGuests}\\n\\nContact: +255 758 241 294\\nEmail: info@infinityvoyagetours.com`);
+  const calendarLocation = encodeURIComponent('Tanzania / Zanzibar');
+  
+  // Parse travel date for calendar (assuming format like "December 25, 2025")
+  const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${calendarTitle}&details=${calendarDetails}&location=${calendarLocation}&dates=${booking.travelDate.replace(/[^0-9]/g, '')}/${booking.travelDate.replace(/[^0-9]/g, '')}`;
+
   return `
 <!DOCTYPE html>
 <html>
@@ -119,6 +134,13 @@ function generateCustomerEmailHtml(booking: BookingEmailRequest): string {
 
         <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; padding: 25px; margin: 25px 0;">
           <h3 style="color: #1a1a2e; margin: 0 0 15px 0; font-size: 18px;">📋 Your Booking Summary</h3>
+          ${booking.trackingCode ? `
+          <div style="background-color: #1a1a2e; border-radius: 8px; padding: 15px; margin-bottom: 15px; text-align: center;">
+            <p style="color: #888; margin: 0 0 5px 0; font-size: 12px; text-transform: uppercase;">Your Tracking Code</p>
+            <p style="color: #d4af37; margin: 0; font-size: 24px; font-weight: bold; font-family: monospace; letter-spacing: 3px;">${booking.trackingCode}</p>
+            <p style="color: #888; margin: 10px 0 0 0; font-size: 11px;">Save this code to track your booking at infinityvoyagetours.com</p>
+          </div>
+          ` : ''}
           <table width="100%" cellspacing="0" cellpadding="5">
             <tr>
               <td style="color: #666; padding: 5px 0;">Tour:</td>
@@ -135,6 +157,15 @@ function generateCustomerEmailHtml(booking: BookingEmailRequest): string {
           </table>
         </div>
 
+        <!-- Add to Calendar Button -->
+        <div style="text-align: center; margin: 25px 0;">
+          <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=${calendarTitle}&details=${calendarDetails}&location=${calendarLocation}" 
+             target="_blank"
+             style="display: inline-block; background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%); color: #1a1a2e; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: bold; font-size: 15px;">
+            📅 Add to Google Calendar
+          </a>
+        </div>
+
         <div style="background-color: #d4f4dd; border-radius: 8px; padding: 20px; margin: 25px 0; border-left: 4px solid #28a745;">
           <h4 style="color: #155724; margin: 0 0 10px 0;">✅ What Happens Next?</h4>
           <ol style="color: #155724; margin: 0; padding-left: 20px; line-height: 1.8;">
@@ -144,6 +175,17 @@ function generateCustomerEmailHtml(booking: BookingEmailRequest): string {
             <li>Get ready for an unforgettable adventure!</li>
           </ol>
         </div>
+
+        <!-- Track Booking Button -->
+        ${booking.trackingCode ? `
+        <div style="text-align: center; margin: 25px 0;">
+          <a href="https://infinityvoyagetours.com/track-booking" 
+             target="_blank"
+             style="display: inline-block; background-color: #1a1a2e; color: #d4af37; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: bold; font-size: 15px;">
+            🔍 Track Your Booking
+          </a>
+        </div>
+        ` : ''}
 
         <p style="color: #1a1a2e; font-weight: bold; margin-top: 30px;">
           Asante sana! (Thank you very much!)<br>

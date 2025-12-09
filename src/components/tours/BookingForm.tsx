@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { CalendarIcon, Loader2, CheckCircle2, Users, Mail, Phone, MapPin, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -37,6 +38,7 @@ interface Props {
 
 const BookingForm = ({ tourId, tourName }: Props) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -68,9 +70,15 @@ const BookingForm = ({ tourId, tourName }: Props) => {
         tour_id: tourId || null,
       };
 
-      const { error } = await supabase.from('bookings').insert(payload);
+      const { data: insertedBooking, error } = await supabase
+        .from('bookings')
+        .insert(payload)
+        .select('tracking_code')
+        .single();
       
       if (error) throw error;
+
+      const trackingCode = insertedBooking?.tracking_code;
 
       // Send email notifications via Edge Function (fire-and-forget, don't wait)
       supabase.functions.invoke('send-booking-email', {
@@ -82,6 +90,7 @@ const BookingForm = ({ tourId, tourName }: Props) => {
           numberOfGuests: parseInt(data.guests),
           specialRequests: data.notes || 'None',
           tourName: tourName || 'General Inquiry',
+          trackingCode: trackingCode || '',
         },
       }).catch((emailErr) => {
         // Don't fail the booking if email fails, just log it
@@ -96,6 +105,7 @@ const BookingForm = ({ tourId, tourName }: Props) => {
           travelDate: format(data.date, 'PPP'),
           numberOfGuests: parseInt(data.guests),
           tourName: tourName || 'General Inquiry',
+          trackingCode: trackingCode || '',
         },
       }).catch((smsErr) => {
         // Don't fail the booking if SMS fails, just log it
@@ -109,11 +119,19 @@ const BookingForm = ({ tourId, tourName }: Props) => {
         duration: 5000,
       });
 
-      // Reset form after success
+      // Navigate to ThankYou page with tracking code and booking details
       setTimeout(() => {
         form.reset();
-        setIsSuccess(false);
-      }, 3000);
+        const params = new URLSearchParams({
+          code: trackingCode || '',
+          name: data.name,
+          email: data.email,
+          tour: tourName || 'General Inquiry',
+          date: format(data.date, 'PPP'),
+          guests: data.guests,
+        });
+        navigate(`/thank-you?${params.toString()}`);
+      }, 1500);
     } catch (err: any) {
       console.error('Booking error', err);
       toast({

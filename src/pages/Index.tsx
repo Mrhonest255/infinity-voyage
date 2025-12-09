@@ -6,6 +6,7 @@ import { Destinations } from "@/components/home/Destinations";
 import { TourPackages } from "@/components/home/TourPackages";
 import { Testimonials } from "@/components/home/Testimonials";
 import { CallToAction } from "@/components/home/CallToAction";
+import { StatsCounter } from "@/components/home/StatsCounter";
 
 const Index = () => {
   return (
@@ -14,6 +15,7 @@ const Index = () => {
       <main>
         <Hero />
         <WhyChooseUs />
+        <StatsCounter />
         <Destinations />
         <TourPackages />
         <Testimonials />

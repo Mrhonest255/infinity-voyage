@@ -143,24 +143,36 @@ export const Destinations = () => {
   }
 
   return (
-    <section className="section-padding bg-muted/30">
-      <div className="container-wide mx-auto">
+    <section className="section-padding bg-gradient-to-b from-muted/30 via-background to-muted/30 relative overflow-hidden">
+      {/* Decorative background */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-safari-gold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+      <div className="container-wide mx-auto relative">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
           >
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
-              Popular Destinations
+            {/* Section label */}
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-10 h-px bg-safari-gold" />
+              <span className="text-safari-gold text-sm font-semibold uppercase tracking-[0.2em]">
+                Destinations
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-5">
+              Popular <span className="text-gradient-gold">Destinations</span>
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg md:text-xl text-muted-foreground max-w-xl">
               Explore the top-rated places in Tanzania & Zanzibar
             </p>
           </motion.div>
           <Link to="/safaris">
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" className="rounded-xl border-2 hover:border-primary hover:bg-primary/5 transition-all duration-300">
               View All Places
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
@@ -172,17 +184,17 @@ export const Destinations = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="flex flex-wrap gap-3 mb-12"
+          transition={{ delay: 0.1, duration: 0.6 }}
+          className="flex flex-wrap gap-3 mb-14"
         >
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
+              className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-400 ${
                 activeCategory === category
-                  ? "bg-primary text-primary-foreground shadow-soft"
-                  : "bg-background text-foreground hover:bg-primary/10"
+                  ? "bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-elevated"
+                  : "bg-background text-foreground border border-border hover:border-primary/50 hover:shadow-soft"
               }`}
             >
               {category}
@@ -195,11 +207,11 @@ export const Destinations = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="bg-safari-gold/10 border border-safari-gold/30 rounded-xl p-4 mb-12"
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="bg-gradient-to-r from-safari-gold/10 via-safari-gold/5 to-safari-gold/10 border border-safari-gold/30 rounded-2xl p-5 mb-14 backdrop-blur-sm"
         >
           <p className="text-sm text-foreground">
-            <span className="font-semibold">Best Season?</span> June to October
+            <span className="font-semibold text-safari-gold">✦ Best Season:</span> June to October
             is perfect for safaris (Dry Season). December to February is great
             for calving season in the Serengeti.
           </p>
@@ -210,56 +222,77 @@ export const Destinations = () => {
           {filteredTours.map((tour, index) => (
             <motion.div
               key={tour.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group safari-card"
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              className="group safari-card hover-lift"
             >
               {/* Image */}
-              <div className="relative h-64 overflow-hidden">
+              <div className="relative h-72 overflow-hidden img-zoom">
                 <img
                   src={tour.featured_image || getPlaceholderImage(index)}
                   alt={tour.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-cover"
                 />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-safari-night/80 via-safari-night/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+                
                 <div className="absolute top-4 left-4">
                   <Badge
                     variant="secondary"
-                    className="bg-background/90 backdrop-blur-sm"
+                    className="bg-background/95 backdrop-blur-md text-xs font-semibold px-3 py-1.5 rounded-lg shadow-soft"
                   >
                     {tour.category}
                   </Badge>
                 </div>
                 {tour.is_featured && (
                   <div className="absolute top-4 right-4">
-                    <Badge className="bg-safari-gold text-safari-night">
-                      Featured
+                    <Badge className="badge-premium shadow-gold">
+                      ✦ Featured
                     </Badge>
+                  </div>
+                )}
+
+                {/* Price overlay */}
+                {tour.price && (
+                  <div className="absolute bottom-4 right-4">
+                    <div className="bg-background/95 backdrop-blur-md rounded-xl px-4 py-2 shadow-elevated">
+                      <p className="text-xs text-muted-foreground">From</p>
+                      <p className="text-lg font-bold text-foreground">
+                        ${tour.price?.toLocaleString()}
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
 
               {/* Content */}
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                  <MapPin className="w-4 h-4" />
-                  Tanzania
+              <div className="p-7">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                  <MapPin className="w-4 h-4 text-safari-gold" />
+                  <span>Tanzania</span>
+                  {tour.duration && (
+                    <>
+                      <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+                      <span>{tour.duration}</span>
+                    </>
+                  )}
                 </div>
-                <h3 className="font-display text-xl font-semibold text-foreground mb-3">
+                <h3 className="text-xl md:text-2xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">
                   {tour.title}
                 </h3>
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                <p className="text-muted-foreground text-sm mb-5 line-clamp-2 leading-relaxed">
                   {tour.short_description || 'Discover this amazing destination'}
                 </p>
 
                 {/* Highlights */}
                 {tour.highlights && tour.highlights.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="flex flex-wrap gap-2 mb-5">
                     {tour.highlights.slice(0, 2).map((highlight) => (
                       <span
                         key={highlight}
-                        className="text-xs px-3 py-1 rounded-full bg-muted text-muted-foreground"
+                        className="text-xs px-3 py-1.5 rounded-lg bg-primary/5 text-primary font-medium border border-primary/10"
                       >
                         {highlight}
                       </span>

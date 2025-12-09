@@ -1,10 +1,14 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "";
+const ADMIN_EMAIL = "info@infinityvoyagetours.com";
+const FROM_EMAIL = "Infinity Voyage <onboarding@resend.dev>";
+const COMPANY_NAME = "Infinity Voyage Tours & Safaris";
 
 interface BookingEmailRequest {
   customerName: string;
@@ -16,17 +20,6 @@ interface BookingEmailRequest {
   specialRequests?: string;
 }
 
-const SMTP_CONFIG = {
-  hostname: Deno.env.get("SMTP_HOST") || "mail.spacemail.com",
-  port: parseInt(Deno.env.get("SMTP_PORT") || "587"),
-  username: Deno.env.get("SMTP_USER") || "info@infinityvoyagetours.com",
-  password: Deno.env.get("SMTP_PASS") || "",
-};
-
-const ADMIN_EMAIL = "info@infinityvoyagetours.com";
-const FROM_EMAIL = "info@infinityvoyagetours.com";
-const COMPANY_NAME = "Infinity Voyage Tours & Safaris";
-
 function generateAdminEmailHtml(booking: BookingEmailRequest): string {
   return `
 <!DOCTYPE html>
@@ -34,7 +27,6 @@ function generateAdminEmailHtml(booking: BookingEmailRequest): string {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Booking Request</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
@@ -73,7 +65,7 @@ function generateAdminEmailHtml(booking: BookingEmailRequest): string {
             <td style="border: 1px solid #dee2e6; font-weight: bold;">Number of Guests</td>
             <td style="border: 1px solid #dee2e6;">${booking.numberOfGuests}</td>
           </tr>
-          ${booking.specialRequests ? `
+          ${booking.specialRequests && booking.specialRequests !== 'None' ? `
           <tr style="background-color: #f8f9fa;">
             <td style="border: 1px solid #dee2e6; font-weight: bold;">Special Requests</td>
             <td style="border: 1px solid #dee2e6;">${booking.specialRequests}</td>
@@ -86,20 +78,12 @@ function generateAdminEmailHtml(booking: BookingEmailRequest): string {
             ⏰ <strong>Action Required:</strong> Please respond to this inquiry within 24 hours.
           </p>
         </div>
-
-        <div style="margin-top: 20px; text-align: center;">
-          <a href="mailto:${booking.customerEmail}?subject=Re: Your ${booking.tourName} Booking Request" 
-             style="display: inline-block; padding: 12px 30px; background-color: #d4af37; color: #1a1a2e; text-decoration: none; border-radius: 5px; font-weight: bold;">
-            Reply to Customer
-          </a>
-        </div>
       </td>
     </tr>
     <tr>
       <td style="background-color: #1a1a2e; padding: 20px; text-align: center;">
         <p style="color: #888; margin: 0; font-size: 12px;">
-          ${COMPANY_NAME} | Tanzania & Zanzibar<br>
-          This is an automated notification from your booking system.
+          ${COMPANY_NAME} | Tanzania & Zanzibar
         </p>
       </td>
     </tr>
@@ -116,7 +100,6 @@ function generateCustomerEmailHtml(booking: BookingEmailRequest): string {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booking Confirmation - ${COMPANY_NAME}</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
@@ -162,21 +145,6 @@ function generateCustomerEmailHtml(booking: BookingEmailRequest): string {
           </ol>
         </div>
 
-        <p style="color: #555; line-height: 1.6; font-size: 15px;">
-          Have questions? Feel free to reach out to us anytime:
-        </p>
-        
-        <div style="text-align: center; margin: 30px 0;">
-          <a href="mailto:${ADMIN_EMAIL}" 
-             style="display: inline-block; padding: 14px 35px; background-color: #d4af37; color: #1a1a2e; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
-            📧 Contact Us
-          </a>
-        </div>
-
-        <p style="color: #555; line-height: 1.6; font-size: 15px;">
-          We can't wait to show you the wonders of Tanzania and Zanzibar!
-        </p>
-        
         <p style="color: #1a1a2e; font-weight: bold; margin-top: 30px;">
           Asante sana! (Thank you very much!)<br>
           <span style="color: #d4af37;">The ${COMPANY_NAME} Team</span>
@@ -208,40 +176,51 @@ serve(async (req) => {
   try {
     const booking: BookingEmailRequest = await req.json();
 
-    console.log("Sending booking emails for:", booking.customerName);
-
-    const client = new SmtpClient();
-
-    await client.connectTLS({
-      hostname: SMTP_CONFIG.hostname,
-      port: SMTP_CONFIG.port,
-      username: SMTP_CONFIG.username,
-      password: SMTP_CONFIG.password,
-    });
+    console.log("Sending booking emails via Resend for:", booking.customerName);
 
     // Send email to admin
-    await client.send({
-      from: FROM_EMAIL,
-      to: ADMIN_EMAIL,
-      subject: `🦁 New Booking: ${booking.tourName} - ${booking.customerName}`,
-      content: `New booking request from ${booking.customerName} for ${booking.tourName}`,
-      html: generateAdminEmailHtml(booking),
+    const adminEmailResponse = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: FROM_EMAIL,
+        to: [ADMIN_EMAIL],
+        subject: `🦁 New Booking: ${booking.tourName} - ${booking.customerName}`,
+        html: generateAdminEmailHtml(booking),
+      }),
     });
 
-    console.log("Admin email sent successfully");
+    if (!adminEmailResponse.ok) {
+      const errorData = await adminEmailResponse.text();
+      console.error("Admin email failed:", errorData);
+    } else {
+      console.log("Admin email sent successfully");
+    }
 
     // Send confirmation email to customer
-    await client.send({
-      from: FROM_EMAIL,
-      to: booking.customerEmail,
-      subject: `✅ Booking Received - ${booking.tourName} | ${COMPANY_NAME}`,
-      content: `Thank you for your booking request for ${booking.tourName}. We will contact you within 24 hours.`,
-      html: generateCustomerEmailHtml(booking),
+    const customerEmailResponse = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: FROM_EMAIL,
+        to: [booking.customerEmail],
+        subject: `✅ Booking Received - ${booking.tourName} | ${COMPANY_NAME}`,
+        html: generateCustomerEmailHtml(booking),
+      }),
     });
 
-    console.log("Customer email sent successfully");
-
-    await client.close();
+    if (!customerEmailResponse.ok) {
+      const errorData = await customerEmailResponse.text();
+      console.error("Customer email failed:", errorData);
+    } else {
+      console.log("Customer email sent successfully");
+    }
 
     return new Response(
       JSON.stringify({ success: true, message: "Emails sent successfully" }),

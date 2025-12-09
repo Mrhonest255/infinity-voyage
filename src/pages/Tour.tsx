@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Navbar } from '@/components/layout/Navbar';
+import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import { Footer } from '@/components/layout/Footer';
 import { TourReviews } from '@/components/tours/TourReviews';
 
@@ -27,6 +28,7 @@ const TourPage = () => {
         if (error) {
           console.error('Error fetching tour', error);
         } else {
+          console.debug('Tour fetched from supabase:', data);
           setTour(data || null);
         }
       }).finally(() => setLoading(false));
@@ -121,6 +123,8 @@ const TourPage = () => {
     setLightboxOpen(true);
   };
 
+  const debugMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === '1';
+
   const navigateImage = (direction: 'prev' | 'next') => {
     const totalImages = allImages.length;
     if (totalImages === 0) return;
@@ -159,9 +163,25 @@ const TourPage = () => {
   );
 
   return (
-    <>
+    <ErrorBoundary>
       {/* SEO Structured Data is added via useEffect */}
       <div className="min-h-screen bg-gradient-to-br from-background via-card/30 to-background">
+        {debugMode && (
+          <div className="fixed bottom-4 right-4 z-50 bg-white p-3 rounded shadow-lg max-w-md w-full text-xs text-left overflow-auto border border-muted">
+            <div className="font-semibold mb-1">Tour Debug</div>
+            <div className="text-foreground text-xs">
+              <pre className="whitespace-pre-wrap">{JSON.stringify({
+                id: tour?.id,
+                title: tour?.title,
+                slug: tour?.slug,
+                published: tour?.is_published,
+                featured_image: tour?.featured_image,
+                gallery_count: Array.isArray(tour?.gallery) ? tour.gallery.length : 0,
+                price: tour?.price
+              }, null, 2)}</pre>
+            </div>
+          </div>
+        )}
         <Navbar />
         {/* Hero Image Section */}
         <div className="relative w-full h-[60vh] min-h-[500px] overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
@@ -708,7 +728,7 @@ const TourPage = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    </ErrorBoundary>
   );
 };
 

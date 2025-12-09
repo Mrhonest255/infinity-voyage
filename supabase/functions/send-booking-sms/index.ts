@@ -10,7 +10,7 @@ const corsHeaders = {
 const BEEM_AUTH_TOKEN = "MjEzNzhhNmJkYmM2NWExNzpNelExWWpoaE5HVTBabU13WVdGa056VmlaalptTXprMk1qZ3pNMk0zWmpFMVlUbGtaVE16WlRKaE1HUTVPVFl6TTJJMVpXUXdNVGMwTnpGbFl6RXpNdz09";
 const BEEM_SENDER_ID = "Z-MATE";
 // Admin phone numbers for notifications (multiple recipients)
-const ADMIN_PHONES = ["255690000128", "255758241294"];
+const ADMIN_PHONES = ["255775668066", "255758241294"];
 
 interface BookingSmsRequest {
   customerName: string;

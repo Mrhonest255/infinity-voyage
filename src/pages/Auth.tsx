@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { z } from 'zod';
+import { supabase } from '@/integrations/supabase/client';
 
 const emailSchema = z.string().email('Please enter a valid email address');
 const passwordSchema = z.string().min(6, 'Password must be at least 6 characters');
@@ -89,7 +90,7 @@ const Auth = () => {
     if (!validateFields(false)) return;
     
     setLoading(true);
-    const { error } = await signIn(email, password);
+    const { error, data } = await supabase.auth.signInWithPassword({ email, password });
     
     if (error) {
       setLoading(false);
@@ -105,9 +106,26 @@ const Auth = () => {
         title: 'Welcome back!',
         description: 'You have signed in successfully.',
       });
-      // Set login success flag - redirect will happen after auth state updates
-      setLoginSuccess(true);
-      // Keep loading true until redirect happens
+      
+      // Check admin role directly after login
+      if (data?.user) {
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', data.user.id)
+          .eq('role', 'admin')
+          .maybeSingle();
+        
+        if (roleData) {
+          // User is admin - redirect to admin dashboard
+          navigate('/admin', { replace: true });
+        } else {
+          // Regular user - redirect to homepage
+          navigate('/', { replace: true });
+        }
+      } else {
+        navigate('/', { replace: true });
+      }
     }
   };
 

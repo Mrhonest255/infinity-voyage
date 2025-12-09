@@ -10,6 +10,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import { TourReviews } from '@/components/tours/TourReviews';
 
 const TourPage = () => {
   const { slug } = useParams();
@@ -104,9 +105,16 @@ const TourPage = () => {
   );
 
   // Combine featured image with gallery images (featured image first)
+  const galleryArray = Array.isArray(tour?.gallery) ? tour.gallery.filter(Boolean) : [];
   const allImages = tour?.featured_image 
-    ? [tour.featured_image, ...(tour.gallery || [])]
-    : (tour?.gallery || []);
+    ? [tour.featured_image, ...galleryArray]
+    : galleryArray;
+
+  // Normalize array-like fields to avoid runtime errors
+  const safeIncluded = Array.isArray(tour?.included) ? tour.included : [];
+  const safeExcluded = Array.isArray(tour?.excluded) ? tour.excluded : [];
+  const safeHighlights = Array.isArray(tour?.highlights) ? tour.highlights : [];
+  const safeItinerary = Array.isArray(tour?.itinerary) ? tour.itinerary : [];
 
   const openLightbox = (index: number) => {
     setSelectedImageIndex(index);
@@ -382,7 +390,7 @@ const TourPage = () => {
               )}
 
               {/* Highlights Section */}
-              {tour.highlights && tour.highlights.length > 0 && (
+              {safeHighlights.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -399,7 +407,7 @@ const TourPage = () => {
                     </div>
                     <CardContent className="p-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {tour.highlights.map((highlight: string, index: number) => (
+                        {safeHighlights.map((highlight: string, index: number) => (
                           <motion.div
                             key={index}
                             initial={{ opacity: 0, x: -20 }}
@@ -424,7 +432,7 @@ const TourPage = () => {
               )}
 
               {/* Included/Excluded Table */}
-              {(tour.included || tour.excluded) && (
+              {(safeIncluded.length > 0 || safeExcluded.length > 0) && (
                 <Card className="border-2 border-border shadow-elevated">
                   <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
                     <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
@@ -433,7 +441,7 @@ const TourPage = () => {
                     <p className="text-muted-foreground mt-2">Know exactly what's covered</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border">
-                    {tour.included && tour.included.length > 0 && (
+                    {safeIncluded.length > 0 && (
                       <div className="p-6">
                         <h3 className="font-heading text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                           <CheckCircle2 className="w-5 h-5 text-green-600" />
@@ -441,7 +449,7 @@ const TourPage = () => {
                         </h3>
                         <Table>
                           <TableBody>
-                            {tour.included.map((item: string, index: number) => (
+                            {safeIncluded.map((item: string, index: number) => (
                               <TableRow key={index} className="hover:bg-green-50/50 dark:hover:bg-green-950/10">
                                 <TableCell className="flex items-center gap-3 text-foreground">
                                   <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
@@ -453,7 +461,7 @@ const TourPage = () => {
                         </Table>
                       </div>
                     )}
-                    {tour.excluded && tour.excluded.length > 0 && (
+                    {safeExcluded.length > 0 && (
                       <div className="p-6">
                         <h3 className="font-heading text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                           <span className="text-red-600">✕</span>
@@ -461,7 +469,7 @@ const TourPage = () => {
                         </h3>
                         <Table>
                           <TableBody>
-                            {tour.excluded.map((item: string, index: number) => (
+                            {safeExcluded.map((item: string, index: number) => (
                               <TableRow key={index} className="hover:bg-red-50/50 dark:hover:bg-red-950/10">
                                 <TableCell className="flex items-center gap-3 text-foreground">
                                   <span className="w-4 h-4 text-red-600 flex-shrink-0 flex items-center justify-center">✕</span>
@@ -478,7 +486,7 @@ const TourPage = () => {
               )}
 
               {/* Itinerary Section */}
-              {tour.itinerary && tour.itinerary.length > 0 && (
+              {safeItinerary.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -500,7 +508,7 @@ const TourPage = () => {
                     </div>
                     <CardContent className="p-6">
                       <div className="space-y-6">
-                        {tour.itinerary.map((day: any, index: number) => (
+                        {safeItinerary.map((day: any, index: number) => (
                           <motion.div
                             key={day.day || index}
                             initial={{ opacity: 0, x: -20 }}
@@ -551,6 +559,9 @@ const TourPage = () => {
                   </Card>
                 </motion.div>
               )}
+
+              {/* Reviews */}
+              <TourReviews tourId={tour.id} tourTitle={tour.title} />
             </div>
 
             {/* Sidebar */}

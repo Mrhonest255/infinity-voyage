@@ -31,6 +31,7 @@ interface Tour {
 export const TourPackages = () => {
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState<"all" | "safari" | "zanzibar">("all");
 
   useEffect(() => {
     fetchFeaturedTours();
@@ -76,6 +77,12 @@ export const TourPackages = () => {
       setLoading(false);
     }
   };
+
+  const filteredTours = tours.filter((tour) => {
+    if (activeFilter === "all") return true;
+    const isSafari = (tour.category || "").toLowerCase().includes("safari");
+    return activeFilter === "safari" ? isSafari : !isSafari;
+  });
 
   const getPlaceholderImage = (index: number) => {
     return placeholderImages[index % placeholderImages.length];
@@ -169,18 +176,38 @@ export const TourPackages = () => {
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground">
               Our Top Tour Packages
             </h2>
+            <p className="text-muted-foreground mt-2">
+              Safari packages stay under Safari, while Zanzibar beach/culture live under Zanzibar.
+            </p>
           </motion.div>
-          <Link to="/safaris">
-            <Button variant="outline" size="lg">
-              View All Packages
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Link>
+          <div className="flex flex-wrap gap-3 items-center">
+            <div className="flex rounded-full bg-muted/60 p-1">
+              {["all", "safari", "zanzibar"].map((key) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveFilter(key as "all" | "safari" | "zanzibar")}
+                  className={`px-4 py-2 text-sm rounded-full transition ${
+                    activeFilter === key
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-foreground hover:bg-primary/10"
+                  }`}
+                >
+                  {key === "all" ? "All" : key === "safari" ? "Safari" : "Zanzibar"}
+                </button>
+              ))}
+            </div>
+            <Link to="/safaris">
+              <Button variant="outline" size="lg">
+                View All
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Packages Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {tours.map((tour, index) => (
+          {filteredTours.map((tour, index) => (
             <motion.div
               key={tour.id}
               initial={{ opacity: 0, y: 30 }}

@@ -19,6 +19,7 @@ import AdminBookings from "./pages/admin/Bookings";
 import AdminSettings from "./pages/admin/Settings";
 import NotFound from "./pages/NotFound";
 import TourPage from "./pages/Tour";
+import ThankYou from "./pages/ThankYou";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/tour/:slug" element={<TourPage />} />
             <Route path="/zanzibar" element={<Zanzibar />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/thank-you" element={<ThankYou />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/tours" element={<AdminTours />} />

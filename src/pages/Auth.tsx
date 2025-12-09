@@ -26,17 +26,30 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; name?: string }>({});
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   useEffect(() => {
-    if (user && !authLoading) {
+    // Only redirect after login success and auth loading is complete
+    if (user && !authLoading && loginSuccess) {
       // Redirect admins to admin dashboard, regular users to homepage
       if (isAdmin) {
-        navigate('/admin');
+        navigate('/admin', { replace: true });
       } else {
-        navigate('/');
+        navigate('/', { replace: true });
       }
     }
-  }, [user, isAdmin, authLoading, navigate]);
+  }, [user, isAdmin, authLoading, loginSuccess, navigate]);
+
+  // Also handle case where user is already logged in when visiting auth page
+  useEffect(() => {
+    if (user && !authLoading && !loginSuccess) {
+      if (isAdmin) {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
+    }
+  }, [user, isAdmin, authLoading, loginSuccess, navigate]);
 
   const validateFields = (isSignUp: boolean) => {
     const newErrors: { email?: string; password?: string; name?: string } = {};
@@ -77,9 +90,9 @@ const Auth = () => {
     
     setLoading(true);
     const { error } = await signIn(email, password);
-    setLoading(false);
     
     if (error) {
+      setLoading(false);
       toast({
         title: 'Sign in failed',
         description: error.message === 'Invalid login credentials' 
@@ -92,6 +105,9 @@ const Auth = () => {
         title: 'Welcome back!',
         description: 'You have signed in successfully.',
       });
+      // Set login success flag - redirect will happen after auth state updates
+      setLoginSuccess(true);
+      // Keep loading true until redirect happens
     }
   };
 

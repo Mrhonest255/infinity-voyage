@@ -88,6 +88,20 @@ const BookingForm = ({ tourId, tourName }: Props) => {
         console.error('Email notification failed:', emailErr);
       });
 
+      // Send SMS notification to admin via Edge Function (fire-and-forget)
+      supabase.functions.invoke('send-booking-sms', {
+        body: {
+          customerName: data.name,
+          customerPhone: data.phone || '',
+          travelDate: format(data.date, 'PPP'),
+          numberOfGuests: parseInt(data.guests),
+          tourName: tourName || 'General Inquiry',
+        },
+      }).catch((smsErr) => {
+        // Don't fail the booking if SMS fails, just log it
+        console.error('SMS notification failed:', smsErr);
+      });
+
       setIsSuccess(true);
       toast({
         title: 'Booking Request Sent! 🎉',

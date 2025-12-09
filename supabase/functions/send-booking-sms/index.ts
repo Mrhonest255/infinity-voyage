@@ -9,7 +9,8 @@ const corsHeaders = {
 // Auth token = base64(apiKey:secretKey)
 const BEEM_AUTH_TOKEN = "MjEzNzhhNmJkYmM2NWExNzpNelExWWpoaE5HVTBabU13WVdGa056VmlaalptTXprMk1qZ3pNMk0zWmpFMVlUbGtaVE16WlRKaE1HUTVPVFl6TTJJMVpXUXdNVGMwTnpGbFl6RXpNdz09";
 const BEEM_SENDER_ID = "Z-MATE";
-const ADMIN_PHONE = "255690000128"; // Admin phone number for notifications
+// Admin phone numbers for notifications (multiple recipients)
+const ADMIN_PHONES = ["255690000128", "255758241294"];
 
 interface BookingSmsRequest {
   customerName: string;
@@ -19,22 +20,23 @@ interface BookingSmsRequest {
   numberOfGuests: number;
 }
 
-async function sendBeemSms(recipient: string, message: string): Promise<boolean> {
+async function sendBeemSms(recipients: string[], message: string): Promise<boolean> {
   try {
-    console.log("Attempting to send SMS to:", recipient);
+    console.log("Attempting to send SMS to:", recipients.join(", "));
     console.log("Using Auth Token:", BEEM_AUTH_TOKEN ? "SET (length: " + BEEM_AUTH_TOKEN.length + ")" : "NOT SET");
+    
+    // Build recipients array for Beem API
+    const recipientsList = recipients.map((phone, index) => ({
+      recipient_id: index + 1,
+      dest_addr: phone,
+    }));
     
     const requestBody = {
       source_addr: BEEM_SENDER_ID,
       schedule_time: "",
       encoding: 0,
       message: message,
-      recipients: [
-        {
-          recipient_id: 1,
-          dest_addr: recipient,
-        },
-      ],
+      recipients: recipientsList,
     };
     
     console.log("Sending to Beem API...");
@@ -77,8 +79,8 @@ serve(async (req) => {
     // Format admin notification message (no emojis for better compatibility)
     const adminMessage = `NEW BOOKING!\n\nCustomer: ${booking.customerName}\nTour: ${booking.tourName}\nDate: ${booking.travelDate}\nGuests: ${booking.numberOfGuests}\n${booking.customerPhone ? `Phone: ${booking.customerPhone}` : ''}\n\nCheck dashboard for details.`;
 
-    // Send SMS to admin
-    const smsSent = await sendBeemSms(ADMIN_PHONE, adminMessage);
+    // Send SMS to all admin phones
+    const smsSent = await sendBeemSms(ADMIN_PHONES, adminMessage);
 
     if (smsSent) {
       console.log("Admin SMS notification sent successfully");

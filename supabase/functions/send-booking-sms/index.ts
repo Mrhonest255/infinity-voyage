@@ -7,9 +7,9 @@ const corsHeaders = {
 };
 
 // Beem SMS API Configuration
-const BEEM_API_KEY = Deno.env.get("BEEM_API_KEY") || "11fe9dd4203153e5";
+const BEEM_API_KEY = Deno.env.get("BEEM_API_KEY") || "";
 const BEEM_SECRET_KEY = Deno.env.get("BEEM_SECRET_KEY") || "";
-const BEEM_SENDER_ID = "KIJIJI-APP";
+const BEEM_SENDER_ID = "Z-MATE";
 const ADMIN_PHONE = "255690000128"; // Admin phone number for notifications
 
 interface BookingSmsRequest {

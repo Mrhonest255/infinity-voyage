@@ -7,12 +7,12 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const navLinks = [
   { name: "Home", path: "/" },
-  { name: "About Us", path: "/about" },
-  { name: "Safaris", path: "/safaris" },
   { name: "Zanzibar Excursions", path: "/zanzibar" },
+  { name: "Safaris", path: "/safaris" },
   { name: "Prices", path: "/prices" },
   { name: "Gallery", path: "/gallery" },
-  { name: "Contact", path: "/contact" },
+  { name: "About Us", path: "/about" },
+  { name: "Contacts", path: "/contact" },
 ];
 
 export const Navbar = () => {

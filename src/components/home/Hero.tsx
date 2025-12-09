@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Search, Calendar as CalendarIcon, Users, Play, Minus, Plus } from "lucide-react";
+import { Search, Calendar as CalendarIcon, Users, Minus, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import heroImage from "@/assets/hero-safari.jpg";
@@ -21,6 +21,13 @@ const destinations = [
   "Selous Game Reserve",
 ];
 
+// Extract YouTube video ID from URL
+const getYouTubeId = (url: string): string | null => {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+};
+
 export const Hero = () => {
   const navigate = useNavigate();
   const { data: settings } = useSiteSettings();
@@ -29,6 +36,11 @@ export const Hero = () => {
   const [date, setDate] = useState<Date>();
   const [guests, setGuests] = useState(2);
   const [showGuests, setShowGuests] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+
+  // YouTube video ID - from settings or default
+  const videoUrl = settings?.homepage?.heroVideo || "https://www.youtube.com/watch?v=DZnw2TeLuEU";
+  const videoId = getYouTubeId(videoUrl) || "DZnw2TeLuEU";
 
   const filteredDestinations = destinations.filter(d => 
     d.toLowerCase().includes(destination.toLowerCase())
@@ -42,26 +54,38 @@ export const Hero = () => {
     navigate(`/safaris?${params.toString()}`);
   };
 
-  const handlePlay = () => {
-    const videoUrl = settings?.homepage?.heroVideo;
-    if (videoUrl) {
-      window.open(videoUrl, "_blank", "noopener,noreferrer");
-    }
-  };
-
   const heroTitle = settings?.homepage?.heroTitle?.trim() || "INFINITY VOYAGE";
   const heroSubtitle = settings?.homepage?.heroSubtitle?.trim() || "Your Gateway to Endless Exploration";
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
+      {/* Fallback Background Image - shows while video loads */}
       <div className="absolute inset-0 z-0">
         <img
           src={heroImage}
-          alt="African Safari Sunset"
-          className="w-full h-full object-cover"
+          alt="African Safari"
+          className={`w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-safari-night/40 via-safari-night/30 to-safari-night/60" />
+      </div>
+
+      {/* YouTube Video Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 scale-150">
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1&origin=${window.location.origin}&disablekb=1&fs=0`}
+            title="Background Video"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[177.78vh] min-w-full min-h-[56.25vw] h-screen"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen={false}
+            onLoad={() => setVideoLoaded(true)}
+            style={{
+              border: 'none',
+              pointerEvents: 'none',
+            }}
+          />
+        </div>
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-safari-night/50 via-safari-night/40 to-safari-night/70" />
       </div>
 
       {/* Content */}
@@ -72,37 +96,22 @@ export const Hero = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-center mb-12"
         >
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-primary-foreground mb-6 tracking-tight">
+          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-primary-foreground mb-6 tracking-tight drop-shadow-lg">
             {heroTitle}
           </h1>
-          <p className="text-xl md:text-2xl text-primary-foreground/90 tracking-[0.2em] uppercase font-light">
+          <p className="text-xl md:text-2xl text-primary-foreground/90 tracking-[0.2em] uppercase font-light drop-shadow-md">
             {heroSubtitle}
           </p>
         </motion.div>
 
-        {/* Play Button */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex justify-center mb-16"
-        >
-          <button
-            className="group relative w-20 h-20 rounded-full bg-primary-foreground/20 backdrop-blur-sm border border-primary-foreground/30 flex items-center justify-center hover:bg-primary-foreground/30 transition-all duration-300 disabled:opacity-50"
-            onClick={handlePlay}
-            disabled={!settings?.homepage?.heroVideo}
-          >
-            <Play className="w-8 h-8 text-primary-foreground ml-1" />
-            <div className="absolute inset-0 rounded-full border border-primary-foreground/30 animate-ping" />
-          </button>
-        </motion.div>
+        {/* Removed Play Button since video is now auto-playing in background */}
 
         {/* Search Box */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="max-w-5xl mx-auto"
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="max-w-5xl mx-auto mt-16"
         >
           <div className="bg-background/95 backdrop-blur-md rounded-2xl shadow-elevated p-3 md:p-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -147,20 +156,20 @@ export const Hero = () => {
                 )}
               </div>
 
-              {/* Divider */}
-              <div className="hidden md:block border-l border-border" />
+              {/* Divider - Desktop */}
+              <div className="hidden md:block w-px bg-border self-stretch my-2" />
 
               {/* Date */}
               <Popover>
                 <PopoverTrigger asChild>
                   <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted transition-colors cursor-pointer">
                     <CalendarIcon className="w-5 h-5 text-primary shrink-0" />
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        Date
+                        Travel Date
                       </p>
-                      <p className="text-sm font-medium text-foreground">
-                        {date ? format(date, "MMM dd, yyyy") : "Add Dates"}
+                      <p className="text-sm font-medium truncate">
+                        {date ? format(date, "MMM d, yyyy") : "Select date"}
                       </p>
                     </div>
                   </div>
@@ -170,25 +179,25 @@ export const Hero = () => {
                     mode="single"
                     selected={date}
                     onSelect={setDate}
-                    disabled={(date) => date < new Date()}
                     initialFocus
+                    disabled={(date) => date < new Date()}
                   />
                 </PopoverContent>
               </Popover>
 
-              {/* Divider */}
-              <div className="hidden md:block border-l border-border" />
+              {/* Divider - Desktop */}
+              <div className="hidden md:block w-px bg-border self-stretch my-2" />
 
               {/* Guests */}
               <Popover open={showGuests} onOpenChange={setShowGuests}>
                 <PopoverTrigger asChild>
                   <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted transition-colors cursor-pointer">
                     <Users className="w-5 h-5 text-primary shrink-0" />
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        Guests
+                        Travelers
                       </p>
-                      <p className="text-sm font-medium text-foreground">
+                      <p className="text-sm font-medium">
                         {guests} {guests === 1 ? "Guest" : "Guests"}
                       </p>
                     </div>
@@ -198,57 +207,56 @@ export const Hero = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Guests</span>
                     <div className="flex items-center gap-3">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
+                      <button
                         onClick={() => setGuests(Math.max(1, guests - 1))}
-                        disabled={guests <= 1}
+                        className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
                       >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="w-8 text-center font-medium">{guests}</span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
+                        <Minus className="w-4 h-4" />
+                      </button>
+                      <span className="w-6 text-center font-medium">{guests}</span>
+                      <button
                         onClick={() => setGuests(Math.min(20, guests + 1))}
-                        disabled={guests >= 20}
+                        className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
                       >
-                        <Plus className="h-4 w-4" />
-                      </Button>
+                        <Plus className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 </PopoverContent>
               </Popover>
 
               {/* Search Button */}
-              <div className="md:pl-2">
-                <Button variant="safari" size="lg" className="w-full" onClick={handleSearch}>
-                  <Search className="w-4 h-4 mr-2" />
-                  Explore
-                </Button>
-              </div>
+              <Button 
+                onClick={handleSearch}
+                size="lg" 
+                className="h-auto py-4 px-8 text-base font-semibold rounded-xl"
+              >
+                <Search className="w-5 h-5 mr-2" />
+                Search
+              </Button>
             </div>
           </div>
         </motion.div>
-      </div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <div className="w-6 h-10 rounded-full border-2 border-primary-foreground/50 flex justify-center pt-2">
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-1.5 h-1.5 rounded-full bg-primary-foreground"
-          />
-        </div>
-      </motion.div>
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        >
+          <div className="flex flex-col items-center gap-2 text-primary-foreground/70">
+            <span className="text-xs uppercase tracking-widest">Explore</span>
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="w-6 h-10 rounded-full border-2 border-primary-foreground/30 flex justify-center pt-2"
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground/70" />
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 };

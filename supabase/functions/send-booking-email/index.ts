@@ -6,8 +6,8 @@ const corsHeaders = {
 };
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "";
-const ADMIN_EMAIL = "infinityvoyagetours@gmail.com"; // Verified email in Resend
-const FROM_EMAIL = "Infinity Voyage <onboarding@resend.dev>";
+const ADMIN_EMAIL = "info@infinityvoyagetours.com";
+const FROM_EMAIL = "Infinity Voyage <info@infinityvoyagetours.com>";
 const COMPANY_NAME = "Infinity Voyage Tours & Safaris";
 
 interface BookingEmailRequest {
@@ -200,10 +200,7 @@ serve(async (req) => {
       console.log("Admin email sent successfully");
     }
 
-    // Send confirmation email to customer (only works after domain verification)
-    // For now, skip customer email since domain is not verified
-    // Once you verify infinityvoyagetours.com domain on Resend, uncomment below:
-    /*
+    // Send confirmation email to customer
     const customerEmailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -224,8 +221,6 @@ serve(async (req) => {
     } else {
       console.log("Customer email sent successfully");
     }
-    */
-    console.log("Customer email skipped - domain not verified yet");
 
     return new Response(
       JSON.stringify({ success: true, message: "Emails sent successfully" }),

@@ -296,8 +296,6 @@ INSERT INTO public.tours (
     'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/eb/2c/52/jozan-forest-is-a-national.jpg?w=900&h=500&s=1'
   ],
   false, true
-);
-
--- Avoid duplicate inserts if rerun
+)
 ON CONFLICT (slug) DO NOTHING;
 

@@ -1,84 +1,63 @@
+import { useEffect, useState } from "react";
+import { useAuth } from '@/hooks/useAuth';
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Clock, Check, MapPin, Filter } from "lucide-react";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
-import serengetiImg from "@/assets/serengeti.jpg";
-import zanzibarImg from "@/assets/zanzibar.jpg";
-import kilimanjaroImg from "@/assets/kilimanjaro.jpg";
-import ngorongoroImg from "@/assets/ngorongoro.jpg";
-import tarangireImg from "@/assets/tarangire.jpg";
-import stoneTownImg from "@/assets/stone-town.jpg";
+type SafariTour = {
+  id: string;
+  title: string;
+  slug: string;
+  duration: string | null;
+  featured_image: string | null;
+  price: number | null;
+  category: string | null;
+  highlights: string[] | null;
+  short_description: string | null;
+};
 
-const safaris = [
-  {
-    id: 1,
-    name: "Serengeti Great Migration Safari",
-    location: "Serengeti National Park",
-    duration: "7 Days",
-    image: serengetiImg,
-    price: 3200,
-    category: "Wildlife Safari",
-    highlights: ["Great Migration", "Big Five", "Hot Air Balloon", "Luxury Camps"],
-    description: "Witness millions of wildebeest crossing the Serengeti plains in one of nature's greatest spectacles.",
-  },
-  {
-    id: 2,
-    name: "Ngorongoro Crater Adventure",
-    location: "Ngorongoro Conservation Area",
-    duration: "3 Days",
-    image: ngorongoroImg,
-    price: 1800,
-    category: "Wildlife Safari",
-    highlights: ["Crater Floor Game Drive", "Maasai Village", "Flamingo Lakes"],
-    description: "Explore the world's largest intact volcanic caldera, home to an incredible concentration of wildlife.",
-  },
-  {
-    id: 3,
-    name: "Mount Kilimanjaro Trek",
-    location: "Kilimanjaro Region",
-    duration: "8 Days",
-    image: kilimanjaroImg,
-    price: 4500,
-    category: "Trekking",
-    highlights: ["Summit Attempt", "Machame Route", "Experienced Guides", "Full Support"],
-    description: "Conquer Africa's highest peak via the scenic Machame route with our expert mountain guides.",
-  },
-  {
-    id: 4,
-    name: "Tarangire Elephant Safari",
-    location: "Tarangire National Park",
-    duration: "4 Days",
-    image: tarangireImg,
-    price: 2100,
-    category: "Wildlife Safari",
-    highlights: ["Elephant Herds", "Baobab Trees", "Walking Safari", "Bird Watching"],
-    description: "Experience close encounters with large elephant herds among ancient baobab trees.",
-  },
-  {
-    id: 5,
-    name: "Northern Circuit Complete",
-    location: "Multiple Parks",
-    duration: "12 Days",
-    image: serengetiImg,
-    price: 6500,
-    category: "Combo Package",
-    highlights: ["4 National Parks", "Luxury Lodges", "All Inclusive", "Private Guide"],
-    description: "The ultimate Tanzania safari covering Serengeti, Ngorongoro, Tarangire, and Lake Manyara.",
-  },
-];
-
-const categories = ["All Safaris", "Wildlife Safari", "Trekking", "Combo Package"];
+const categories = ["All", "Wildlife", "Trekking", "Combo", "Package"];
 
 const Safaris = () => {
-  const [activeCategory, setActiveCategory] = useState("All Safaris");
+  const [tours, setTours] = useState<SafariTour[]>([]);
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [loading, setLoading] = useState(true);
+  const { isAdmin } = useAuth();
 
-  const filteredSafaris = activeCategory === "All Safaris" 
-    ? safaris 
-    : safaris.filter(s => s.category === activeCategory);
+  useEffect(() => {
+    fetchSafaris();
+  }, [isAdmin]);
+
+  const fetchSafaris = async () => {
+    setLoading(true);
+    let query = supabase
+      .from("tours")
+      .select("id,title,slug,duration,featured_image,price,category,highlights,short_description")
+      .order("created_at", { ascending: false });
+
+    if (!isAdmin) {
+      query = query.eq("is_published", true);
+    }
+
+    const { data, error } = await query;
+    if (!error && data) {
+      const safariOnly = data.filter((t) => (t.category || "").toLowerCase().includes("safari"));
+      setTours(safariOnly as SafariTour[]);
+    }
+    setLoading(false);
+  };
+
+  const filteredSafaris =
+    activeCategory === "All"
+      ? tours
+      : tours.filter((s) =>
+          (s.category || "").toLowerCase().includes(activeCategory.toLowerCase().replace("wildlife", "safari"))
+        );
 
   return (
     <div className="min-h-screen bg-background">
@@ -105,17 +84,17 @@ const Safaris = () => {
       {/* Filters */}
       <section className="py-8 bg-muted/30 sticky top-20 z-30 border-b border-border">
         <div className="container-wide mx-auto px-4 md:px-8">
-          <div className="flex items-center gap-4 overflow-x-auto pb-2">
+            <div className="flex items-center gap-4 overflow-x-auto pb-2">
             <Filter className="w-5 h-5 text-muted-foreground shrink-0" />
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
                 className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                  activeCategory === category
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-background text-foreground hover:bg-primary/10"
-                }`}
+                    activeCategory === category
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-background text-foreground hover:bg-primary/10"
+                  }`}
               >
                 {category}
               </button>
@@ -140,13 +119,13 @@ const Safaris = () => {
                 {/* Image */}
                 <div className="relative h-64 md:h-auto">
                   <img
-                    src={safari.image}
-                    alt={safari.name}
+                    src={safari.featured_image || "/placeholder.jpg"}
+                    alt={safari.title}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute top-4 left-4">
                     <Badge className="bg-primary text-primary-foreground">
-                      {safari.category}
+                      {safari.category || "Safari"}
                     </Badge>
                   </div>
                 </div>
@@ -157,25 +136,25 @@ const Safaris = () => {
                     <div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                         <MapPin className="w-4 h-4" />
-                        {safari.location}
+                        Tanzania
                       </div>
                       <h3 className="font-display text-2xl font-semibold text-foreground">
-                        {safari.name}
+                        {safari.title}
                       </h3>
                     </div>
                     <Badge variant="outline" className="shrink-0">
                       <Clock className="w-3 h-3 mr-1" />
-                      {safari.duration}
+                      {safari.duration || "Multi-day"}
                     </Badge>
                   </div>
 
                   <p className="text-muted-foreground mb-6 flex-grow">
-                    {safari.description}
+                    {safari.short_description || "Discover Tanzania's best safari experiences."}
                   </p>
 
                   {/* Highlights */}
                   <div className="flex flex-wrap gap-3 mb-6">
-                    {safari.highlights.map((highlight) => (
+                    {(safari.highlights || []).slice(0, 6).map((highlight) => (
                       <div
                         key={highlight}
                         className="flex items-center gap-1.5 text-sm text-foreground"
@@ -191,14 +170,16 @@ const Safaris = () => {
                     <div>
                       <span className="text-sm text-muted-foreground">From</span>
                       <p className="text-2xl font-bold text-primary">
-                        ${safari.price.toLocaleString()}
+                        {safari.price ? `$${safari.price.toLocaleString()}` : "Contact"}
                         <span className="text-sm font-normal text-muted-foreground"> /person</span>
                       </p>
                     </div>
-                    <Button variant="safari" size="lg">
-                      View Details
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
+                    <Link to={`/tour/${safari.slug}`}>
+                      <Button variant="safari" size="lg">
+                        View Details
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </motion.div>

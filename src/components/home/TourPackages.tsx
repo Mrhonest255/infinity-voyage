@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Clock, Check, Loader2 } from "lucide-react";
@@ -32,6 +33,7 @@ export const TourPackages = () => {
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<"all" | "safari" | "zanzibar">("all");
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     fetchFeaturedTours();
@@ -39,24 +41,30 @@ export const TourPackages = () => {
 
   const fetchFeaturedTours = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('tours')
         .select('*')
-        .eq('is_published', true)
         .eq('is_featured', true)
         .order('created_at', { ascending: false })
         .limit(4);
+
+      if (!isAdmin) {
+        query = query.eq('is_published', true);
+      }
+
+      const { data, error } = await query;
       
       if (error) throw error;
       
       // If not enough featured tours, get some regular tours
       if ((data?.length || 0) < 4) {
-        const { data: moreTours, error: moreError } = await supabase
+        let moreQuery = supabase
           .from('tours')
           .select('*')
-          .eq('is_published', true)
           .order('created_at', { ascending: false })
           .limit(4);
+        if (!isAdmin) moreQuery = moreQuery.eq('is_published', true);
+        const { data: moreTours, error: moreError } = await moreQuery;
         
         if (!moreError && moreTours) {
           const uniqueTours = [...(data || [])];

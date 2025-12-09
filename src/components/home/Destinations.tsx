@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, MapPin, Loader2 } from "lucide-react";
@@ -36,6 +37,7 @@ export const Destinations = () => {
   const [activeCategory, setActiveCategory] = useState("All Destinations");
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     fetchTours();
@@ -43,12 +45,13 @@ export const Destinations = () => {
 
   const fetchTours = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('tours')
         .select('*')
-        .eq('is_published', true)
         .order('is_featured', { ascending: false })
         .limit(6);
+      if (!isAdmin) query = query.eq('is_published', true);
+      const { data, error } = await query;
       
       if (error) throw error;
       setTours(data || []);

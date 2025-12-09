@@ -2,96 +2,79 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Clock, Check, MapPin, Sun, Waves } from "lucide-react";
+import { ArrowRight, Clock, Check, MapPin, Sun, Waves, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from 'react-router-dom';
 
 import zanzibarImg from "@/assets/zanzibar.jpg";
 import stoneTownImg from "@/assets/stone-town.jpg";
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
-const excursions = [
-  {
-    id: 1,
-    name: "Spice Plantation Tour",
-    duration: "Half Day",
-    image: stoneTownImg,
-    price: 45,
-    category: "Cultural",
-    highlights: ["Spice Tasting", "Local Guide", "Lunch Included"],
-    description: "Discover the aromatic world of Zanzibar's famous spices including cloves, cinnamon, and vanilla.",
-  },
-  {
-    id: 2,
-    name: "Stone Town Walking Tour",
-    duration: "4 Hours",
-    image: stoneTownImg,
-    price: 35,
-    category: "Cultural",
-    highlights: ["UNESCO Heritage Site", "Local Guide", "Historical Sites"],
-    description: "Explore the winding streets, markets, and historical landmarks of this UNESCO World Heritage Site.",
-  },
-  {
-    id: 3,
-    name: "Mnemba Atoll Snorkeling",
-    duration: "Full Day",
-    image: zanzibarImg,
-    price: 85,
-    category: "Marine",
-    highlights: ["Snorkeling Gear", "Boat Trip", "Seafood Lunch", "Dolphin Spotting"],
-    description: "Snorkel in crystal-clear waters around the pristine Mnemba Atoll marine reserve.",
-  },
-  {
-    id: 4,
-    name: "Jozani Forest Tour",
-    duration: "Half Day",
-    image: stoneTownImg,
-    price: 40,
-    category: "Nature",
-    highlights: ["Red Colobus Monkeys", "Nature Walk", "Mangrove Boardwalk"],
-    description: "Visit the last remaining indigenous forest in Zanzibar, home to the rare Red Colobus monkeys.",
-  },
-  {
-    id: 5,
-    name: "Sunset Dhow Cruise",
-    duration: "3 Hours",
-    image: zanzibarImg,
-    price: 55,
-    category: "Leisure",
-    highlights: ["Traditional Dhow", "Drinks & Snacks", "Sunset Views"],
-    description: "Sail on a traditional dhow as the sun sets over the Indian Ocean with refreshments included.",
-  },
-  {
-    id: 6,
-    name: "Prison Island & Dolphins",
-    duration: "Full Day",
-    image: zanzibarImg,
-    price: 95,
-    category: "Marine",
-    highlights: ["Giant Tortoises", "Dolphin Swimming", "Snorkeling", "Lunch"],
-    description: "Swim with dolphins and visit the historic Prison Island with its giant Aldabra tortoises.",
-  },
-  {
-    id: 7,
-    name: "Nungwi Beach Day",
-    duration: "Full Day",
-    image: zanzibarImg,
-    price: 65,
-    category: "Beach",
-    highlights: ["Beach Access", "Lunch", "Water Sports Options"],
-    description: "Relax on the stunning white sands of Nungwi, one of Zanzibar's most beautiful beaches.",
-  },
-  {
-    id: 8,
-    name: "Safari Blue Excursion",
-    duration: "Full Day",
-    image: zanzibarImg,
-    price: 110,
-    category: "Marine",
-    highlights: ["Sailing", "Snorkeling", "Sandbank Picnic", "Seafood Feast"],
-    description: "The ultimate marine adventure with sailing, snorkeling, and a gourmet seafood lunch on a sandbank.",
-  },
-];
+interface Excursion {
+  id: string;
+  title: string;
+  slug: string;
+  duration?: string | null;
+  featured_image?: string | null;
+  price?: number | null;
+  category?: string | null;
+  highlights?: string[] | null;
+  short_description?: string | null;
+}
+
 
 const Zanzibar = () => {
+  const { isAdmin } = useAuth();
+  const [tours, setTours] = useState<Excursion[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchZanzibarTours();
+  }, []);
+
+  const fetchZanzibarTours = async () => {
+    setLoading(true);
+    try {
+      let query = supabase
+        .from('tours')
+        .select('id, title, slug, duration, featured_image, price, category, highlights, short_description');
+
+      // For non-admins only show published tours
+      if (!isAdmin) {
+        query = query.eq('is_published', true);
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
+      if (error) throw error;
+      if (data) {
+        // Filter by category matching Zanzibar (case-insensitive)
+        const zanzibarOnly = (data as any[]).filter((t) => (t.category || '').toLowerCase().includes('zanz'));
+        setTours(zanzibarOnly as Excursion[]);
+      }
+    } catch (err) {
+      console.error('Error fetching Zanzibar tours', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <section className="relative pt-32 pb-20">
+          <div className="container-wide mx-auto px-4 md:px-8">
+            <div className="text-center py-32">
+              <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
+            </div>
+          </div>
+        </section>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -190,7 +173,7 @@ const Zanzibar = () => {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {excursions.map((excursion, index) => (
+            {tours.map((excursion, index) => (
               <motion.div
                 key={excursion.id}
                 initial={{ opacity: 0, y: 30 }}
@@ -202,7 +185,7 @@ const Zanzibar = () => {
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={excursion.image}
+                    src={excursion.featured_image || excursion.image || zanzibarImg}
                     alt={excursion.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
@@ -222,40 +205,50 @@ const Zanzibar = () => {
                 {/* Content */}
                 <div className="p-5">
                   <h3 className="font-display text-lg font-semibold text-foreground mb-2">
-                    {excursion.name}
+                    {excursion.title}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                    {excursion.description}
+                    {excursion.short_description || excursion.description}
                   </p>
 
                   {/* Highlights */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {excursion.highlights.slice(0, 2).map((highlight) => (
-                      <span
-                        key={highlight}
-                        className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground"
-                      >
-                        {highlight}
-                      </span>
-                    ))}
-                    {excursion.highlights.length > 2 && (
-                      <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
-                        +{excursion.highlights.length - 2} more
-                      </span>
-                    )}
-                  </div>
+                  {(excursion.highlights || []).length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {(excursion.highlights || []).slice(0, 2).map((highlight) => (
+                        <span
+                          key={highlight}
+                          className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground"
+                        >
+                          {highlight}
+                        </span>
+                      ))}
+                      {(excursion.highlights || []).length > 2 && (
+                        <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
+                          +{(excursion.highlights || []).length - 2} more
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   {/* Footer */}
                   <div className="flex items-center justify-between pt-4 border-t border-border">
                     <div>
-                      <span className="text-xl font-bold text-primary">
-                        ${excursion.price}
-                      </span>
-                      <span className="text-sm text-muted-foreground"> /person</span>
+                      {excursion.price ? (
+                        <>
+                          <span className="text-xl font-bold text-primary">
+                            ${excursion.price?.toLocaleString()}
+                          </span>
+                          <span className="text-sm text-muted-foreground"> /person</span>
+                        </>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">Contact</span>
+                      )}
                     </div>
-                    <Button variant="safari" size="sm">
-                      Book
-                    </Button>
+                    <Link to={`/tour/${excursion.slug}`}>
+                      <Button variant="safari" size="sm">
+                        Book
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </motion.div>

@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,8 +6,8 @@ const corsHeaders = {
 };
 
 // Beem SMS API Configuration
-const BEEM_API_KEY = Deno.env.get("BEEM_API_KEY") || "";
-const BEEM_SECRET_KEY = Deno.env.get("BEEM_SECRET_KEY") || "";
+// Auth token = base64(apiKey:secretKey)
+const BEEM_AUTH_TOKEN = "MjEzNzhhNmJkYmM2NWExNzpNelExWWpoaE5HVTBabU13WVdGa056VmlaalptTXprMk1qZ3pNMk0zWmpFMVlUbGtaVE16WlRKaE1HUTVPVFl6TTJJMVpXUXdNVGMwTnpGbFl6RXpNdz09";
 const BEEM_SENDER_ID = "Z-MATE";
 const ADMIN_PHONE = "255690000128"; // Admin phone number for notifications
 
@@ -22,37 +21,41 @@ interface BookingSmsRequest {
 
 async function sendBeemSms(recipient: string, message: string): Promise<boolean> {
   try {
-    // Create Basic Auth header
-    const credentials = base64Encode(`${BEEM_API_KEY}:${BEEM_SECRET_KEY}`);
+    console.log("Attempting to send SMS to:", recipient);
+    console.log("Using Auth Token:", BEEM_AUTH_TOKEN ? "SET (length: " + BEEM_AUTH_TOKEN.length + ")" : "NOT SET");
+    
+    const requestBody = {
+      source_addr: BEEM_SENDER_ID,
+      schedule_time: "",
+      encoding: 0,
+      message: message,
+      recipients: [
+        {
+          recipient_id: 1,
+          dest_addr: recipient,
+        },
+      ],
+    };
+    
+    console.log("Sending to Beem API...");
     
     const response = await fetch("https://apisms.beem.africa/v1/send", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Basic ${credentials}`,
+        "Authorization": `Basic ${BEEM_AUTH_TOKEN}`,
       },
-      body: JSON.stringify({
-        source_addr: BEEM_SENDER_ID,
-        schedule_time: "",
-        encoding: 0,
-        message: message,
-        recipients: [
-          {
-            recipient_id: 1,
-            dest_addr: recipient,
-          },
-        ],
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error("Beem SMS failed:", errorData);
+      console.error("Beem SMS failed - Status:", response.status, "Response:", errorData);
       return false;
     }
 
     const result = await response.json();
-    console.log("Beem SMS sent successfully:", result);
+    console.log("Beem SMS sent successfully:", JSON.stringify(result));
     return true;
   } catch (error) {
     console.error("Beem SMS error:", error);
@@ -71,8 +74,8 @@ serve(async (req) => {
 
     console.log("Sending SMS notification for booking:", booking.customerName);
 
-    // Format admin notification message
-    const adminMessage = `🦁 NEW BOOKING!\n\nCustomer: ${booking.customerName}\nTour: ${booking.tourName}\nDate: ${booking.travelDate}\nGuests: ${booking.numberOfGuests}\n${booking.customerPhone ? `Phone: ${booking.customerPhone}` : ''}\n\nCheck dashboard for details.`;
+    // Format admin notification message (no emojis for better compatibility)
+    const adminMessage = `NEW BOOKING!\n\nCustomer: ${booking.customerName}\nTour: ${booking.tourName}\nDate: ${booking.travelDate}\nGuests: ${booking.numberOfGuests}\n${booking.customerPhone ? `Phone: ${booking.customerPhone}` : ''}\n\nCheck dashboard for details.`;
 
     // Send SMS to admin
     const smsSent = await sendBeemSms(ADMIN_PHONE, adminMessage);

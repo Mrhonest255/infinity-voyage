@@ -17,10 +17,10 @@ interface BookingEmailRequest {
 }
 
 const SMTP_CONFIG = {
-  hostname: "mail.spacemail.com",
-  port: 587,
-  username: "info@infinityvoyagetours.com",
-  password: Deno.env.get("SMTP_PASSWORD") || "Zenji@255",
+  hostname: Deno.env.get("SMTP_HOST") || "mail.spacemail.com",
+  port: parseInt(Deno.env.get("SMTP_PORT") || "587"),
+  username: Deno.env.get("SMTP_USER") || "info@infinityvoyagetours.com",
+  password: Deno.env.get("SMTP_PASS") || "",
 };
 
 const ADMIN_EMAIL = "info@infinityvoyagetours.com";

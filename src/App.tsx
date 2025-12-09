@@ -10,6 +10,11 @@ import Zanzibar from "./pages/Zanzibar";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Auth from "./pages/Auth";
+import Prices from "./pages/Prices";
+import Gallery from "./pages/Gallery";
+import FAQ from "./pages/FAQ";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminTours from "./pages/admin/Tours";
 import TourEditor from "./pages/admin/TourEditor";
@@ -36,6 +41,11 @@ const App = () => (
             <Route path="/safaris" element={<Safaris />} />
             <Route path="/tour/:slug" element={<TourPage />} />
             <Route path="/zanzibar" element={<Zanzibar />} />
+            <Route path="/prices" element={<Prices />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/thank-you" element={<ThankYou />} />
             <Route path="/auth" element={<Auth />} />

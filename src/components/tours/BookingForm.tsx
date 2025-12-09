@@ -72,23 +72,21 @@ const BookingForm = ({ tourId, tourName }: Props) => {
       
       if (error) throw error;
 
-      // Send email notifications via Edge Function
-      try {
-        await supabase.functions.invoke('send-booking-email', {
-          body: {
-            customerName: data.name,
-            customerEmail: data.email,
-            customerPhone: data.phone || 'Not provided',
-            travelDate: format(data.date, 'PPP'),
-            numberOfGuests: parseInt(data.guests),
-            specialRequests: data.notes || 'None',
-            tourName: tourName || 'General Inquiry',
-          },
-        });
-      } catch (emailErr) {
+      // Send email notifications via Edge Function (fire-and-forget, don't wait)
+      supabase.functions.invoke('send-booking-email', {
+        body: {
+          customerName: data.name,
+          customerEmail: data.email,
+          customerPhone: data.phone || 'Not provided',
+          travelDate: format(data.date, 'PPP'),
+          numberOfGuests: parseInt(data.guests),
+          specialRequests: data.notes || 'None',
+          tourName: tourName || 'General Inquiry',
+        },
+      }).catch((emailErr) => {
         // Don't fail the booking if email fails, just log it
         console.error('Email notification failed:', emailErr);
-      }
+      });
 
       setIsSuccess(true);
       toast({

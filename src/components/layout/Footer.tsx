@@ -79,6 +79,9 @@ export const Footer = () => {
     { label: "About Us", path: "/about" },
     { label: "Safaris", path: "/safaris" },
     { label: "Zanzibar", path: "/zanzibar" },
+    { label: "Prices", path: "/prices" },
+    { label: "Gallery", path: "/gallery" },
+    { label: "FAQ", path: "/faq" },
     { label: "Contact", path: "/contact" },
   ];
 
@@ -284,27 +287,27 @@ export const Footer = () => {
               <span className="hidden sm:inline">All rights reserved.</span>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
-              <a 
-                href="#" 
+              <Link 
+                to="/privacy" 
                 className="text-primary-foreground/70 hover:text-safari-gold transition-colors flex items-center gap-1 group"
               >
                 Privacy Policy
                 <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
-              <a 
-                href="#" 
+              </Link>
+              <Link 
+                to="/terms" 
                 className="text-primary-foreground/70 hover:text-safari-gold transition-colors flex items-center gap-1 group"
               >
                 Terms of Service
                 <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
-              <a 
-                href="#" 
+              </Link>
+              <Link 
+                to="/faq" 
                 className="text-primary-foreground/70 hover:text-safari-gold transition-colors flex items-center gap-1 group"
               >
-                Cookie Policy
+                FAQ
                 <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
+              </Link>
             </div>
             <div className="flex items-center gap-2 text-primary-foreground/60 text-xs">
               <Heart className="w-3 h-3 text-safari-gold fill-safari-gold" />

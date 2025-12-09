@@ -41,7 +41,7 @@ const Gallery = () => {
       const { data, error } = await supabase
         .from('tours')
         .select('id, title, image, category, description')
-        .eq('published', true)
+        .eq('is_published', true)
         .not('image', 'is', null);
       
       if (error) {

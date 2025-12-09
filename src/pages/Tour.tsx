@@ -97,15 +97,6 @@ const TourPage = () => {
     };
   }, [tour]);
 
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-card to-background">
-      <div className="text-center space-y-4">
-        <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
-        <p className="text-muted-foreground font-medium">Loading your adventure...</p>
-      </div>
-    </div>
-  );
-
   // Combine featured image with gallery images (featured image first)
   const galleryArray = Array.isArray(tour?.gallery) ? tour.gallery.filter(Boolean) : [];
   const allImages = tour?.featured_image 
@@ -136,7 +127,7 @@ const TourPage = () => {
     }
   };
 
-  // Handle keyboard navigation
+  // Handle keyboard navigation - must be called before any early returns
   useEffect(() => {
     if (!lightboxOpen || allImages.length === 0) return;
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -153,6 +144,17 @@ const TourPage = () => {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [lightboxOpen, allImages.length]);
 
+  // Loading state
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-card to-background">
+      <div className="text-center space-y-4">
+        <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
+        <p className="text-muted-foreground font-medium">Loading your adventure...</p>
+      </div>
+    </div>
+  );
+
+  // Tour not found state
   if (!tour) return (
     <div className="min-h-screen bg-background">
       <Navbar />

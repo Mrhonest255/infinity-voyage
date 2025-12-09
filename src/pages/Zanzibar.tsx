@@ -51,7 +51,7 @@ const Zanzibar = () => {
       if (data) {
         // Filter for Zanzibar-relevant tours: beach, cultural, marine, excursion categories
         // OR tours with "zanzibar" in title/description
-        const zanzibarCategories = ['beach', 'cultural', 'marine', 'excursion', 'leisure', 'nature'];
+        const zanzibarCategories = ['beach', 'cultural', 'marine', 'excursion', 'leisure', 'nature', 'water', 'snorkeling', 'diving', 'island'];
         const zanzibarOnly = (data as any[]).filter((t) => {
           const cat = (t.category || '').toLowerCase();
           const title = (t.title || '').toLowerCase();
@@ -59,10 +59,17 @@ const Zanzibar = () => {
           // Include if category is zanzibar-relevant OR title/description mentions zanzibar
           return zanzibarCategories.includes(cat) || 
                  title.includes('zanzibar') || 
+                 title.includes('beach') ||
+                 title.includes('spice') ||
+                 title.includes('stone town') ||
+                 title.includes('nakupenda') ||
+                 title.includes('dolphin') ||
+                 title.includes('snorkel') ||
                  desc.includes('zanzibar') ||
                  cat.includes('zanz');
         });
-        setTours(zanzibarOnly as Excursion[]);
+        // If no Zanzibar tours found, show all tours as fallback
+        setTours((zanzibarOnly.length > 0 ? zanzibarOnly : data) as Excursion[]);
       }
     } catch (err) {
       console.error('Error fetching Zanzibar tours', err);

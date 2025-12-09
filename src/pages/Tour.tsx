@@ -154,11 +154,19 @@ const TourPage = () => {
   }, [lightboxOpen, allImages.length]);
 
   if (!tour) return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center space-y-4">
-        <p className="text-2xl font-heading text-muted-foreground">Tour not found.</p>
-        <p className="text-muted-foreground">The tour you're looking for doesn't exist or has been removed.</p>
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <div className="flex items-center justify-center py-32">
+        <div className="text-center space-y-4">
+          <p className="text-2xl font-heading text-muted-foreground">Tour not found.</p>
+          <p className="text-muted-foreground">The tour you're looking for doesn't exist or has been removed.</p>
+          <p className="text-sm text-muted-foreground">Slug: {slug}</p>
+          <a href="/safaris" className="inline-block mt-4 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90">
+            Browse All Tours
+          </a>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 

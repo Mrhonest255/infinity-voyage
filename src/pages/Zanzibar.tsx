@@ -49,8 +49,19 @@ const Zanzibar = () => {
       const { data, error } = await query.order('created_at', { ascending: false });
       if (error) throw error;
       if (data) {
-        // Filter by category matching Zanzibar (case-insensitive)
-        const zanzibarOnly = (data as any[]).filter((t) => (t.category || '').toLowerCase().includes('zanz'));
+        // Filter for Zanzibar-relevant tours: beach, cultural, marine, excursion categories
+        // OR tours with "zanzibar" in title/description
+        const zanzibarCategories = ['beach', 'cultural', 'marine', 'excursion', 'leisure', 'nature'];
+        const zanzibarOnly = (data as any[]).filter((t) => {
+          const cat = (t.category || '').toLowerCase();
+          const title = (t.title || '').toLowerCase();
+          const desc = (t.short_description || '').toLowerCase();
+          // Include if category is zanzibar-relevant OR title/description mentions zanzibar
+          return zanzibarCategories.includes(cat) || 
+                 title.includes('zanzibar') || 
+                 desc.includes('zanzibar') ||
+                 cat.includes('zanz');
+        });
         setTours(zanzibarOnly as Excursion[]);
       }
     } catch (err) {

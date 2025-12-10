@@ -345,13 +345,35 @@ I would like to book this adventure!`;
                         ))}
                       </SelectContent>
                     </Select>
-                    {currentPrice && (
+                    
+                    {/* Show available zone prices */}
+                    {zonePrices && Object.keys(zonePrices).length > 0 && !selectedZone && (
+                      <div className="mt-2 p-3 bg-muted/50 rounded-lg border">
+                        <p className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+                          <DollarSign className="w-4 h-4 text-safari-gold" />
+                          Prices by pickup location:
+                        </p>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          {PICKUP_ZONES.map((zone) => {
+                            const price = zonePrices[zone.id];
+                            return price ? (
+                              <div key={zone.id} className="flex justify-between">
+                                <span className="text-muted-foreground">{zone.name}:</span>
+                                <span className="font-semibold text-foreground">${price}</span>
+                              </div>
+                            ) : null;
+                          })}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {currentPrice && selectedZone && (
                       <div className="flex items-center gap-2 mt-2 p-3 bg-gradient-to-r from-safari-gold/10 to-safari-amber/10 rounded-lg border border-safari-gold/20">
                         <DollarSign className="w-5 h-5 text-safari-gold" />
                         <span className="font-semibold text-foreground">
                           Price: ${currentPrice.toLocaleString()} per person
                         </span>
-                        {selectedZone && zonePrices?.[selectedZone] && (
+                        {zonePrices?.[selectedZone] && (
                           <span className="text-xs text-muted-foreground ml-auto">
                             (Zone rate)
                           </span>

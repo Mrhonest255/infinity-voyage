@@ -129,6 +129,7 @@ const TransferEditor = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-transfers'] });
+      queryClient.invalidateQueries({ queryKey: ['public-transfers'] });
       toast({ title: 'Success!', description: `Transfer ${isNew ? 'created' : 'updated'} successfully.` });
       navigate('/admin/transfers');
     },

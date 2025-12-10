@@ -140,8 +140,11 @@ export default function Transfers() {
         console.error('Error fetching transfers:', error);
         return fallbackTransfers;
       }
+      console.log('Transfers from DB:', data);
       return data?.length ? data as Transfer[] : fallbackTransfers;
     },
+    staleTime: 0, // Always fetch fresh data
+    refetchOnMount: 'always', // Refetch when component mounts
   });
 
   const openBookingForm = (transfer: Transfer) => {

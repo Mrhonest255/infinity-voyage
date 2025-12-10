@@ -53,6 +53,7 @@ const AdminTransfers = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-transfers'] });
+      queryClient.invalidateQueries({ queryKey: ['public-transfers'] });
       toast({ title: 'Transfer deleted', description: 'The transfer service has been deleted.' });
     },
     onError: (error: Error) => {
@@ -67,6 +68,7 @@ const AdminTransfers = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-transfers'] });
+      queryClient.invalidateQueries({ queryKey: ['public-transfers'] });
       toast({ title: 'Status updated', description: 'Transfer visibility has been updated.' });
     },
   });

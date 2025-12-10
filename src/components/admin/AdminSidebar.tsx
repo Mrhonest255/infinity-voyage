@@ -1,5 +1,7 @@
 import { NavLink, useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   LayoutDashboard, 
   Map, 
@@ -16,6 +18,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
+import { Badge } from '@/components/ui/badge';
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
@@ -32,6 +35,21 @@ const AdminSidebar = () => {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Fetch pending bookings count for badge
+  const { data: pendingCount } = useQuery({
+    queryKey: ['pending-bookings-count'],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('bookings')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pending');
+      
+      if (error) return 0;
+      return count || 0;
+    },
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -92,7 +110,21 @@ const AdminSidebar = () => {
             )}
           >
             <item.icon className="h-5 w-5 shrink-0" />
-            {!collapsed && <span className="truncate">{item.label}</span>}
+            {!collapsed && (
+              <span className="truncate flex-1">{item.label}</span>
+            )}
+            {/* Show pending badge for Bookings */}
+            {item.label === 'Bookings' && pendingCount && pendingCount > 0 && (
+              <Badge 
+                variant="destructive" 
+                className={cn(
+                  "h-5 min-w-5 flex items-center justify-center text-xs px-1.5",
+                  collapsed && "absolute -top-1 -right-1"
+                )}
+              >
+                {pendingCount > 99 ? '99+' : pendingCount}
+              </Badge>
+            )}
           </NavLink>
         ))}
         

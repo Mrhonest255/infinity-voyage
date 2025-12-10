@@ -74,43 +74,51 @@ export default function TrackBooking() {
   const [searchCode, setSearchCode] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
 
-  const { data: booking, isLoading, error } = useQuery({
+  const { data: booking, isLoading, error, refetch } = useQuery({
     queryKey: ['booking-tracking', searchCode],
     queryFn: async (): Promise<Booking | null> => {
       if (!searchCode) return null;
       
-      // Use raw query to avoid TypeScript deep instantiation issue
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/rest/v1/bookings?tracking_code=eq.${encodeURIComponent(searchCode.toUpperCase())}&select=*`,
-        {
-          headers: {
-            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-        }
+      console.log('Searching for tracking code:', searchCode.toUpperCase());
+      
+      // Fetch all bookings and filter by tracking code (workaround for TypeScript issue)
+      const { data, error } = await supabase
+        .from('bookings')
+        .select('*');
+      
+      if (error) {
+        console.error('Booking fetch error:', error);
+        throw error;
+      }
+      
+      // Find matching booking by tracking code
+      const matchingBooking = (data as any[])?.find(
+        (b: any) => b.tracking_code?.toUpperCase() === searchCode.toUpperCase()
       );
       
-      if (!response.ok) throw new Error('Failed to fetch booking');
+      if (!matchingBooking) {
+        console.log('No booking found for code:', searchCode);
+        return null;
+      }
       
-      const data = await response.json();
-      if (!data || data.length === 0) return null;
+      console.log('Found booking:', matchingBooking);
       
-      const booking = data[0];
       return {
-        id: booking.id,
-        tracking_code: booking.tracking_code || '',
-        customer_name: booking.customer_name,
-        customer_email: booking.customer_email,
-        customer_phone: booking.customer_phone,
-        travel_date: booking.travel_date,
-        number_of_guests: booking.number_of_guests,
-        special_requests: booking.special_requests,
-        status: booking.status,
-        created_at: booking.created_at,
-        tour_id: booking.tour_id,
+        id: matchingBooking.id,
+        tracking_code: matchingBooking.tracking_code || searchCode.toUpperCase(),
+        customer_name: matchingBooking.customer_name,
+        customer_email: matchingBooking.customer_email,
+        customer_phone: matchingBooking.customer_phone,
+        travel_date: matchingBooking.travel_date,
+        number_of_guests: matchingBooking.number_of_guests,
+        special_requests: matchingBooking.special_requests,
+        status: matchingBooking.status,
+        created_at: matchingBooking.created_at,
+        tour_id: matchingBooking.tour_id,
       };
     },
     enabled: !!searchCode,
+    retry: false,
   });
 
   const handleSearch = (e: React.FormEvent) => {

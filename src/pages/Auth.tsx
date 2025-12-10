@@ -84,11 +84,11 @@ const Auth = () => {
       if (data?.user) {
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('role')
+          .select('role' as any)
           .eq('id', data.user.id)
           .maybeSingle();
         
-        if (profileData?.role === 'admin') {
+        if ((profileData as any)?.role === 'admin') {
           navigate('/admin', { replace: true });
         } else {
           // Also check user_roles table as fallback

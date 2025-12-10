@@ -19,8 +19,10 @@ import {
   Car,
   Home,
   Info,
-  MessageCircle
+  MessageCircle,
+  Mail
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -302,15 +304,30 @@ export default function SafariCalculator() {
                       </p>
                     </div>
 
-                    {/* Book Button */}
-                    <Button 
-                      size="xl" 
-                      className="w-full bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold shadow-gold hover:shadow-glow"
-                      onClick={() => window.open(`https://wa.me/255758241294?text=Hello! I'm interested in a ${selectedDest?.name} safari for ${numPeople} people, ${selectedDuration?.label}. Estimated price: $${calculatedPrice.total}`, "_blank")}
-                    >
-                      <MessageCircle className="w-5 h-5 mr-2" />
-                      Book This Safari via WhatsApp
-                    </Button>
+                    {/* Dual Booking Options */}
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Link 
+                        to={`/contact?subject=Safari%20Booking&safari=${encodeURIComponent(selectedDest?.name || '')}&people=${numPeople}&duration=${encodeURIComponent(selectedDuration?.label || '')}&price=${calculatedPrice.total}`}
+                        className="flex-1"
+                      >
+                        <Button 
+                          size="xl" 
+                          variant="outline"
+                          className="w-full border-2 border-primary hover:bg-primary/10 font-bold"
+                        >
+                          <Mail className="w-5 h-5 mr-2" />
+                          Book via Email
+                        </Button>
+                      </Link>
+                      <Button 
+                        size="xl" 
+                        className="flex-1 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold shadow-lg hover:shadow-glow hover:from-green-500 hover:to-green-600"
+                        onClick={() => window.open(`https://wa.me/255758241294?text=Hello! I'm interested in a ${selectedDest?.name} safari for ${numPeople} people, ${selectedDuration?.label}. Estimated price: $${calculatedPrice.total}`, "_blank")}
+                      >
+                        <MessageCircle className="w-5 h-5 mr-2" />
+                        Book via WhatsApp
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

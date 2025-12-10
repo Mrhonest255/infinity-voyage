@@ -36,10 +36,10 @@ const AdminTransfers = () => {
   const { data: transfers, isLoading } = useQuery({
     queryKey: ['admin-transfers'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('transfers')
+      const { data, error } = await (supabase
+        .from('transfers' as any)
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false }) as any);
       
       if (error) throw error;
       return data as Transfer[];
@@ -48,7 +48,7 @@ const AdminTransfers = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('transfers').delete().eq('id', id);
+      const { error } = await (supabase.from('transfers' as any).delete().eq('id', id) as any);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -62,7 +62,7 @@ const AdminTransfers = () => {
 
   const togglePublishMutation = useMutation({
     mutationFn: async ({ id, is_published }: { id: string; is_published: boolean }) => {
-      const { error } = await supabase.from('transfers').update({ is_published: !is_published }).eq('id', id);
+      const { error } = await (supabase.from('transfers' as any).update({ is_published: !is_published }).eq('id', id) as any);
       if (error) throw error;
     },
     onSuccess: () => {

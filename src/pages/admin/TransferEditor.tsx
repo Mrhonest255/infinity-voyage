@@ -70,7 +70,7 @@ const TransferEditor = () => {
     queryKey: ['transfer', id],
     queryFn: async () => {
       if (isNew) return null;
-      const { data, error } = await supabase.from('transfers').select('*').eq('id', id).single();
+      const { data, error } = await (supabase.from('transfers' as any).select('*').eq('id', id).single() as any);
       if (error) throw error;
       return data;
     },
@@ -80,23 +80,23 @@ const TransferEditor = () => {
   useEffect(() => {
     if (transfer) {
       setFormData({
-        title: transfer.title || '',
-        slug: transfer.slug || '',
-        description: transfer.description || '',
-        short_description: transfer.short_description || '',
-        transfer_type: transfer.transfer_type || 'airport',
-        route_from: transfer.route_from || '',
-        route_to: transfer.route_to || '',
-        price_small_group: transfer.price_small_group,
-        price_large_group: transfer.price_large_group,
-        vehicle_type: transfer.vehicle_type || 'minivan',
-        max_passengers: transfer.max_passengers || 12,
-        duration: transfer.duration || '',
-        features: transfer.features || [],
-        featured_image: transfer.featured_image || '',
-        gallery: transfer.gallery || [],
-        is_featured: transfer.is_featured || false,
-        is_published: transfer.is_published || false,
+        title: (transfer as any).title || '',
+        slug: (transfer as any).slug || '',
+        description: (transfer as any).description || '',
+        short_description: (transfer as any).short_description || '',
+        transfer_type: (transfer as any).transfer_type || 'airport',
+        route_from: (transfer as any).route_from || '',
+        route_to: (transfer as any).route_to || '',
+        price_small_group: (transfer as any).price_small_group,
+        price_large_group: (transfer as any).price_large_group,
+        vehicle_type: (transfer as any).vehicle_type || 'minivan',
+        max_passengers: (transfer as any).max_passengers || 12,
+        duration: (transfer as any).duration || '',
+        features: (transfer as any).features || [],
+        featured_image: (transfer as any).featured_image || '',
+        gallery: (transfer as any).gallery || [],
+        is_featured: (transfer as any).is_featured || false,
+        is_published: (transfer as any).is_published || false,
       });
     }
   }, [transfer]);
@@ -120,10 +120,10 @@ const TransferEditor = () => {
       };
 
       if (isNew) {
-        const { error } = await supabase.from('transfers').insert(payload);
+        const { error } = await (supabase.from('transfers' as any).insert(payload) as any);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('transfers').update(payload).eq('id', id);
+        const { error } = await (supabase.from('transfers' as any).update(payload).eq('id', id) as any);
         if (error) throw error;
       }
     },

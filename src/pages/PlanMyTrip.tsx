@@ -12,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Select,
   SelectContent,
@@ -31,7 +32,9 @@ import {
   Waves,
   Mountain,
   Utensils,
-  Music
+  Music,
+  MessageCircle,
+  Mail
 } from "lucide-react";
 
 const interests = [
@@ -83,27 +86,14 @@ export default function PlanMyTrip() {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.fullName || !formData.email || !formData.fromDate || !formData.toDate) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setLoading(true);
-
-    // Build WhatsApp message
+  // Generate WhatsApp message
+  const generateWhatsAppMessage = () => {
     const selectedInterests = interests
       .filter(i => formData.interests.includes(i.id))
       .map(i => i.label)
       .join(", ");
 
-    const message = `
+    return `
 🌴 *NEW TRIP PLANNING REQUEST*
 
 *Personal Information:*
@@ -124,16 +114,105 @@ ${selectedInterests || "Not specified"}
 *Additional Notes:*
 ${formData.additionalInfo || "None"}
     `.trim();
+  };
 
-    // Open WhatsApp with the message
+  const handleWhatsAppSubmit = () => {
+    if (!formData.fullName || !formData.email) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide at least your name and email.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const message = generateWhatsAppMessage();
     window.open(`https://wa.me/255758241294?text=${encodeURIComponent(message)}`, "_blank");
-
+    
     toast({
-      title: "Request Submitted!",
+      title: "Request Sent!",
       description: "We'll contact you shortly with a personalized itinerary.",
     });
+  };
 
-    setLoading(false);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.fullName || !formData.email || !formData.fromDate || !formData.toDate) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Build message for email submission
+      const selectedInterests = interests
+        .filter(i => formData.interests.includes(i.id))
+        .map(i => i.label)
+        .join(", ");
+
+      const tripDetails = `
+Trip Planning Request
+
+Personal Information:
+- Name: ${formData.fullName}
+- Email: ${formData.email}
+- Phone: ${formData.phone || 'Not provided'}
+
+Trip Details:
+- From: ${formData.fromDate ? format(formData.fromDate, "PPP") : "Not selected"}
+- To: ${formData.toDate ? format(formData.toDate, "PPP") : "Not selected"}
+- Travelers: ${formData.travelers}
+- Budget: ${formData.budget || 'Not specified'}
+- Accommodation: ${accommodationTypes.find(a => a.value === formData.accommodation)?.label || "Not specified"}
+
+Interests: ${selectedInterests || 'Not specified'}
+
+Additional Notes: ${formData.additionalInfo || 'None'}
+      `.trim();
+
+      // Send email to admin via Edge Function
+      const { error } = await supabase.functions.invoke('send-booking-email', {
+        body: {
+          customerName: formData.fullName,
+          customerEmail: formData.email,
+          customerPhone: formData.phone || 'Not provided',
+          tourName: 'Trip Planning Request',
+          travelDate: formData.fromDate ? format(formData.fromDate, 'PPP') : 'TBD',
+          numberOfGuests: parseInt(formData.travelers),
+          specialRequests: tripDetails,
+        },
+      });
+
+      if (error) throw error;
+      
+      toast({
+        title: "Request Submitted! 🎉",
+        description: "We'll contact you via email with a personalized itinerary.",
+      });
+
+      // Reset form
+      setFormData({
+        fullName: '', email: '', phone: '',
+        fromDate: undefined, toDate: undefined,
+        travelers: '2', budget: '', accommodation: '',
+        interests: [], additionalInfo: ''
+      });
+    } catch (error: any) {
+      console.error('Trip planning error:', error);
+      toast({
+        title: "Submission Failed",
+        description: error.message || "Please try again or contact us directly.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -386,25 +465,36 @@ ${formData.additionalInfo || "None"}
                       />
                     </div>
 
-                    {/* Submit Button */}
-                    <Button
-                      type="submit"
-                      size="xl"
-                      disabled={loading}
-                      className="w-full bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold shadow-gold hover:shadow-glow"
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                          Submitting...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="w-5 h-5 mr-2" />
-                          Submit Trip Request
-                        </>
-                      )}
-                    </Button>
+                    {/* Dual Submit Options */}
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button
+                        type="submit"
+                        size="xl"
+                        disabled={loading}
+                        className="flex-1 bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold shadow-gold hover:shadow-glow"
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                            Submitting...
+                          </>
+                        ) : (
+                          <>
+                            <Mail className="w-5 h-5 mr-2" />
+                            Submit via Email
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        type="button"
+                        size="xl"
+                        onClick={handleWhatsAppSubmit}
+                        className="flex-1 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold shadow-lg hover:shadow-glow hover:from-green-500 hover:to-green-600"
+                      >
+                        <MessageCircle className="w-5 h-5 mr-2" />
+                        Submit via WhatsApp
+                      </Button>
+                    </div>
                   </form>
                 </CardContent>
               </Card>

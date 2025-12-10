@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,6 +7,14 @@ import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 import { 
   Plane, 
   Car, 
@@ -16,8 +25,15 @@ import {
   Shield,
   MessageCircle,
   Loader2,
-  Ship
+  Ship,
+  Mail,
+  CalendarIcon,
+  Send,
+  Phone
 } from "lucide-react";
+
+const WHATSAPP_NUMBER = '255758241294';
+const ADMIN_EMAIL = 'info@infinityvoyagetours.com';
 
 interface Transfer {
   id: string;
@@ -97,14 +113,28 @@ const whyChooseUs = [
 ];
 
 export default function Transfers() {
+  const { toast } = useToast();
+  const [selectedTransfer, setSelectedTransfer] = useState<Transfer | null>(null);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [bookingForm, setBookingForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    date: undefined as Date | undefined,
+    passengers: '2',
+    flightNumber: '',
+    notes: ''
+  });
+
   const { data: transfers, isLoading } = useQuery({
     queryKey: ['public-transfers'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('transfers')
+      const { data, error } = await (supabase
+        .from('transfers' as any)
         .select('*')
         .eq('is_published', true)
-        .order('is_featured', { ascending: false });
+        .order('is_featured', { ascending: false }) as any);
       
       if (error) {
         console.error('Error fetching transfers:', error);
@@ -114,9 +144,102 @@ export default function Transfers() {
     },
   });
 
-  const handleBooking = (transfer: Transfer, size: string) => {
-    const message = `Hello! I would like to book a transfer:\n\n📍 Route: ${transfer.route_from} → ${transfer.route_to}\n👥 Passengers: ${size}\n\nPlease confirm availability and price.`;
-    window.open(`https://wa.me/255758241294?text=${encodeURIComponent(message)}`, "_blank");
+  const openBookingForm = (transfer: Transfer) => {
+    setSelectedTransfer(transfer);
+    setIsBookingOpen(true);
+  };
+
+  const handleWhatsAppBooking = (transfer: Transfer) => {
+    const message = `Hello! I would like to book a transfer:\n\n📍 Route: ${transfer.route_from} → ${transfer.route_to}\n💰 Price: $${transfer.price_small_group || 'TBD'} (1-6 pax)\n\nPlease confirm availability.`;
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedTransfer || !bookingForm.name || !bookingForm.email || !bookingForm.date) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Save booking to database
+      const { error: dbError } = await supabase.from('bookings').insert({
+        customer_name: bookingForm.name,
+        customer_email: bookingForm.email,
+        customer_phone: bookingForm.phone,
+        travel_date: bookingForm.date.toISOString(),
+        number_of_guests: parseInt(bookingForm.passengers),
+        special_requests: `Transfer: ${selectedTransfer.title}\nRoute: ${selectedTransfer.route_from} → ${selectedTransfer.route_to}\nFlight Number: ${bookingForm.flightNumber || 'Not provided'}\nNotes: ${bookingForm.notes || 'None'}`,
+        total_price: parseInt(bookingForm.passengers) <= 6 
+          ? selectedTransfer.price_small_group || 0 
+          : selectedTransfer.price_large_group || 0,
+        status: 'pending'
+      });
+
+      if (dbError) throw dbError;
+
+      // Send email notification via Edge Function
+      await supabase.functions.invoke('send-booking-email', {
+        body: {
+          to: ADMIN_EMAIL,
+          customerName: bookingForm.name,
+          customerEmail: bookingForm.email,
+          customerPhone: bookingForm.phone,
+          tourName: `Transfer: ${selectedTransfer.title}`,
+          travelDate: format(bookingForm.date, 'PPP'),
+          guests: bookingForm.passengers,
+          specialRequests: `Route: ${selectedTransfer.route_from} → ${selectedTransfer.route_to}\nFlight: ${bookingForm.flightNumber || 'N/A'}\n${bookingForm.notes}`,
+          totalPrice: parseInt(bookingForm.passengers) <= 6 
+            ? selectedTransfer.price_small_group || 0 
+            : selectedTransfer.price_large_group || 0
+        }
+      });
+
+      toast({
+        title: "Booking Submitted! 🎉",
+        description: "We'll confirm your transfer shortly via email.",
+      });
+
+      setIsBookingOpen(false);
+      setBookingForm({
+        name: '', email: '', phone: '', date: undefined,
+        passengers: '2', flightNumber: '', notes: ''
+      });
+    } catch (error: any) {
+      console.error('Booking error:', error);
+      toast({
+        title: "Booking Failed",
+        description: error.message || "Please try again or contact us directly.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleWhatsAppFromForm = () => {
+    if (!selectedTransfer) return;
+    const message = `🚗 *TRANSFER BOOKING REQUEST*
+━━━━━━━━━━━━━━━━━
+*Transfer:* ${selectedTransfer.title}
+*Route:* ${selectedTransfer.route_from} → ${selectedTransfer.route_to}
+*Name:* ${bookingForm.name || 'Not provided'}
+*Email:* ${bookingForm.email || 'Not provided'}
+*Phone:* ${bookingForm.phone || 'Not provided'}
+*Date:* ${bookingForm.date ? format(bookingForm.date, 'PPP') : 'Not selected'}
+*Passengers:* ${bookingForm.passengers}
+*Flight Number:* ${bookingForm.flightNumber || 'Not provided'}
+*Notes:* ${bookingForm.notes || 'None'}
+━━━━━━━━━━━━━━━━━
+Please confirm this transfer booking!`;
+    
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   const getTypeIcon = (type: string) => {
@@ -272,15 +395,26 @@ export default function Transfers() {
                           </div>
                         )}
 
-                        {/* Book Button */}
-                        <Button 
-                          size="lg" 
-                          className="w-full bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold mt-auto"
-                          onClick={() => handleBooking(transfer, "1-6")}
-                        >
-                          <MessageCircle className="w-5 h-5 mr-2" />
-                          Book Transfer
-                        </Button>
+                        {/* Dual Booking Options */}
+                        <div className="flex gap-2 mt-auto">
+                          <Button 
+                            size="lg" 
+                            variant="outline"
+                            className="flex-1 border-2 border-primary hover:bg-primary/10"
+                            onClick={() => openBookingForm(transfer)}
+                          >
+                            <Send className="w-4 h-4 mr-2" />
+                            Book Now
+                          </Button>
+                          <Button 
+                            size="lg" 
+                            className="flex-1 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold hover:from-green-500 hover:to-green-600"
+                            onClick={() => handleWhatsAppBooking(transfer)}
+                          >
+                            <MessageCircle className="w-4 h-4 mr-2" />
+                            WhatsApp
+                          </Button>
+                        </div>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -331,19 +465,197 @@ export default function Transfers() {
             <p className="text-primary-foreground/70 mb-8 max-w-xl mx-auto">
               Start your Zanzibar adventure with a smooth and hassle-free airport transfer
             </p>
-            <Button 
-              size="xl"
-              className="bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold shadow-gold hover:shadow-glow"
-              onClick={() => window.open("https://wa.me/255758241294?text=Hello! I would like to book an airport transfer.", "_blank")}
-            >
-              <MessageCircle className="w-5 h-5 mr-2" />
-              Book via WhatsApp
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                size="xl"
+                variant="outline"
+                className="border-2 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:border-primary-foreground/50"
+                onClick={() => {
+                  if (transfers && transfers.length > 0) {
+                    openBookingForm(transfers[0]);
+                  }
+                }}
+              >
+                <Send className="w-5 h-5 mr-2" />
+                Book Now
+              </Button>
+              <Button 
+                size="xl"
+                className="bg-gradient-to-r from-green-600 to-green-500 text-white font-bold shadow-lg hover:shadow-glow hover:from-green-500 hover:to-green-600"
+                onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Hello! I would like to book an airport transfer.`, "_blank")}
+              >
+                <MessageCircle className="w-5 h-5 mr-2" />
+                Book via WhatsApp
+              </Button>
+            </div>
           </motion.div>
         </div>
       </section>
 
       <Footer />
+
+      {/* Booking Form Dialog */}
+      <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
+        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+              <Car className="w-6 h-6 text-safari-gold" />
+              Book Transfer
+            </DialogTitle>
+          </DialogHeader>
+
+          {selectedTransfer && (
+            <div className="space-y-6">
+              {/* Transfer Info */}
+              <div className="bg-muted/50 rounded-xl p-4">
+                <h3 className="font-semibold text-lg">{selectedTransfer.title}</h3>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                  <MapPin className="w-4 h-4 text-safari-gold" />
+                  <span>{selectedTransfer.route_from} → {selectedTransfer.route_to}</span>
+                </div>
+                <div className="flex gap-4 mt-3">
+                  <div className="text-center">
+                    <span className="text-xs text-muted-foreground">1-6 Pax</span>
+                    <p className="text-xl font-bold text-primary">${selectedTransfer.price_small_group}</p>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-xs text-muted-foreground">7-12 Pax</span>
+                    <p className="text-xl font-bold text-safari-gold">${selectedTransfer.price_large_group}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Booking Form */}
+              <form onSubmit={handleFormSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name *</Label>
+                    <Input
+                      id="name"
+                      placeholder="John Doe"
+                      value={bookingForm.name}
+                      onChange={(e) => setBookingForm(prev => ({ ...prev, name: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="john@example.com"
+                      value={bookingForm.email}
+                      onChange={(e) => setBookingForm(prev => ({ ...prev, email: e.target.value }))}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="+255 xxx xxx xxx"
+                      value={bookingForm.phone}
+                      onChange={(e) => setBookingForm(prev => ({ ...prev, phone: e.target.value }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Travel Date *</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal"
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {bookingForm.date ? format(bookingForm.date, "PPP") : "Select date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={bookingForm.date}
+                          onSelect={(date) => setBookingForm(prev => ({ ...prev, date }))}
+                          disabled={(date) => date < new Date()}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="passengers">Number of Passengers</Label>
+                    <select
+                      id="passengers"
+                      value={bookingForm.passengers}
+                      onChange={(e) => setBookingForm(prev => ({ ...prev, passengers: e.target.value }))}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    >
+                      {[1,2,3,4,5,6,7,8,9,10,11,12].map(n => (
+                        <option key={n} value={n}>{n} {n === 1 ? 'passenger' : 'passengers'}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="flight">Flight Number</Label>
+                    <Input
+                      id="flight"
+                      placeholder="e.g., KQ 403"
+                      value={bookingForm.flightNumber}
+                      onChange={(e) => setBookingForm(prev => ({ ...prev, flightNumber: e.target.value }))}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="notes">Special Requests</Label>
+                  <Textarea
+                    id="notes"
+                    placeholder="Any special requirements or notes..."
+                    value={bookingForm.notes}
+                    onChange={(e) => setBookingForm(prev => ({ ...prev, notes: e.target.value }))}
+                    rows={3}
+                  />
+                </div>
+
+                {/* Dual Submit Options */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex-1 bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="w-4 h-4 mr-2" />
+                        Submit Booking
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleWhatsAppFromForm}
+                    className="flex-1 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Book via WhatsApp
+                  </Button>
+                </div>
+              </form>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

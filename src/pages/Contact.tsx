@@ -1,19 +1,112 @@
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Phone, Mail, MapPin, Clock, Send, MessageCircle } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Send, MessageCircle, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 import heroImage from "@/assets/hero-safari.jpg";
 
+const WHATSAPP_NUMBER = '255758241294';
+
 const Contact = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const [searchParams] = useSearchParams();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    interest: 'Safari Experience',
+    message: ''
+  });
+
+  // Pre-fill form from URL params
+  useEffect(() => {
+    const subject = searchParams.get('subject');
+    const transfer = searchParams.get('transfer');
+    const route = searchParams.get('route');
+    const safari = searchParams.get('safari');
+    const people = searchParams.get('people');
+    const duration = searchParams.get('duration');
+    const price = searchParams.get('price');
+
+    let prefillMessage = '';
+    let prefillInterest = 'Safari Experience';
+
+    if (transfer) {
+      prefillInterest = 'Other Inquiry';
+      prefillMessage = `🚗 TRANSFER BOOKING REQUEST\n\nTransfer: ${transfer}\nRoute: ${route || 'Not specified'}\n\nPlease confirm availability and pricing.`;
+    } else if (safari) {
+      prefillInterest = 'Safari Experience';
+      prefillMessage = `🦁 SAFARI BOOKING REQUEST\n\nSafari: ${safari}\nTravelers: ${people || 'Not specified'}\nDuration: ${duration || 'Not specified'}\nEstimated Price: $${price || 'TBD'}\n\nPlease confirm availability.`;
+    } else if (subject) {
+      prefillMessage = `Subject: ${subject}\n\n`;
+    }
+
+    if (prefillMessage) {
+      setFormData(prev => ({
+        ...prev,
+        interest: prefillInterest,
+        message: prefillMessage
+      }));
+    }
+  }, [searchParams]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Thank you! We'll get back to you within 24 hours.");
+    
+    if (!formData.firstName || !formData.email || !formData.message) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Send email to admin via Edge Function
+      const { error } = await supabase.functions.invoke('send-booking-email', {
+        body: {
+          customerName: `${formData.firstName} ${formData.lastName}`.trim(),
+          customerEmail: formData.email,
+          customerPhone: formData.phone || 'Not provided',
+          tourName: `Contact Inquiry: ${formData.interest}`,
+          travelDate: 'Not specified',
+          numberOfGuests: 1,
+          specialRequests: formData.message,
+        },
+      });
+
+      if (error) throw error;
+
+      toast.success("Thank you! We'll get back to you within 24 hours.");
+      
+      // Reset form
+      setFormData({
+        firstName: '', lastName: '', email: '', phone: '',
+        interest: 'Safari Experience', message: ''
+      });
+    } catch (error: any) {
+      console.error('Contact form error:', error);
+      toast.error("Failed to send message. Please try again or contact us directly.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleWhatsApp = () => {
+    const message = `Hello! I'm interested in ${formData.interest}.\n\nName: ${formData.firstName} ${formData.lastName}\nEmail: ${formData.email}\n\n${formData.message}`;
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
+  };
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -67,28 +160,55 @@ const Contact = () => {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" placeholder="John" required />
+                    <Input 
+                      id="firstName" 
+                      placeholder="John" 
+                      value={formData.firstName}
+                      onChange={(e) => handleChange('firstName', e.target.value)}
+                      required 
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" placeholder="Doe" required />
+                    <Input 
+                      id="lastName" 
+                      placeholder="Doe" 
+                      value={formData.lastName}
+                      onChange={(e) => handleChange('lastName', e.target.value)}
+                      required 
+                    />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="john@example.com" required />
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    placeholder="john@example.com" 
+                    value={formData.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    required 
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" type="tel" placeholder="+1 234 567 890" />
+                  <Input 
+                    id="phone" 
+                    type="tel" 
+                    placeholder="+1 234 567 890" 
+                    value={formData.phone}
+                    onChange={(e) => handleChange('phone', e.target.value)}
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="interest">I'm interested in</Label>
                   <select
                     id="interest"
+                    value={formData.interest}
+                    onChange={(e) => handleChange('interest', e.target.value)}
                     className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <option>Safari Experience</option>
@@ -96,6 +216,7 @@ const Contact = () => {
                     <option>Kilimanjaro Trekking</option>
                     <option>Combo Package</option>
                     <option>Custom Itinerary</option>
+                    <option>Transfer Booking</option>
                     <option>Other Inquiry</option>
                   </select>
                 </div>
@@ -106,14 +227,43 @@ const Contact = () => {
                     id="message"
                     placeholder="Tell us about your dream trip..."
                     rows={5}
+                    value={formData.message}
+                    onChange={(e) => handleChange('message', e.target.value)}
                     required
                   />
                 </div>
 
-                <Button type="submit" variant="safari" size="lg" className="w-full">
-                  <Send className="w-4 h-4 mr-2" />
-                  Send Message
-                </Button>
+                {/* Dual Submit Options */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button 
+                    type="submit" 
+                    variant="safari" 
+                    size="lg" 
+                    className="flex-1"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 mr-2" />
+                        Send Message
+                      </>
+                    )}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    size="lg" 
+                    className="flex-1 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold hover:from-green-500 hover:to-green-600"
+                    onClick={handleWhatsApp}
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Chat on WhatsApp
+                  </Button>
+                </div>
               </form>
             </motion.div>
 

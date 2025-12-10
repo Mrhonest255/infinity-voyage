@@ -56,29 +56,52 @@ export const Navbar = () => {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group">
               {logo ? (
-                <img src={logo} alt={siteName} className="w-12 h-12 object-contain" />
+                <div className="relative flex items-center gap-3">
+                  <img 
+                    src={logo} 
+                    alt={siteName} 
+                    className="h-12 w-auto object-contain" 
+                  />
+                  <div className="hidden sm:flex flex-col">
+                    <span
+                      className={`font-bold text-xl leading-tight transition-colors duration-300 ${
+                        isScrolled ? "text-foreground" : "text-primary-foreground"
+                      }`}
+                      style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                    >
+                      {siteName}
+                    </span>
+                    <span className={`text-[10px] uppercase tracking-[0.2em] font-medium ${
+                      isScrolled ? "text-safari-gold" : "text-safari-gold/80"
+                    }`}>
+                      Zanzibar
+                    </span>
+                  </div>
+                </div>
               ) : (
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-safari-gold via-safari-amber to-safari-gold flex items-center justify-center shadow-gold group-hover:shadow-glow transition-all duration-500">
-                  <span className="text-safari-night font-bold text-xl">
-                    IV
-                  </span>
+                <div className="relative flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-safari-gold via-safari-amber to-safari-gold flex items-center justify-center shadow-gold group-hover:shadow-glow transition-all duration-500 group-hover:scale-105">
+                    <span className="text-safari-night font-bold text-xl" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                      IV
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span
+                      className={`font-bold text-xl leading-tight transition-colors duration-300 ${
+                        isScrolled ? "text-foreground" : "text-primary-foreground"
+                      }`}
+                      style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                    >
+                      {siteName}
+                    </span>
+                    <span className={`text-[10px] uppercase tracking-[0.2em] font-medium ${
+                      isScrolled ? "text-safari-gold" : "text-safari-gold/80"
+                    }`}>
+                      Zanzibar
+                    </span>
+                  </div>
                 </div>
               )}
-              <div className="flex flex-col">
-                <span
-                  className={`font-semibold text-xl tracking-tight transition-colors duration-300 ${
-                    isScrolled ? "text-foreground" : "text-primary-foreground"
-                  }`}
-                  style={{ fontFamily: "'Cormorant Garamond', serif" }}
-                >
-                  {siteName}
-                </span>
-                <span className={`text-[10px] uppercase tracking-[0.2em] font-medium ${
-                  isScrolled ? "text-safari-gold" : "text-safari-gold/90"
-                }`}>
-                  Zanzibar
-                </span>
-              </div>
             </Link>
 
             {/* Desktop Navigation */}

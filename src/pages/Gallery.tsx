@@ -40,9 +40,9 @@ const Gallery = () => {
       // Try to fetch from a gallery table if it exists
       const { data, error } = await supabase
         .from('tours')
-        .select('id, title, image, category, description')
+        .select('id, title, featured_image, category, description')
         .eq('is_published', true)
-        .not('image', 'is', null);
+        .not('featured_image', 'is', null);
       
       if (error) {
         console.error('Gallery fetch error:', error);
@@ -50,9 +50,9 @@ const Gallery = () => {
       }
       
       // Transform tour images to gallery format
-      const tourImages: GalleryImage[] = (data || []).map(tour => ({
+      const tourImages: GalleryImage[] = (data || []).map((tour: any) => ({
         id: tour.id,
-        url: tour.image || '',
+        url: tour.featured_image || '',
         title: tour.title,
         category: tour.category || 'safari',
         description: tour.description

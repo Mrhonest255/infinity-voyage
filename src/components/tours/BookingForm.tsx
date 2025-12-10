@@ -11,10 +11,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
-import { CalendarIcon, Loader2, CheckCircle2, Users, Mail, Phone, MapPin, Clock } from 'lucide-react';
+import { CalendarIcon, Loader2, CheckCircle2, Users, Mail, Phone, MapPin, Clock, MessageCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+const WHATSAPP_NUMBER = '255758241294';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -41,6 +43,29 @@ const BookingForm = ({ tourId, tourName }: Props) => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // Generate WhatsApp booking message
+  const generateWhatsAppMessage = () => {
+    const formData = form.getValues();
+    const message = `🦁 *BOOKING INQUIRY*
+━━━━━━━━━━━━━━━━━
+*Tour/Activity:* ${tourName || 'General Inquiry'}
+*Name:* ${formData.name || 'Not specified'}
+*Email:* ${formData.email || 'Not specified'}
+*Phone:* ${formData.phone || 'Not specified'}
+*Travel Date:* ${formData.date ? format(formData.date, 'PPP') : 'Not selected'}
+*Guests:* ${formData.guests || '2'}
+*Special Requests:* ${formData.notes || 'None'}
+━━━━━━━━━━━━━━━━━
+I would like to book this adventure!`;
+    
+    return encodeURIComponent(message);
+  };
+
+  const handleWhatsAppBooking = () => {
+    const message = generateWhatsAppMessage();
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+  };
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -359,23 +384,37 @@ const BookingForm = ({ tourId, tourName }: Props) => {
               />
             </div>
 
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full h-14 text-base font-semibold bg-gradient-to-r from-safari-gold to-safari-amber hover:from-safari-amber hover:to-safari-gold text-foreground shadow-glow hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              size="lg"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Submitting...
-                </>
-              ) : (
-                <>
-                  Submit Booking Request
-                </>
-              )}
-            </Button>
+            {/* Dual Booking Options */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1 h-14 text-base font-semibold bg-gradient-to-r from-safari-gold to-safari-amber hover:from-safari-amber hover:to-safari-gold text-foreground shadow-glow hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                size="lg"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Mail className="w-5 h-5 mr-2" />
+                    Book via Email
+                  </>
+                )}
+              </Button>
+
+              <Button
+                type="button"
+                onClick={handleWhatsAppBooking}
+                className="flex-1 h-14 text-base font-semibold bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-600 text-white shadow-lg hover:shadow-2xl transition-all duration-300"
+                size="lg"
+              >
+                <MessageCircle className="w-5 h-5 mr-2" />
+                Book via WhatsApp
+              </Button>
+            </div>
 
             <p className="text-xs text-center text-muted-foreground">
               By submitting this form, you agree to our terms of service and privacy policy.

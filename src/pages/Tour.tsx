@@ -618,7 +618,12 @@ const TourPage = () => {
                       </div>
                     </div>
                     <div className="p-6">
-                      <BookingForm tourId={tour.id} tourName={tour.title} />
+                      <BookingForm 
+                        tourId={tour.id} 
+                        tourName={tour.title}
+                        basePrice={tour.price}
+                        zonePrices={(tour as any).zone_prices || {}}
+                      />
                     </div>
                   </CardContent>
                 </Card>

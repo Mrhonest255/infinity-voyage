@@ -14,7 +14,19 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, Save, Sparkles, Loader2, Plus, X } from 'lucide-react';
+import { ArrowLeft, Save, Sparkles, Loader2, Plus, X, MapPin, DollarSign } from 'lucide-react';
+
+// Define pickup zones for pricing
+const PICKUP_ZONES = [
+  { id: 'stone_town', name: 'Stone Town Hotels', description: 'Stone Town and central area' },
+  { id: 'beach_north', name: 'North Coast (Nungwi/Kendwa)', description: 'Nungwi, Kendwa beaches' },
+  { id: 'beach_east', name: 'East Coast (Paje/Jambiani)', description: 'Paje, Jambiani, Bwejuu' },
+  { id: 'beach_south', name: 'South Coast (Kizimkazi)', description: 'Kizimkazi and southern beaches' },
+];
+
+interface ZonePrices {
+  [key: string]: number | null;
+}
 
 interface TourFormData {
   title: string;
@@ -23,6 +35,7 @@ interface TourFormData {
   short_description: string;
   duration: string;
   price: number | null;
+  zone_prices: ZonePrices;
   category: string;
   difficulty: string;
   max_group_size: number;
@@ -43,6 +56,7 @@ const initialFormData: TourFormData = {
   short_description: '',
   duration: '',
   price: null,
+  zone_prices: {},
   category: 'safari',
   difficulty: 'moderate',
   max_group_size: 12,
@@ -91,6 +105,7 @@ const TourEditor = () => {
         short_description: tour.short_description || '',
         duration: tour.duration || '',
         price: tour.price,
+        zone_prices: (tour as any).zone_prices || {},
         category: tour.category || 'safari',
         difficulty: tour.difficulty || 'moderate',
         max_group_size: tour.max_group_size || 12,
@@ -168,7 +183,7 @@ const TourEditor = () => {
         ...formData,
         slug: formData.slug || generateSlug(formData.title),
         created_by: user?.id,
-      };
+      } as any;
 
       if (isNew) {
         const { error } = await supabase.from('tours').insert(tourData);
@@ -256,8 +271,9 @@ const TourEditor = () => {
         </div>
 
         <Tabs defaultValue="basic" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
+            <TabsTrigger value="pricing">Zone Pricing</TabsTrigger>
             <TabsTrigger value="details">Details</TabsTrigger>
             <TabsTrigger value="itinerary">Itinerary</TabsTrigger>
             <TabsTrigger value="media">Media</TabsTrigger>
@@ -356,6 +372,69 @@ const TourEditor = () => {
                       onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_published: checked }))}
                     />
                     <Label>Published</Label>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Zone Pricing */}
+          <TabsContent value="pricing">
+            <Card className="shadow-soft">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  Zone-Based Pricing
+                </CardTitle>
+                <CardDescription>
+                  Set different prices based on pickup location. Leave empty to use the default price above.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {PICKUP_ZONES.map((zone) => (
+                    <div 
+                      key={zone.id} 
+                      className="border rounded-lg p-4 space-y-3 hover:border-primary/50 transition-colors"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-medium text-foreground">{zone.name}</h4>
+                          <p className="text-xs text-muted-foreground">{zone.description}</p>
+                        </div>
+                        <DollarSign className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground text-sm">$</span>
+                        <Input
+                          type="number"
+                          placeholder={formData.price ? `Default: $${formData.price}` : 'Enter price'}
+                          value={formData.zone_prices[zone.id] || ''}
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            zone_prices: {
+                              ...prev.zone_prices,
+                              [zone.id]: e.target.value ? parseFloat(e.target.value) : null
+                            }
+                          }))}
+                          className="flex-1"
+                        />
+                        <span className="text-muted-foreground text-sm">per person</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="bg-muted/50 rounded-lg p-4 mt-4">
+                  <h4 className="font-medium text-sm text-foreground mb-2">Pricing Summary</h4>
+                  <div className="text-sm text-muted-foreground space-y-1">
+                    <p>• Default price: <span className="text-foreground font-medium">${formData.price || 'Not set'}</span></p>
+                    {Object.entries(formData.zone_prices).filter(([_, price]) => price !== null).map(([zoneId, price]) => {
+                      const zone = PICKUP_ZONES.find(z => z.id === zoneId);
+                      return zone ? (
+                        <p key={zoneId}>• {zone.name}: <span className="text-foreground font-medium">${price}</span></p>
+                      ) : null;
+                    })}
                   </div>
                 </div>
               </CardContent>

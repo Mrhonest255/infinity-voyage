@@ -11,17 +11,30 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
-import { CalendarIcon, Loader2, CheckCircle2, Users, Mail, Phone, MapPin, Clock, MessageCircle } from 'lucide-react';
+import { CalendarIcon, Loader2, CheckCircle2, Users, Mail, Phone, MapPin, Clock, MessageCircle, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const WHATSAPP_NUMBER = '255758241294';
+
+// Pickup zone options for customers
+const PICKUP_ZONES = [
+  { id: 'stone_town', name: 'Stone Town Hotels', description: 'Stone Town and central area' },
+  { id: 'beach_north', name: 'North Coast (Nungwi/Kendwa)', description: 'Nungwi, Kendwa beaches' },
+  { id: 'beach_east', name: 'East Coast (Paje/Jambiani)', description: 'Paje, Jambiani, Bwejuu' },
+  { id: 'beach_south', name: 'South Coast (Kizimkazi)', description: 'Kizimkazi and southern beaches' },
+];
+
+interface ZonePrices {
+  [key: string]: number | null;
+}
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   phone: z.string().optional(),
+  pickup_zone: z.string().optional(),
   date: z.date({
     required_error: 'Please select a travel date',
   }).refine((date) => date >= new Date(new Date().setHours(0, 0, 0, 0)), {
@@ -36,13 +49,30 @@ type BookingFormValues = z.infer<typeof bookingSchema>;
 interface Props {
   tourId?: string | null;
   tourName?: string;
+  basePrice?: number | null;
+  zonePrices?: ZonePrices;
 }
 
-const BookingForm = ({ tourId, tourName }: Props) => {
+const BookingForm = ({ tourId, tourName, basePrice, zonePrices }: Props) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [selectedZone, setSelectedZone] = useState<string>('');
+
+  // Calculate current price based on selected zone
+  const currentPrice = useMemo(() => {
+    if (selectedZone && zonePrices && zonePrices[selectedZone]) {
+      return zonePrices[selectedZone];
+    }
+    return basePrice;
+  }, [selectedZone, zonePrices, basePrice]);
+
+  // Get zone name for display
+  const selectedZoneName = useMemo(() => {
+    const zone = PICKUP_ZONES.find(z => z.id === selectedZone);
+    return zone?.name || '';
+  }, [selectedZone]);
 
   // Generate WhatsApp booking message
   const generateWhatsAppMessage = () => {
@@ -53,8 +83,10 @@ const BookingForm = ({ tourId, tourName }: Props) => {
 *Name:* ${formData.name || 'Not specified'}
 *Email:* ${formData.email || 'Not specified'}
 *Phone:* ${formData.phone || 'Not specified'}
+*Pickup Location:* ${selectedZoneName || 'Not selected'}
 *Travel Date:* ${formData.date ? format(formData.date, 'PPP') : 'Not selected'}
 *Guests:* ${formData.guests || '2'}
+*Price Per Person:* ${currentPrice ? `$${currentPrice}` : 'Please quote'}
 *Special Requests:* ${formData.notes || 'None'}
 ━━━━━━━━━━━━━━━━━
 I would like to book this adventure!`;
@@ -73,6 +105,7 @@ I would like to book this adventure!`;
       name: '',
       email: '',
       phone: '',
+      pickup_zone: '',
       date: undefined,
       guests: '2',
       notes: '',
@@ -90,7 +123,7 @@ I would like to book this adventure!`;
         customer_phone: data.phone || null,
         travel_date: format(data.date, 'yyyy-MM-dd'),
         number_of_guests: parseInt(data.guests),
-        special_requests: data.notes || null,
+        special_requests: `${selectedZoneName ? `Pickup: ${selectedZoneName}. ` : ''}${data.notes || ''}`.trim() || null,
         status: 'pending',
         tour_id: tourId || null,
       };
@@ -274,6 +307,57 @@ I would like to book this adventure!`;
                     <FormDescription className="text-xs">
                       Optional - helps us reach you faster
                     </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Pickup Zone Field */}
+              <FormField
+                control={form.control}
+                name="pickup_zone"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel className="flex items-center gap-2 text-base font-semibold">
+                      <MapPin className="w-4 h-4 text-safari-gold" />
+                      Pickup Location
+                    </FormLabel>
+                    <Select 
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        setSelectedZone(value);
+                      }} 
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="h-12 text-base border-2 focus:border-safari-gold transition-colors">
+                          <SelectValue placeholder="Select your pickup area" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {PICKUP_ZONES.map((zone) => (
+                          <SelectItem key={zone.id} value={zone.id}>
+                            <div className="flex flex-col">
+                              <span>{zone.name}</span>
+                              <span className="text-xs text-muted-foreground">{zone.description}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {currentPrice && (
+                      <div className="flex items-center gap-2 mt-2 p-3 bg-gradient-to-r from-safari-gold/10 to-safari-amber/10 rounded-lg border border-safari-gold/20">
+                        <DollarSign className="w-5 h-5 text-safari-gold" />
+                        <span className="font-semibold text-foreground">
+                          Price: ${currentPrice.toLocaleString()} per person
+                        </span>
+                        {selectedZone && zonePrices?.[selectedZone] && (
+                          <span className="text-xs text-muted-foreground ml-auto">
+                            (Zone rate)
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}

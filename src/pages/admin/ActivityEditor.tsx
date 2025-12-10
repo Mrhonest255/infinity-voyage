@@ -14,7 +14,19 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, Save, Sparkles, Loader2, Plus, X } from 'lucide-react';
+import { ArrowLeft, Save, Sparkles, Loader2, Plus, X, MapPin, DollarSign } from 'lucide-react';
+
+// Define pickup zones for pricing
+const PICKUP_ZONES = [
+  { id: 'stone_town', name: 'Stone Town Hotels', description: 'Stone Town and central area' },
+  { id: 'beach_north', name: 'North Coast (Nungwi/Kendwa)', description: 'Nungwi, Kendwa beaches' },
+  { id: 'beach_east', name: 'East Coast (Paje/Jambiani)', description: 'Paje, Jambiani, Bwejuu' },
+  { id: 'beach_south', name: 'South Coast (Kizimkazi)', description: 'Kizimkazi and southern beaches' },
+];
+
+interface ZonePrices {
+  [key: string]: number | null;
+}
 
 interface ActivityFormData {
   title: string;
@@ -23,6 +35,7 @@ interface ActivityFormData {
   short_description: string;
   duration: string;
   price: number | null;
+  zone_prices: ZonePrices;
   location: string;
   category: string;
   included: string[];
@@ -41,6 +54,7 @@ const initialFormData: ActivityFormData = {
   short_description: '',
   duration: '',
   price: null,
+  zone_prices: {},
   location: '',
   category: 'excursion',
   included: [],
@@ -86,6 +100,7 @@ const ActivityEditor = () => {
         short_description: activity.short_description || '',
         duration: activity.duration || '',
         price: activity.price,
+        zone_prices: (activity as any).zone_prices || {},
         location: activity.location || '',
         category: activity.category || 'excursion',
         included: activity.included || [],
@@ -143,16 +158,30 @@ const ActivityEditor = () => {
   const saveMutation = useMutation({
     mutationFn: async () => {
       const activityData = {
-        ...formData,
+        title: formData.title,
         slug: formData.slug || generateSlug(formData.title),
+        description: formData.description,
+        short_description: formData.short_description,
+        duration: formData.duration,
+        price: formData.price,
+        zone_prices: formData.zone_prices,
+        location: formData.location,
+        category: formData.category,
+        included: formData.included,
+        excluded: formData.excluded,
+        highlights: formData.highlights,
+        featured_image: formData.featured_image,
+        gallery: formData.gallery,
+        is_featured: formData.is_featured,
+        is_published: formData.is_published,
         created_by: user?.id,
       };
 
       if (isNew) {
-        const { error } = await supabase.from('activities').insert(activityData);
+        const { error } = await (supabase.from('activities').insert(activityData as any) as any);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('activities').update(activityData).eq('id', id);
+        const { error } = await (supabase.from('activities').update(activityData as any).eq('id', id) as any);
         if (error) throw error;
       }
     },
@@ -214,8 +243,9 @@ const ActivityEditor = () => {
         </div>
 
         <Tabs defaultValue="basic" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
+            <TabsTrigger value="pricing">Zone Pricing</TabsTrigger>
             <TabsTrigger value="details">Details</TabsTrigger>
             <TabsTrigger value="media">Media</TabsTrigger>
           </TabsList>
@@ -303,6 +333,92 @@ const ActivityEditor = () => {
                       onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_published: checked }))}
                     />
                     <Label>Published</Label>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Zone-Based Pricing Tab */}
+          <TabsContent value="pricing">
+            <Card className="shadow-soft">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-safari-gold" />
+                  Zone-Based Pricing
+                </CardTitle>
+                <CardDescription>
+                  Set different prices based on pickup location. Leave empty to use the base price.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Base Price */}
+                <div className="p-4 bg-muted/50 rounded-xl">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-base font-semibold">Base Price (Default)</Label>
+                    <span className="text-xs text-muted-foreground">Used when no zone price is set</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="number"
+                      value={formData.price || ''}
+                      onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || null }))}
+                      placeholder="0"
+                      className="max-w-[150px]"
+                    />
+                    <span className="text-sm text-muted-foreground">USD per person</span>
+                  </div>
+                </div>
+
+                {/* Zone Prices */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">Pickup Zone Prices</h4>
+                  <div className="grid gap-4">
+                    {PICKUP_ZONES.map((zone) => (
+                      <div key={zone.id} className="flex items-center gap-4 p-4 border rounded-xl hover:bg-muted/30 transition-colors">
+                        <div className="flex-1">
+                          <p className="font-medium">{zone.name}</p>
+                          <p className="text-sm text-muted-foreground">{zone.description}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <DollarSign className="h-4 w-4 text-muted-foreground" />
+                          <Input
+                            type="number"
+                            value={formData.zone_prices[zone.id] || ''}
+                            onChange={(e) => setFormData(prev => ({
+                              ...prev,
+                              zone_prices: {
+                                ...prev.zone_prices,
+                                [zone.id]: parseFloat(e.target.value) || null
+                              }
+                            }))}
+                            placeholder={formData.price?.toString() || '0'}
+                            className="w-[120px]"
+                          />
+                          <span className="text-sm text-muted-foreground">USD</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Price Summary */}
+                <div className="p-4 bg-gradient-to-r from-safari-gold/10 to-safari-amber/10 rounded-xl">
+                  <h4 className="font-semibold mb-3">Price Summary</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                    <div className="p-2 bg-background rounded-lg">
+                      <p className="text-muted-foreground">Base Price</p>
+                      <p className="font-bold text-lg">${formData.price || 0}</p>
+                    </div>
+                    {PICKUP_ZONES.map((zone) => (
+                      <div key={zone.id} className="p-2 bg-background rounded-lg">
+                        <p className="text-muted-foreground text-xs">{zone.name}</p>
+                        <p className="font-bold text-lg">
+                          ${formData.zone_prices[zone.id] || formData.price || 0}
+                        </p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </CardContent>

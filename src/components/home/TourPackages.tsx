@@ -315,7 +315,7 @@ export const TourPackages = () => {
                       <p className="text-lg font-semibold text-muted-foreground">Contact for price</p>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <AddToCartButton
                       item={{
                         id: tour.id,
@@ -326,16 +326,18 @@ export const TourPackages = () => {
                         duration: tour.duration || undefined,
                       }}
                       variant="icon"
-                      className="border border-safari-gold/30"
                     />
                     <Link to={`/tour/${tour.slug}`}>
-                      <Button 
-                        size="lg" 
-                        className="rounded-xl bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold hover:shadow-gold transition-all duration-300 hover:scale-105 group/btn"
+                      <motion.div
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="relative px-6 py-3 rounded-2xl bg-gradient-to-r from-safari-gold via-safari-amber to-safari-gold bg-[length:200%_100%] text-safari-night font-bold shadow-lg hover:shadow-gold transition-all duration-300 overflow-hidden flex items-center gap-2 group/btn animate-shimmer"
                       >
-                        View
-                        <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover/btn:translate-x-1" />
-                      </Button>
+                        {/* Shine effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
+                        <span className="relative z-10">View</span>
+                        <ArrowRight className="w-4 h-4 relative z-10 transition-transform group-hover/btn:translate-x-1" />
+                      </motion.div>
                     </Link>
                   </div>
                 </div>

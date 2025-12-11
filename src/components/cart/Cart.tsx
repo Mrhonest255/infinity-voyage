@@ -287,37 +287,53 @@ export function AddToCartButton({
   if (variant === "icon") {
     return (
       <motion.button
-        whileHover={{ scale: 1.1 }}
+        whileHover={{ scale: 1.15, rotate: 5 }}
         whileTap={{ scale: 0.9 }}
         onClick={handleAdd}
-        className={`p-3 rounded-xl bg-white/90 backdrop-blur-sm shadow-lg hover:bg-safari-gold hover:text-white transition-all ${className}`}
+        className={`relative p-3.5 rounded-2xl bg-gradient-to-br from-white to-safari-cream border-2 border-safari-gold/30 shadow-lg hover:shadow-gold hover:border-safari-gold group transition-all duration-300 overflow-hidden ${className}`}
         aria-label="Add to cart"
       >
-        <ShoppingCart className="w-5 h-5" />
+        {/* Animated background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-safari-gold to-safari-amber opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {/* Shine effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+        <ShoppingCart className="w-5 h-5 relative z-10 text-safari-gold group-hover:text-white transition-colors duration-300" />
       </motion.button>
     );
   }
 
   if (variant === "outline") {
     return (
-      <Button
-        variant="outline"
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         onClick={handleAdd}
-        className={`border-safari-gold text-safari-gold hover:bg-safari-gold hover:text-white rounded-xl ${className}`}
+        className={`relative px-5 py-3 rounded-2xl border-2 border-safari-gold/50 bg-gradient-to-br from-white to-safari-cream/50 text-safari-gold font-bold shadow-md hover:shadow-gold hover:border-safari-gold group transition-all duration-300 overflow-hidden flex items-center justify-center gap-2 ${className}`}
       >
-        <ShoppingCart className="w-4 h-4 mr-2" />
-        Add to Cart
-      </Button>
+        {/* Animated background */}
+        <div className="absolute inset-0 bg-gradient-to-r from-safari-gold to-safari-amber opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {/* Shine effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+        <ShoppingCart className="w-4 h-4 relative z-10 group-hover:text-white transition-colors duration-300" />
+        <span className="relative z-10 group-hover:text-white transition-colors duration-300">Add</span>
+      </motion.button>
     );
   }
 
   return (
-    <Button
+    <motion.button
+      whileHover={{ scale: 1.02, y: -2 }}
+      whileTap={{ scale: 0.98 }}
       onClick={handleAdd}
-      className={`bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-semibold hover:shadow-gold rounded-xl ${className}`}
+      className={`relative px-6 py-3.5 rounded-2xl bg-gradient-to-r from-safari-gold via-safari-amber to-safari-gold bg-[length:200%_100%] text-safari-night font-bold shadow-lg hover:shadow-gold group transition-all duration-300 overflow-hidden flex items-center justify-center gap-2 animate-shimmer ${className}`}
     >
-      <ShoppingCart className="w-4 h-4 mr-2" />
-      Add to Cart
-    </Button>
+      {/* Shine effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+      {/* Sparkle dots */}
+      <div className="absolute top-1 right-2 w-1.5 h-1.5 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute bottom-2 left-3 w-1 h-1 bg-white/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100" />
+      <ShoppingCart className="w-5 h-5 relative z-10" />
+      <span className="relative z-10">Add to Cart</span>
+    </motion.button>
   );
 }

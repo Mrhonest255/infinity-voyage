@@ -9,9 +9,19 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { HelpCircle, MessageCircle, Mail, Phone } from "lucide-react";
+import { HelpCircle, MessageCircle, Mail, Phone, Sparkles, Search, Calendar, Plane, Heart, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
+import { useState } from "react";
+
+// Category icons mapping
+const categoryIcons: Record<string, React.ElementType> = {
+  "Booking & Reservations": Calendar,
+  "Safari Experience": Sparkles,
+  "Zanzibar Excursions": Plane,
+  "Health & Safety": Shield,
+  "Practical Information": HelpCircle,
+};
 
 const FAQ = () => {
   const faqs = [
@@ -124,10 +134,11 @@ const FAQ = () => {
       />
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-16 bg-gradient-to-br from-safari-night via-safari-night/95 to-safari-brown/20 overflow-hidden">
+      {/* Premium Hero Section */}
+      <section className="relative pt-32 pb-20 bg-gradient-to-br from-safari-night via-safari-night/95 to-safari-brown/20 overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-20 right-10 w-72 h-72 bg-safari-gold/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 left-20 w-60 h-60 bg-safari-amber/10 rounded-full blur-3xl"></div>
         </div>
         <div className="container-wide mx-auto px-4 md:px-8 relative z-10">
           <motion.div 
@@ -136,13 +147,18 @@ const FAQ = () => {
             transition={{ duration: 0.6 }}
             className="text-center max-w-3xl mx-auto"
           >
-            <Badge className="bg-safari-gold/20 text-safari-gold border-safari-gold/30 mb-4">
-              <HelpCircle className="w-3 h-3 mr-1" /> Help Center
-            </Badge>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-              Frequently Asked <span className="text-safari-gold">Questions</span>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 bg-safari-gold/20 text-safari-gold px-5 py-2 rounded-full text-sm font-semibold mb-6 border border-safari-gold/30"
+            >
+              <HelpCircle className="w-4 h-4" /> Help Center
+            </motion.div>
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              Frequently Asked <span className="text-gradient-gold">Questions</span>
             </h1>
-            <p className="text-primary-foreground/80 text-lg md:text-xl">
+            <p className="text-white/80 text-lg md:text-xl leading-relaxed">
               Find answers to common questions about our safaris, Zanzibar excursions, 
               booking process, and travel tips.
             </p>
@@ -150,38 +166,47 @@ const FAQ = () => {
         </div>
       </section>
 
-      {/* FAQ Content */}
-      <section className="py-16 flex-1">
+      {/* FAQ Content - Premium Design */}
+      <section className="py-20 flex-1 bg-gradient-to-b from-background to-muted/20">
         <div className="container-wide mx-auto px-4 md:px-8 max-w-4xl">
-          {faqs.map((category, categoryIndex) => (
-            <motion.div
-              key={category.category}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: categoryIndex * 0.1 }}
-              className="mb-12"
-            >
-              <h2 className="font-display text-2xl font-bold mb-6 text-foreground border-b border-border pb-3">
-                {category.category}
-              </h2>
-              <Accordion type="single" collapsible className="space-y-4">
-                {category.questions.map((faq, index) => (
-                  <AccordionItem 
-                    key={index} 
-                    value={`${categoryIndex}-${index}`}
-                    className="border border-border rounded-xl px-6 data-[state=open]:bg-muted/30"
-                  >
-                    <AccordionTrigger className="text-left font-semibold hover:text-safari-gold transition-colors">
-                      {faq.q}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground leading-relaxed">
-                      {faq.a}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </motion.div>
-          ))}
+          {faqs.map((category, categoryIndex) => {
+            const CategoryIcon = categoryIcons[category.category] || HelpCircle;
+            return (
+              <motion.div
+                key={category.category}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: categoryIndex * 0.1 }}
+                className="mb-14"
+              >
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center">
+                    <CategoryIcon className="w-6 h-6 text-safari-gold" />
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-semibold text-foreground" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                    {category.category}
+                  </h2>
+                </div>
+                <Accordion type="single" collapsible className="space-y-4">
+                  {category.questions.map((faq, index) => (
+                    <AccordionItem 
+                      key={index} 
+                      value={`${categoryIndex}-${index}`}
+                      className="border border-border/50 rounded-2xl px-6 bg-background shadow-soft hover:shadow-elevated transition-all duration-300 data-[state=open]:border-safari-gold/30 data-[state=open]:shadow-luxury"
+                    >
+                      <AccordionTrigger className="text-left font-semibold hover:text-safari-gold transition-colors py-5 text-base">
+                        {faq.q}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground leading-relaxed pb-5">
+                        {faq.a}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 

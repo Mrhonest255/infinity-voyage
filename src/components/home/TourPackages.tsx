@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Clock, Check, Loader2, Star, MapPin, Users } from "lucide-react";
+import { ArrowRight, Clock, Check, Loader2, Star, MapPin, Users, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { AddToCartButton } from "@/components/cart/Cart";
 
 import serengetiImg from "@/assets/serengeti.jpg";
 import zanzibarImg from "@/assets/zanzibar.jpg";
@@ -314,15 +315,29 @@ export const TourPackages = () => {
                       <p className="text-lg font-semibold text-muted-foreground">Contact for price</p>
                     )}
                   </div>
-                  <Link to={`/tour/${tour.slug}`}>
-                    <Button 
-                      size="lg" 
-                      className="rounded-xl bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold hover:shadow-gold transition-all duration-300 hover:scale-105 group/btn"
-                    >
-                      View Details
-                      <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1" />
-                    </Button>
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <AddToCartButton
+                      item={{
+                        id: tour.id,
+                        type: "tour",
+                        title: tour.title,
+                        image: tour.featured_image || undefined,
+                        price: tour.price || 0,
+                        duration: tour.duration || undefined,
+                      }}
+                      variant="icon"
+                      className="border border-safari-gold/30"
+                    />
+                    <Link to={`/tour/${tour.slug}`}>
+                      <Button 
+                        size="lg" 
+                        className="rounded-xl bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold hover:shadow-gold transition-all duration-300 hover:scale-105 group/btn"
+                      >
+                        View
+                        <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover/btn:translate-x-1" />
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
 

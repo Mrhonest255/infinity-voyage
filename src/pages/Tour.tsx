@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Clock, Users, MapPin, Star, CheckCircle2, Calendar, Award, Zap, Heart, Images, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Loader2, Clock, Users, MapPin, Star, CheckCircle2, Calendar, Award, Zap, Heart, Images, ChevronLeft, ChevronRight, X, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BookingForm from '@/components/tours/BookingForm';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/layout/Navbar';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import { Footer } from '@/components/layout/Footer';
 import { TourReviews } from '@/components/tours/TourReviews';
+import { AddToCartButton } from '@/components/cart/Cart';
 
 const TourPage = () => {
   const { slug } = useParams();
@@ -146,10 +148,15 @@ const TourPage = () => {
 
   // Loading state
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-card to-background">
-      <div className="text-center space-y-4">
-        <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
-        <p className="text-muted-foreground font-medium">Loading your adventure...</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-safari-cream via-background to-safari-gold/5">
+      <div className="text-center space-y-6">
+        <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center">
+          <Loader2 className="h-10 w-10 animate-spin text-safari-gold" />
+        </div>
+        <div>
+          <p className="text-lg font-semibold text-foreground">Loading your adventure...</p>
+          <p className="text-sm text-muted-foreground mt-1">Preparing an amazing experience</p>
+        </div>
       </div>
     </div>
   );
@@ -159,11 +166,14 @@ const TourPage = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="flex items-center justify-center py-32">
-        <div className="text-center space-y-4">
-          <p className="text-2xl font-heading text-muted-foreground">Tour not found.</p>
+        <div className="text-center space-y-6 max-w-md mx-auto px-4">
+          <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+            <MapPin className="w-12 h-12 text-muted-foreground" />
+          </div>
+          <h2 className="font-display text-3xl font-semibold text-foreground">Tour not found</h2>
           <p className="text-muted-foreground">The tour you're looking for doesn't exist or has been removed.</p>
-          <p className="text-sm text-muted-foreground">Slug: {slug}</p>
-          <a href="/safaris" className="inline-block mt-4 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90">
+          <a href="/safaris" className="inline-flex items-center gap-2 mt-4 px-8 py-4 bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night rounded-xl font-semibold hover:shadow-lg transition-all">
+            <MapPin className="w-5 h-5" />
             Browse All Tours
           </a>
         </div>
@@ -193,9 +203,9 @@ const TourPage = () => {
           </div>
         )}
         <Navbar />
-        {/* Hero Image Section */}
-        <div className="relative w-full h-[60vh] min-h-[500px] overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
-          <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/50 to-transparent z-10" />
+        {/* Premium Hero Image Section */}
+        <div className="relative w-full h-[65vh] min-h-[550px] overflow-hidden bg-gradient-to-br from-safari-cream to-safari-gold/10">
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10" />
           {tour.featured_image ? (
             <img 
               src={tour.featured_image} 
@@ -206,20 +216,41 @@ const TourPage = () => {
               }}
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/10" />
+            <div className="absolute inset-0 bg-gradient-to-br from-safari-cream to-safari-gold/20" />
           )}
-          <div className="absolute bottom-0 left-0 right-0 z-20 container-wide mx-auto px-4 pb-12">
+          
+          {/* Decorative Elements */}
+          <div className="absolute top-20 right-10 w-32 h-32 border border-white/20 rounded-full z-5" />
+          <div className="absolute bottom-40 left-10 w-24 h-24 border border-safari-gold/30 rounded-full z-5" />
+          
+          <div className="absolute bottom-0 left-0 right-0 z-20 container-wide mx-auto px-4 pb-16">
             <div className="max-w-4xl">
-              <Badge className="mb-4 bg-safari-gold/90 text-foreground hover:bg-safari-gold border-0">
-                <Award className="w-3 h-3 mr-1" />
-                {tour.category?.toUpperCase() || 'SAFARI'}
-              </Badge>
-              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+              >
+                <Badge className="mb-4 bg-white/90 backdrop-blur-sm text-safari-brown font-semibold border-0 shadow-lg px-4 py-1.5">
+                  <Award className="w-3.5 h-3.5 mr-1.5 text-safari-gold" />
+                  {tour.category?.toUpperCase() || 'SAFARI'}
+                </Badge>
+              </motion.div>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight"
+              >
                 {tour.title}
-              </h1>
-              <p className="text-lg md:text-xl text-foreground/90 font-medium max-w-2xl leading-relaxed">
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-lg md:text-xl text-foreground/80 font-medium max-w-2xl leading-relaxed"
+              >
                 {tour.short_description}
-              </p>
+              </motion.p>
             </div>
           </div>
         </div>
@@ -228,7 +259,7 @@ const TourPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-10">
-              {/* Quick Info Cards */}
+              {/* Premium Quick Info Cards */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
                   { icon: Clock, value: tour.duration, label: 'Duration' },
@@ -242,18 +273,15 @@ const TourPage = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
-                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileHover={{ scale: 1.02, y: -3 }}
                   >
-                    <Card className="border-2 border-border/50 hover:border-primary/50 transition-all bg-gradient-to-br from-card to-card/50 hover:shadow-lg cursor-pointer">
-                      <CardContent className="p-4 text-center">
-                        <motion.div
-                          whileHover={{ rotate: 360 }}
-                          transition={{ duration: 0.6 }}
-                        >
-                          <item.icon className="w-6 h-6 text-primary mx-auto mb-2" />
-                        </motion.div>
-                        <div className="font-heading text-2xl font-bold text-foreground">{item.value}</div>
-                        <div className="text-xs text-muted-foreground mt-1">{item.label}</div>
+                    <Card className="border border-border/50 hover:border-safari-gold/50 transition-all bg-white rounded-2xl hover:shadow-luxury cursor-pointer">
+                      <CardContent className="p-5 text-center">
+                        <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center">
+                          <item.icon className="w-6 h-6 text-safari-gold" />
+                        </div>
+                        <div className="font-display text-2xl font-bold text-foreground">{item.value}</div>
+                        <div className="text-xs text-muted-foreground mt-1 font-medium">{item.label}</div>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -597,27 +625,49 @@ const TourPage = () => {
             {/* Sidebar */}
             <aside>
               <div className="sticky top-24 space-y-6">
-                {/* Booking Card */}
-                <Card className="border-2 border-primary/20 shadow-elevated bg-gradient-to-br from-card to-card/50">
+                {/* Premium Booking Card */}
+                <Card className="border border-safari-gold/30 shadow-luxury bg-white rounded-2xl overflow-hidden">
                   <CardContent className="p-0">
-                    <div className="bg-gradient-to-r from-primary to-primary/80 p-6 text-white rounded-t-xl">
-                      <div className="flex items-center justify-between mb-2">
+                    <div className="bg-gradient-to-r from-safari-gold to-safari-amber p-6 text-safari-night">
+                      <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-sm opacity-90">Starting from</div>
-                          <div className="text-4xl font-bold">
+                          <div className="text-sm opacity-80 font-medium">Starting from</div>
+                          <div className="text-4xl font-bold mt-1">
                             {tour.price ? `$${tour.price.toLocaleString()}` : 'Contact'}
                           </div>
-                          <div className="text-sm opacity-90 mt-1">per person</div>
+                          <div className="text-sm opacity-80 mt-1">per person</div>
                         </div>
                         {tour.duration && (
-                          <div className="text-right">
-                            <Clock className="w-5 h-5 mx-auto mb-1 opacity-90" />
+                          <div className="text-right bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3">
+                            <Clock className="w-5 h-5 mx-auto mb-1" />
                             <div className="text-sm font-semibold">{tour.duration}</div>
                           </div>
                         )}
                       </div>
                     </div>
-                    <div className="p-6">
+                    <div className="p-6 space-y-4">
+                      {/* Add to Cart Button */}
+                      <AddToCartButton
+                        item={{
+                          id: tour.id,
+                          type: "tour",
+                          title: tour.title,
+                          image: tour.featured_image,
+                          price: tour.price || 0,
+                          duration: tour.duration,
+                        }}
+                        className="w-full h-12"
+                      />
+                      
+                      <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="w-full border-t border-border/50"></div>
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                          <span className="bg-white px-2 text-muted-foreground">or book now</span>
+                        </div>
+                      </div>
+                      
                       <BookingForm 
                         tourId={tour.id} 
                         tourName={tour.title}
@@ -628,24 +678,30 @@ const TourPage = () => {
                   </CardContent>
                 </Card>
 
-                {/* Quick Contact */}
-                <Card className="border-2 border-border bg-gradient-to-br from-muted/30 to-transparent">
+                {/* Premium Quick Contact */}
+                <Card className="border border-border/50 bg-gradient-to-br from-safari-cream/30 to-transparent rounded-2xl">
                   <CardContent className="p-6">
-                    <h3 className="font-heading text-lg font-bold text-foreground mb-3">Need Help?</h3>
+                    <h3 className="font-display text-lg font-bold text-foreground mb-3">Need Help?</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                       Our travel experts are here to help you plan the perfect adventure. Contact us for:
                     </p>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                    <ul className="space-y-3 text-sm text-muted-foreground">
+                      <li className="flex items-center gap-3">
+                        <div className="w-6 h-6 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-safari-gold" />
+                        </div>
                         Custom itineraries
                       </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                      <li className="flex items-center gap-3">
+                        <div className="w-6 h-6 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-safari-gold" />
+                        </div>
                         Group bookings
                       </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary" />
+                      <li className="flex items-center gap-3">
+                        <div className="w-6 h-6 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-safari-gold" />
+                        </div>
                         Special requests
                       </li>
                     </ul>

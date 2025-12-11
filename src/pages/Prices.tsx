@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, Clock, Users, MapPin, Star, ArrowRight, Loader2, Calendar, Plane, Shield } from "lucide-react";
+import { Check, Clock, Users, MapPin, Star, ArrowRight, Loader2, Calendar, Plane, Shield, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { SEO, SEO_KEYWORDS } from "@/components/SEO";
+import { TourCardSkeleton } from "@/components/ui/skeleton";
+import { AddToCartButton } from "@/components/cart/Cart";
 
 const Prices = () => {
   const { data: tours, isLoading } = useQuery({
@@ -101,10 +103,22 @@ const Prices = () => {
             {tour.description || "Experience the beauty of Tanzania with this amazing tour package."}
           </p>
         </CardContent>
-        <CardFooter className="pt-0">
-          <Link to={`/tour/${tour.slug || tour.id}`} className="w-full">
+        <CardFooter className="pt-0 flex gap-2">
+          <AddToCartButton
+            item={{
+              id: tour.id,
+              type: "tour",
+              title: tour.title,
+              image: tour.image,
+              price: tour.price || 0,
+              duration: tour.duration,
+            }}
+            variant="outline"
+            className="flex-shrink-0"
+          />
+          <Link to={`/tour/${tour.slug || tour.id}`} className="flex-1">
             <Button className="w-full bg-safari-gold hover:bg-safari-amber text-safari-night">
-              View Details <ArrowRight className="w-4 h-4 ml-2" />
+              View <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </Link>
         </CardFooter>
@@ -182,8 +196,26 @@ const Prices = () => {
       <section className="py-16 flex-1">
         <div className="container-wide mx-auto px-4 md:px-8">
           {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-safari-gold" />
+            <div className="space-y-10">
+              {/* Skeleton tabs */}
+              <div className="flex justify-center">
+                <div className="bg-muted/50 p-1 rounded-xl">
+                  <div className="flex gap-2">
+                    {['All Tours', 'Safaris', 'Zanzibar', 'Climbing'].map((tab) => (
+                      <div key={tab} className="px-6 py-2 text-sm font-medium text-muted-foreground">
+                        {tab}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Skeleton grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[...Array(8)].map((_, i) => (
+                  <TourCardSkeleton key={i} />
+                ))}
+              </div>
             </div>
           ) : (
             <Tabs defaultValue="all" className="w-full">

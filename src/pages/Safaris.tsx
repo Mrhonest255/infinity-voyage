@@ -4,11 +4,12 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Clock, Check, MapPin, Filter } from "lucide-react";
+import { ArrowRight, Clock, Check, MapPin, Filter, Sparkles, Search, Users, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO, SEO_KEYWORDS } from "@/components/SEO";
+import heroImage from "@/assets/serengeti.jpg";
 
 type SafariTour = {
   id: string;
@@ -70,128 +71,193 @@ const Safaris = () => {
       />
       <Navbar />
       
-      {/* Hero */}
-      <section className="relative pt-32 pb-20 bg-safari-night">
-        <div className="container-wide mx-auto px-4 md:px-8">
+      {/* Premium Hero */}
+      <section className="relative pt-32 pb-24 min-h-[50vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src={heroImage}
+            alt="Tanzania Safari"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-safari-night/80 via-safari-night/60 to-safari-night/90" />
+        </div>
+        <div className="relative container-wide mx-auto px-4 md:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-4">
-              Tanzania Safari Tours
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/90 px-5 py-2 rounded-full text-sm font-medium mb-6 border border-white/10"
+            >
+              <Sparkles className="w-4 h-4 text-safari-gold" />
+              Unforgettable Adventures
+            </motion.div>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              Tanzania <span className="text-gradient-gold">Safari</span> Tours
             </h1>
-            <p className="text-xl text-primary-foreground/80 max-w-2xl mx-auto">
-              Explore Tanzania's iconic national parks and witness the incredible wildlife of East Africa. Serengeti, Ngorongoro, Tarangire & more!
+            <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+              Explore Tanzania's iconic national parks and witness the incredible wildlife of East Africa
             </p>
+            
+            {/* Stats */}
+            <div className="flex flex-wrap items-center justify-center gap-8 mt-10">
+              <div className="text-center">
+                <p className="text-3xl font-bold text-safari-gold">{tours.length}+</p>
+                <p className="text-sm text-white/60">Safari Tours</p>
+              </div>
+              <div className="w-px h-10 bg-white/20 hidden sm:block" />
+              <div className="text-center">
+                <p className="text-3xl font-bold text-safari-gold">5</p>
+                <p className="text-sm text-white/60">National Parks</p>
+              </div>
+              <div className="w-px h-10 bg-white/20 hidden sm:block" />
+              <div className="text-center">
+                <p className="text-3xl font-bold text-safari-gold">4.9★</p>
+                <p className="text-sm text-white/60">Guest Rating</p>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Filters */}
-      <section className="py-8 bg-muted/30 sticky top-20 z-30 border-b border-border">
+      {/* Filters - Premium Design */}
+      <section className="py-6 bg-background sticky top-24 z-30 border-b border-border/50 shadow-sm">
         <div className="container-wide mx-auto px-4 md:px-8">
-            <div className="flex items-center gap-4 overflow-x-auto pb-2">
-            <Filter className="w-5 h-5 text-muted-foreground shrink-0" />
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
+              <div className="flex items-center gap-2 text-muted-foreground shrink-0 pr-3 border-r border-border">
+                <Filter className="w-4 h-4" />
+                <span className="text-sm font-medium">Filter:</span>
+              </div>
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-300 ${
                     activeCategory === category
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-background text-foreground hover:bg-primary/10"
+                      ? "bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night shadow-md"
+                      : "bg-muted/50 text-foreground hover:bg-muted border border-border/50"
                   }`}
-              >
-                {category}
-              </button>
-            ))}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+            <p className="text-sm text-muted-foreground hidden md:block">
+              Showing <span className="font-semibold text-foreground">{filteredSafaris.length}</span> safaris
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Safari List */}
-      <section className="section-padding">
+      {/* Safari List - Premium Cards */}
+      <section className="section-padding bg-gradient-to-b from-background to-muted/20">
         <div className="container-wide mx-auto">
-          <div className="grid gap-8">
-            {filteredSafaris.map((safari, index) => (
-              <motion.div
-                key={safari.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="safari-card grid md:grid-cols-3 overflow-hidden"
-              >
-                {/* Image */}
-                <div className="relative h-64 md:h-auto">
-                  <img
-                    src={safari.featured_image || "/placeholder.jpg"}
-                    alt={safari.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <Badge className="bg-primary text-primary-foreground">
-                      {safari.category || "Safari"}
-                    </Badge>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="md:col-span-2 p-6 md:p-8 flex flex-col">
-                  <div className="flex items-start justify-between gap-4 mb-4">
-                    <div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                        <MapPin className="w-4 h-4" />
-                        Tanzania
-                      </div>
-                      <h3 className="font-display text-2xl font-semibold text-foreground">
-                        {safari.title}
-                      </h3>
+          {loading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="animate-pulse bg-muted rounded-2xl h-[450px]" />
+              ))}
+            </div>
+          ) : filteredSafaris.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+                <Search className="w-10 h-10 text-muted-foreground" />
+              </div>
+              <h3 className="text-2xl font-semibold mb-2">No safaris found</h3>
+              <p className="text-muted-foreground">Try selecting a different category</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredSafaris.map((safari, index) => (
+                <motion.div
+                  key={safari.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group bg-background rounded-2xl overflow-hidden border border-border/50 shadow-soft hover:shadow-luxury hover:border-safari-gold/20 transition-all duration-500"
+                >
+                  {/* Image */}
+                  <div className="relative h-56 overflow-hidden">
+                    <img
+                      src={safari.featured_image || "/placeholder.jpg"}
+                      alt={safari.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-safari-night/60 via-transparent to-transparent" />
+                    
+                    {/* Top badges */}
+                    <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
+                      <Badge className="bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-semibold shadow-md">
+                        {safari.category || "Safari"}
+                      </Badge>
+                      <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm text-foreground">
+                        <Clock className="w-3 h-3 mr-1" />
+                        {safari.duration || "Multi-day"}
+                      </Badge>
                     </div>
-                    <Badge variant="outline" className="shrink-0">
-                      <Clock className="w-3 h-3 mr-1" />
-                      {safari.duration || "Multi-day"}
-                    </Badge>
-                  </div>
-
-                  <p className="text-muted-foreground mb-6 flex-grow">
-                    {safari.short_description || "Discover Tanzania's best safari experiences."}
-                  </p>
-
-                  {/* Highlights */}
-                  <div className="flex flex-wrap gap-3 mb-6">
-                    {(safari.highlights || []).slice(0, 6).map((highlight) => (
-                      <div
-                        key={highlight}
-                        className="flex items-center gap-1.5 text-sm text-foreground"
-                      >
-                        <Check className="w-4 h-4 text-safari-sage" />
-                        {highlight}
+                    
+                    {/* Price badge */}
+                    <div className="absolute bottom-4 right-4">
+                      <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+                        <span className="text-xs text-muted-foreground">From</span>
+                        <p className="text-xl font-bold text-safari-gold">
+                          {safari.price ? `$${safari.price.toLocaleString()}` : "Contact"}
+                        </p>
                       </div>
-                    ))}
+                    </div>
                   </div>
 
-                  {/* Footer */}
-                  <div className="flex items-center justify-between pt-4 border-t border-border">
-                    <div>
-                      <span className="text-sm text-muted-foreground">From</span>
-                      <p className="text-2xl font-bold text-primary">
-                        {safari.price ? `$${safari.price.toLocaleString()}` : "Contact"}
-                        <span className="text-sm font-normal text-muted-foreground"> /person</span>
-                      </p>
+                  {/* Content */}
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                      <MapPin className="w-4 h-4 text-safari-gold" />
+                      Tanzania
+                      <span className="ml-auto flex items-center gap-1">
+                        <Star className="w-4 h-4 fill-safari-gold text-safari-gold" />
+                        <span className="font-medium text-foreground">4.9</span>
+                      </span>
                     </div>
-                    <Link to={`/tour/${safari.slug}`}>
-                      <Button variant="safari" size="lg">
-                        View Details
-                        <ArrowRight className="w-4 h-4 ml-2" />
+                    
+                    <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-safari-gold transition-colors line-clamp-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                      {safari.title}
+                    </h3>
+
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                      {safari.short_description || "Discover Tanzania's best safari experiences."}
+                    </p>
+
+                    {/* Highlights */}
+                    <div className="flex flex-wrap gap-2 mb-5">
+                      {(safari.highlights || []).slice(0, 3).map((highlight) => (
+                        <span
+                          key={highlight}
+                          className="inline-flex items-center gap-1 text-xs bg-muted/50 text-foreground px-2.5 py-1 rounded-full"
+                        >
+                          <Check className="w-3 h-3 text-safari-gold" />
+                          {highlight}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* CTA */}
+                    <Link to={`/tour/${safari.slug}`} className="block">
+                      <Button className="w-full rounded-xl bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-semibold hover:shadow-gold transition-all group/btn">
+                        View Safari Details
+                        <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1" />
                       </Button>
                     </Link>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

@@ -2,7 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Clock, Check, MapPin, Sun, Waves, Loader2 } from "lucide-react";
+import { ArrowRight, Clock, Check, MapPin, Sun, Waves, Loader2, Sparkles, Star, Anchor } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from 'react-router-dom';
 import { SEO, SEO_KEYWORDS } from "@/components/SEO";
@@ -104,44 +104,86 @@ const Zanzibar = () => {
       />
       <Navbar />
       
-      {/* Hero */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
+      {/* Premium Hero */}
+      <section className="relative pt-32 pb-28 min-h-[55vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={zanzibarImg}
             alt="Zanzibar Beach"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-safari-night/60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-safari-night/70 via-safari-night/50 to-safari-night/80" />
+          {/* Decorative wave pattern */}
+          <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent" />
         </div>
         <div className="relative container-wide mx-auto px-4 md:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-4">
-              Zanzibar Excursions
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/90 px-5 py-2 rounded-full text-sm font-medium mb-6 border border-white/10"
+            >
+              <Anchor className="w-4 h-4 text-cyan-400" />
+              Island Paradise
+            </motion.div>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              <span className="text-cyan-300">Zanzibar</span> Excursions
             </h1>
-            <p className="text-xl text-primary-foreground/80 max-w-2xl mx-auto">
-              Discover paradise with our curated selection of island adventures and cultural experiences
+            <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+              Discover paradise with pristine beaches, rich culture, and unforgettable island adventures
             </p>
+            
+            {/* Stats */}
+            <div className="flex flex-wrap items-center justify-center gap-8 mt-10">
+              <div className="text-center">
+                <p className="text-3xl font-bold text-cyan-300">{tours.length}+</p>
+                <p className="text-sm text-white/60">Excursions</p>
+              </div>
+              <div className="w-px h-10 bg-white/20 hidden sm:block" />
+              <div className="text-center">
+                <p className="text-3xl font-bold text-cyan-300">26°C</p>
+                <p className="text-sm text-white/60">Avg. Temperature</p>
+              </div>
+              <div className="w-px h-10 bg-white/20 hidden sm:block" />
+              <div className="text-center">
+                <p className="text-3xl font-bold text-cyan-300">4.9★</p>
+                <p className="text-sm text-white/60">Guest Rating</p>
+              </div>
+            </div>
           </motion.div>
         </div>
+        
+        {/* Floating decorative elements */}
+        <motion.div 
+          animate={{ y: [0, -15, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-32 left-10 w-20 h-20 rounded-full bg-cyan-400/10 blur-xl hidden lg:block" 
+        />
+        <motion.div 
+          animate={{ y: [0, 15, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-40 right-20 w-32 h-32 rounded-full bg-cyan-300/10 blur-2xl hidden lg:block" 
+        />
       </section>
 
-      {/* Info Cards */}
-      <section className="py-8 -mt-16 relative z-10">
+      {/* Info Cards - Premium Design */}
+      <section className="py-8 -mt-10 relative z-10">
         <div className="container-wide mx-auto px-4 md:px-8">
           <div className="grid md:grid-cols-3 gap-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-background rounded-xl p-6 shadow-elevated flex items-center gap-4"
+              className="bg-background/95 backdrop-blur-sm rounded-2xl p-6 shadow-luxury border border-border/50 flex items-center gap-4 hover:shadow-elevated transition-all duration-500"
             >
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <Sun className="w-6 h-6 text-primary" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-500/10 flex items-center justify-center shrink-0">
+                <Sun className="w-7 h-7 text-amber-500" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Best Time to Visit</h3>
@@ -152,10 +194,10 @@ const Zanzibar = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-background rounded-xl p-6 shadow-elevated flex items-center gap-4"
+              className="bg-background/95 backdrop-blur-sm rounded-2xl p-6 shadow-luxury border border-border/50 flex items-center gap-4 hover:shadow-elevated transition-all duration-500"
             >
-              <div className="w-12 h-12 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0">
-                <Waves className="w-6 h-6 text-safari-gold" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 flex items-center justify-center shrink-0">
+                <Waves className="w-7 h-7 text-cyan-500" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Water Temperature</h3>
@@ -166,10 +208,10 @@ const Zanzibar = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-background rounded-xl p-6 shadow-elevated flex items-center gap-4"
+              className="bg-background/95 backdrop-blur-sm rounded-2xl p-6 shadow-luxury border border-border/50 flex items-center gap-4 hover:shadow-elevated transition-all duration-500"
             >
-              <div className="w-12 h-12 rounded-full bg-safari-sage/10 flex items-center justify-center shrink-0">
-                <MapPin className="w-6 h-6 text-safari-sage" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 flex items-center justify-center shrink-0">
+                <MapPin className="w-7 h-7 text-emerald-500" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Location</h3>
@@ -180,19 +222,23 @@ const Zanzibar = () => {
         </div>
       </section>
 
-      {/* Excursions Grid */}
-      <section className="section-padding">
+      {/* Excursions Grid - Premium Cards */}
+      <section className="section-padding bg-gradient-to-b from-background to-muted/20">
         <div className="container-wide mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-12"
+            className="text-center mb-14"
           >
-            <h2 className="font-display text-3xl md:text-4xl font-semibold text-foreground mb-4">
-              Available Excursions
+            <div className="inline-flex items-center gap-2 bg-cyan-500/10 text-cyan-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+              <Sparkles className="w-4 h-4" />
+              Island Adventures
+            </div>
+            <h2 className="text-4xl md:text-5xl font-semibold text-foreground mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              Available <span className="text-cyan-500">Excursions</span>
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Book individual excursions or combine multiple for the perfect Zanzibar experience
             </p>
           </motion.div>
@@ -205,35 +251,51 @@ const Zanzibar = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05 }}
-                className="safari-card group"
+                className="group bg-background rounded-2xl overflow-hidden border border-border/50 shadow-soft hover:shadow-luxury hover:border-cyan-500/20 transition-all duration-500"
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={excursion.featured_image || excursion.image || zanzibarImg}
-                    alt={excursion.name}
+                    src={excursion.featured_image || zanzibarImg}
+                    alt={excursion.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-safari-night/50 via-transparent to-transparent" />
                   <div className="absolute top-3 left-3 flex gap-2">
-                    <Badge className="bg-background/90 backdrop-blur-sm text-foreground text-xs">
+                    <Badge className="bg-gradient-to-r from-cyan-500 to-cyan-400 text-white text-xs font-semibold shadow-md">
                       {excursion.category}
                     </Badge>
                   </div>
                   <div className="absolute top-3 right-3">
-                    <Badge variant="outline" className="bg-background/90 backdrop-blur-sm text-xs">
+                    <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm text-foreground text-xs">
                       <Clock className="w-3 h-3 mr-1" />
                       {excursion.duration}
                     </Badge>
+                  </div>
+                  
+                  {/* Price badge */}
+                  <div className="absolute bottom-3 right-3">
+                    <div className="bg-white/95 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-lg">
+                      <span className="text-lg font-bold text-cyan-600">
+                        {excursion.price ? `$${excursion.price.toLocaleString()}` : "Contact"}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Content */}
                 <div className="p-5">
-                  <h3 className="font-display text-lg font-semibold text-foreground mb-2">
+                  <div className="flex items-center gap-1 mb-2">
+                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    <span className="text-sm font-medium text-foreground">4.9</span>
+                    <span className="text-xs text-muted-foreground">(24 reviews)</span>
+                  </div>
+                  
+                  <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-cyan-600 transition-colors line-clamp-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                     {excursion.title}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                    {excursion.short_description || excursion.description}
+                    {excursion.short_description}
                   </p>
 
                   {/* Highlights */}
@@ -242,39 +304,22 @@ const Zanzibar = () => {
                       {(excursion.highlights || []).slice(0, 2).map((highlight) => (
                         <span
                           key={highlight}
-                          className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground"
+                          className="inline-flex items-center gap-1 text-xs bg-cyan-500/10 text-cyan-700 px-2.5 py-1 rounded-full"
                         >
+                          <Check className="w-3 h-3" />
                           {highlight}
                         </span>
                       ))}
-                      {(excursion.highlights || []).length > 2 && (
-                        <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
-                          +{(excursion.highlights || []).length - 2} more
-                        </span>
-                      )}
                     </div>
                   )}
 
-                  {/* Footer */}
-                  <div className="flex items-center justify-between pt-4 border-t border-border">
-                    <div>
-                      {excursion.price ? (
-                        <>
-                          <span className="text-xl font-bold text-primary">
-                            ${excursion.price?.toLocaleString()}
-                          </span>
-                          <span className="text-sm text-muted-foreground"> /person</span>
-                        </>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">Contact</span>
-                      )}
-                    </div>
-                    <Link to={`/tour/${excursion.slug}`}>
-                      <Button variant="safari" size="sm">
-                        Book
-                      </Button>
-                    </Link>
-                  </div>
+                  {/* CTA */}
+                  <Link to={`/tour/${excursion.slug}`} className="block">
+                    <Button className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-white font-semibold hover:shadow-lg transition-all group/btn">
+                      Book Now
+                      <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1" />
+                    </Button>
+                  </Link>
                 </div>
               </motion.div>
             ))}

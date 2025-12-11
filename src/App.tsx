@@ -4,7 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { CartProvider } from "@/hooks/useCart";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import { CartDrawer } from "@/components/cart/Cart";
 import Index from "./pages/Index";
 import Safaris from "./pages/Safaris";
 import Zanzibar from "./pages/Zanzibar";
@@ -39,43 +41,46 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/safaris" element={<Safaris />} />
-            <Route path="/tour/:slug" element={<TourPage />} />
-            <Route path="/zanzibar" element={<Zanzibar />} />
-            <Route path="/prices" element={<Prices />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/thank-you" element={<ThankYou />} />
-            <Route path="/safari-calculator" element={<SafariCalculator />} />
-            <Route path="/transfers" element={<Transfers />} />
-            <Route path="/plan-my-trip" element={<PlanMyTrip />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/track-booking" element={<TrackBooking />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/tours" element={<AdminTours />} />
-            <Route path="/admin/tours/:id" element={<TourEditor />} />
-            <Route path="/admin/activities" element={<AdminActivities />} />
-            <Route path="/admin/activities/:id" element={<ActivityEditor />} />
-            <Route path="/admin/bookings" element={<AdminBookings />} />
-            <Route path="/admin/transfers" element={<AdminTransfers />} />
-            <Route path="/admin/transfers/:id" element={<TransferEditor />} />
-            <Route path="/admin/settings" element={<AdminSettings />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <WhatsAppButton phoneNumber="255758241294" />
-        </BrowserRouter>
-      </TooltipProvider>
+      <CartProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/safaris" element={<Safaris />} />
+              <Route path="/tour/:slug" element={<TourPage />} />
+              <Route path="/zanzibar" element={<Zanzibar />} />
+              <Route path="/prices" element={<Prices />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/thank-you" element={<ThankYou />} />
+              <Route path="/safari-calculator" element={<SafariCalculator />} />
+              <Route path="/transfers" element={<Transfers />} />
+              <Route path="/plan-my-trip" element={<PlanMyTrip />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/track-booking" element={<TrackBooking />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/tours" element={<AdminTours />} />
+              <Route path="/admin/tours/:id" element={<TourEditor />} />
+              <Route path="/admin/activities" element={<AdminActivities />} />
+              <Route path="/admin/activities/:id" element={<ActivityEditor />} />
+              <Route path="/admin/bookings" element={<AdminBookings />} />
+              <Route path="/admin/transfers" element={<AdminTransfers />} />
+              <Route path="/admin/transfers/:id" element={<TransferEditor />} />
+              <Route path="/admin/settings" element={<AdminSettings />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <CartDrawer />
+            <WhatsAppButton phoneNumber="255758241294" />
+          </BrowserRouter>
+        </TooltipProvider>
+      </CartProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

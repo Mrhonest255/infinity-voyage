@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { BookingDetailSkeleton } from "@/components/ui/skeleton";
 import { 
   Search, 
   Loader2, 
@@ -146,53 +147,79 @@ export default function TrackBooking() {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-16 bg-gradient-to-br from-primary/10 via-background to-safari-gold/5 overflow-hidden">
-        <div className="absolute top-20 right-0 w-96 h-96 bg-safari-gold/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
+      {/* Premium Hero Section */}
+      <section className="relative pt-32 pb-20 bg-gradient-to-br from-safari-cream via-background to-safari-gold/5 overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-safari-gold/15 to-safari-amber/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-10 w-24 h-24 border border-safari-gold/20 rounded-full" />
+        <div className="absolute bottom-1/4 right-20 w-16 h-16 border border-primary/20 rounded-full" />
         
         <div className="container-wide mx-auto px-4 md:px-8 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center max-w-2xl mx-auto"
+            className="text-center max-w-3xl mx-auto"
           >
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-safari-gold to-safari-amber mb-6 shadow-gold">
-              <Package className="w-10 h-10 text-safari-night" />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-semibold text-foreground mb-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-gradient-to-br from-safari-gold to-safari-amber mb-8 shadow-luxury"
+            >
+              <Package className="w-12 h-12 text-white" />
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="font-display text-4xl md:text-5xl font-semibold text-foreground mb-4"
+            >
               Track Your <span className="text-gradient-gold">Booking</span>
-            </h1>
-            <p className="text-lg text-muted-foreground mb-8">
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-lg text-muted-foreground mb-10 max-w-xl mx-auto"
+            >
               Enter your tracking code to check the status of your booking
-            </p>
+            </motion.p>
 
-            {/* Search Form */}
-            <form onSubmit={handleSearch} className="max-w-md mx-auto">
-              <div className="relative">
+            {/* Premium Search Form */}
+            <motion.form 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              onSubmit={handleSearch} 
+              className="max-w-lg mx-auto"
+            >
+              <div className="relative bg-white rounded-2xl shadow-luxury p-2 border border-border/50">
                 <Input
                   type="text"
                   placeholder="Enter tracking code (e.g., IV-ABC123)"
                   value={trackingCode}
                   onChange={(e) => setTrackingCode(e.target.value.toUpperCase())}
-                  className="h-14 pl-5 pr-32 text-lg font-mono tracking-wider border-2 focus:border-safari-gold rounded-xl"
+                  className="h-14 pl-5 pr-36 text-lg font-mono tracking-wider border-0 focus:ring-0 bg-transparent"
                 />
                 <Button 
                   type="submit"
                   disabled={isLoading || !trackingCode.trim()}
-                  className="absolute right-2 top-2 h-10 px-6 bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-semibold rounded-lg"
+                  className="absolute right-2 top-2 h-12 px-6 bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
                 >
                   {isLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
                     <>
-                      <Search className="w-4 h-4 mr-2" />
+                      <Search className="w-5 h-5 mr-2" />
                       Track
                     </>
                   )}
                 </Button>
               </div>
-            </form>
+            </motion.form>
           </motion.div>
         </div>
       </section>
@@ -207,9 +234,9 @@ export default function TrackBooking() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="flex justify-center py-12"
+                className="max-w-2xl mx-auto py-8"
               >
-                <Loader2 className="w-10 h-10 animate-spin text-safari-gold" />
+                <BookingDetailSkeleton />
               </motion.div>
             )}
 
@@ -221,14 +248,14 @@ export default function TrackBooking() {
                 exit={{ opacity: 0, y: -20 }}
                 className="max-w-lg mx-auto text-center"
               >
-                <Card className="border-2 border-dashed border-muted-foreground/30">
-                  <CardContent className="py-12">
-                    <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                      <AlertCircle className="w-8 h-8 text-muted-foreground" />
+                <Card className="border-2 border-dashed border-muted-foreground/20 rounded-2xl bg-white shadow-soft">
+                  <CardContent className="py-14">
+                    <div className="w-20 h-20 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-6">
+                      <AlertCircle className="w-10 h-10 text-muted-foreground" />
                     </div>
-                    <h3 className="text-xl font-semibold mb-2">Booking Not Found</h3>
+                    <h3 className="font-display text-2xl font-semibold mb-3">Booking Not Found</h3>
                     <p className="text-muted-foreground mb-4">
-                      We couldn't find a booking with code <span className="font-mono font-bold">{searchCode}</span>
+                      We couldn't find a booking with code <span className="font-mono font-bold text-foreground">{searchCode}</span>
                     </p>
                     <p className="text-sm text-muted-foreground">
                       Please check your tracking code and try again. The code should look like: IV-XXXXXX
@@ -246,26 +273,26 @@ export default function TrackBooking() {
                 exit={{ opacity: 0, y: -20 }}
                 className="max-w-2xl mx-auto"
               >
-                {/* Status Card */}
-                <Card className={`mb-6 border-2 ${getStatusInfo(booking.status).bgColor}`}>
-                  <CardContent className="py-8">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${getStatusInfo(booking.status).bgColor}`}>
+                {/* Premium Status Card */}
+                <Card className={`mb-8 border-2 rounded-2xl ${getStatusInfo(booking.status).bgColor} shadow-soft`}>
+                  <CardContent className="py-10">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                      <div className="flex items-center gap-5">
+                        <div className={`w-20 h-20 rounded-2xl flex items-center justify-center ${getStatusInfo(booking.status).bgColor}`}>
                           {(() => {
                             const StatusIcon = getStatusInfo(booking.status).icon;
-                            return <StatusIcon className={`w-8 h-8 ${getStatusInfo(booking.status).color}`} />;
+                            return <StatusIcon className={`w-10 h-10 ${getStatusInfo(booking.status).color}`} />;
                           })()}
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground mb-1">Booking Status</p>
-                          <p className={`text-2xl font-bold ${getStatusInfo(booking.status).color}`}>
+                          <p className="text-sm text-muted-foreground mb-1 font-medium">Booking Status</p>
+                          <p className={`text-3xl font-bold ${getStatusInfo(booking.status).color}`}>
                             {getStatusInfo(booking.status).label}
                           </p>
                         </div>
                       </div>
-                      <div className="text-center md:text-right">
-                        <p className="text-sm text-muted-foreground mb-1">Tracking Code</p>
+                      <div className="text-center md:text-right px-6 py-4 bg-white/50 rounded-xl">
+                        <p className="text-sm text-muted-foreground mb-1 font-medium">Tracking Code</p>
                         <p className="text-2xl font-mono font-bold text-foreground">
                           {booking.tracking_code}
                         </p>
@@ -274,89 +301,91 @@ export default function TrackBooking() {
                   </CardContent>
                 </Card>
 
-                {/* Booking Details */}
-                <Card className="shadow-elevated">
-                  <CardContent className="py-8">
-                    <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-safari-gold" />
+                {/* Premium Booking Details */}
+                <Card className="shadow-luxury rounded-2xl border border-border/50 bg-white">
+                  <CardContent className="py-10 px-8">
+                    <h3 className="font-display text-xl font-semibold mb-8 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center">
+                        <Sparkles className="w-5 h-5 text-safari-gold" />
+                      </div>
                       Booking Details
                     </h3>
 
                     <div className="grid md:grid-cols-2 gap-6">
                       {/* Customer Name */}
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                          <Users className="w-5 h-5 text-primary" />
+                      <div className="flex items-start gap-4 p-4 rounded-xl bg-safari-cream/30 border border-safari-gold/10">
+                        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                          <Users className="w-6 h-6 text-primary" />
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Guest Name</p>
-                          <p className="font-semibold">{booking.customer_name}</p>
+                          <p className="text-sm text-muted-foreground font-medium">Guest Name</p>
+                          <p className="font-semibold text-lg">{booking.customer_name}</p>
                         </div>
                       </div>
 
                       {/* Travel Date */}
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-safari-gold/10 flex items-center justify-center shrink-0">
-                          <Calendar className="w-5 h-5 text-safari-gold" />
+                      <div className="flex items-start gap-4 p-4 rounded-xl bg-safari-cream/30 border border-safari-gold/10">
+                        <div className="w-12 h-12 rounded-xl bg-safari-gold/10 flex items-center justify-center shrink-0">
+                          <Calendar className="w-6 h-6 text-safari-gold" />
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Travel Date</p>
-                          <p className="font-semibold">{formatDate(booking.travel_date)}</p>
+                          <p className="text-sm text-muted-foreground font-medium">Travel Date</p>
+                          <p className="font-semibold text-lg">{formatDate(booking.travel_date)}</p>
                         </div>
                       </div>
 
                       {/* Number of Guests */}
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
-                          <Users className="w-5 h-5 text-green-600" />
+                      <div className="flex items-start gap-4 p-4 rounded-xl bg-safari-cream/30 border border-safari-gold/10">
+                        <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center shrink-0">
+                          <Users className="w-6 h-6 text-green-600" />
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Number of Guests</p>
-                          <p className="font-semibold">{booking.number_of_guests} {booking.number_of_guests === 1 ? 'Guest' : 'Guests'}</p>
+                          <p className="text-sm text-muted-foreground font-medium">Number of Guests</p>
+                          <p className="font-semibold text-lg">{booking.number_of_guests} {booking.number_of_guests === 1 ? 'Guest' : 'Guests'}</p>
                         </div>
                       </div>
 
                       {/* Email */}
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
-                          <Mail className="w-5 h-5 text-blue-600" />
+                      <div className="flex items-start gap-4 p-4 rounded-xl bg-safari-cream/30 border border-safari-gold/10">
+                        <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
+                          <Mail className="w-6 h-6 text-blue-600" />
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Email</p>
-                          <p className="font-semibold">{booking.customer_email}</p>
+                          <p className="text-sm text-muted-foreground font-medium">Email</p>
+                          <p className="font-semibold text-lg">{booking.customer_email}</p>
                         </div>
                       </div>
 
                       {/* Phone */}
                       {booking.customer_phone && (
-                        <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
-                            <Phone className="w-5 h-5 text-purple-600" />
+                        <div className="flex items-start gap-4 p-4 rounded-xl bg-safari-cream/30 border border-safari-gold/10">
+                          <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
+                            <Phone className="w-6 h-6 text-purple-600" />
                           </div>
                           <div>
-                            <p className="text-sm text-muted-foreground">Phone</p>
-                            <p className="font-semibold">{booking.customer_phone}</p>
+                            <p className="text-sm text-muted-foreground font-medium">Phone</p>
+                            <p className="font-semibold text-lg">{booking.customer_phone}</p>
                           </div>
                         </div>
                       )}
 
                       {/* Booking Date */}
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                          <Clock className="w-5 h-5 text-muted-foreground" />
+                      <div className="flex items-start gap-4 p-4 rounded-xl bg-safari-cream/30 border border-safari-gold/10">
+                        <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                          <Clock className="w-6 h-6 text-muted-foreground" />
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Booked On</p>
-                          <p className="font-semibold">{formatDate(booking.created_at)}</p>
+                          <p className="text-sm text-muted-foreground font-medium">Booked On</p>
+                          <p className="font-semibold text-lg">{formatDate(booking.created_at)}</p>
                         </div>
                       </div>
                     </div>
 
                     {/* Special Requests */}
                     {booking.special_requests && (
-                      <div className="mt-6 pt-6 border-t">
-                        <p className="text-sm text-muted-foreground mb-2">Special Requests</p>
-                        <p className="text-foreground bg-muted/50 p-4 rounded-lg">
+                      <div className="mt-8 pt-8 border-t border-border/50">
+                        <p className="text-sm text-muted-foreground mb-3 font-medium">Special Requests</p>
+                        <p className="text-foreground bg-safari-cream/30 p-5 rounded-xl border border-safari-gold/10">
                           {booking.special_requests}
                         </p>
                       </div>
@@ -367,20 +396,20 @@ export default function TrackBooking() {
                 {/* Download PDF - for confirmed/completed bookings */}
                 {(booking.status === 'confirmed' || booking.status === 'completed') && (
                   <div className="mt-8">
-                    <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/5 border-green-500/20">
-                      <CardContent className="py-6 text-center">
-                        <div className="w-16 h-16 rounded-2xl bg-green-500/20 flex items-center justify-center mx-auto mb-4">
-                          <FileText className="w-8 h-8 text-green-600" />
+                    <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/5 border-2 border-green-500/20 rounded-2xl">
+                      <CardContent className="py-8 text-center">
+                        <div className="w-20 h-20 rounded-2xl bg-green-500/20 flex items-center justify-center mx-auto mb-5">
+                          <FileText className="w-10 h-10 text-green-600" />
                         </div>
-                        <h3 className="text-lg font-semibold text-green-700 mb-2">
+                        <h3 className="font-display text-xl font-semibold text-green-700 mb-2">
                           {booking.status === 'confirmed' ? 'Your Booking is Confirmed!' : 'Trip Completed!'}
                         </h3>
-                        <p className="text-sm text-muted-foreground mb-4">
+                        <p className="text-sm text-muted-foreground mb-6">
                           Download your official {booking.status === 'confirmed' ? 'confirmation' : 'completion'} voucher
                         </p>
                         <Button 
-                          variant="safari"
-                          className="shadow-gold"
+                          size="lg"
+                          className="bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
                           onClick={() => {
                             downloadBookingPDF({
                               trackingCode: booking.tracking_code,
@@ -404,19 +433,23 @@ export default function TrackBooking() {
                 )}
 
                 {/* Contact Section */}
-                <div className="mt-8 text-center">
-                  <p className="text-muted-foreground mb-4">
+                <div className="mt-10 text-center p-8 bg-safari-cream/30 rounded-2xl border border-safari-gold/10">
+                  <p className="text-muted-foreground mb-5 font-medium">
                     Need help with your booking? Contact us:
                   </p>
                   <div className="flex flex-wrap justify-center gap-4">
                     <Button 
+                      size="lg"
                       variant="outline"
+                      className="border-2 border-safari-gold text-safari-brown hover:bg-safari-gold/10 rounded-xl font-semibold"
                       onClick={() => window.open(`https://wa.me/255758241294?text=Hello! I need help with my booking ${booking.tracking_code}`, '_blank')}
                     >
                       WhatsApp Support
                     </Button>
                     <Button 
+                      size="lg"
                       variant="outline"
+                      className="border-2 rounded-xl font-semibold"
                       onClick={() => window.location.href = 'mailto:info@infinityvoyagetours.com'}
                     >
                       Email Us
@@ -433,21 +466,27 @@ export default function TrackBooking() {
                 animate={{ opacity: 1 }}
                 className="max-w-lg mx-auto text-center py-8"
               >
-                <div className="grid grid-cols-3 gap-4 mb-8">
-                  <div className="p-4 rounded-xl bg-muted/50 border border-border">
-                    <Clock className="w-8 h-8 text-amber-500 mx-auto mb-2" />
-                    <p className="text-sm font-medium">Pending</p>
-                    <p className="text-xs text-muted-foreground">Under Review</p>
+                <div className="grid grid-cols-3 gap-5 mb-10">
+                  <div className="p-5 rounded-2xl bg-white border border-border/50 shadow-soft">
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                      <Clock className="w-6 h-6 text-amber-500" />
+                    </div>
+                    <p className="font-semibold">Pending</p>
+                    <p className="text-xs text-muted-foreground mt-1">Under Review</p>
                   </div>
-                  <div className="p-4 rounded-xl bg-muted/50 border border-border">
-                    <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                    <p className="text-sm font-medium">Confirmed</p>
-                    <p className="text-xs text-muted-foreground">Ready to Go</p>
+                  <div className="p-5 rounded-2xl bg-white border border-border/50 shadow-soft">
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-green-500/10 flex items-center justify-center">
+                      <CheckCircle2 className="w-6 h-6 text-green-500" />
+                    </div>
+                    <p className="font-semibold">Confirmed</p>
+                    <p className="text-xs text-muted-foreground mt-1">Ready to Go</p>
                   </div>
-                  <div className="p-4 rounded-xl bg-muted/50 border border-border">
-                    <Sparkles className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-                    <p className="text-sm font-medium">Completed</p>
-                    <p className="text-xs text-muted-foreground">Trip Finished</p>
+                  <div className="p-5 rounded-2xl bg-white border border-border/50 shadow-soft">
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                      <Sparkles className="w-6 h-6 text-blue-500" />
+                    </div>
+                    <p className="font-semibold">Completed</p>
+                    <p className="text-xs text-muted-foreground mt-1">Trip Finished</p>
                   </div>
                 </div>
                 <p className="text-muted-foreground">

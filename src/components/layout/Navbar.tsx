@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { CartButton } from "@/components/cart/Cart";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -133,8 +134,9 @@ export const Navbar = () => {
               ))}
             </div>
 
-            {/* CTA Buttons - Hidden on desktop for clean look */}
-            <div className="hidden">
+            {/* CTA Buttons - Cart and Phone */}
+            <div className="hidden lg:flex items-center gap-3">
+              <CartButton />
               <a
                 href={`tel:${phone.replace(/\s/g, '')}`}
                 className="flex items-center gap-2.5 text-sm font-medium text-foreground/70 hover:text-primary"
@@ -142,16 +144,17 @@ export const Navbar = () => {
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-primary/10">
                   <Phone className="w-4 h-4" />
                 </div>
-                <span className="hidden xl:inline font-semibold">{phone}</span>
               </a>
             </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden relative p-2.5 rounded-xl text-foreground hover:bg-muted transition-colors"
-              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-            >
+            {/* Mobile Menu Button and Cart */}
+            <div className="flex lg:hidden items-center gap-2">
+              <CartButton />
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="relative p-2.5 rounded-xl text-foreground hover:bg-muted transition-colors"
+                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              >
               <AnimatePresence mode="wait">
                 {isMobileMenuOpen ? (
                   <motion.div
@@ -176,6 +179,7 @@ export const Navbar = () => {
                 )}
               </AnimatePresence>
             </button>
+            </div>
           </nav>
         </div>
       </motion.header>

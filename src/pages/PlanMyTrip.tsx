@@ -219,36 +219,58 @@ Additional Notes: ${formData.additionalInfo || 'None'}
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 bg-gradient-to-br from-primary/10 via-background to-safari-gold/5 overflow-hidden">
-        <div className="absolute top-20 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-safari-gold/10 rounded-full blur-3xl" />
+      {/* Premium Hero Section */}
+      <section className="relative pt-32 pb-20 bg-gradient-to-br from-safari-cream via-background to-safari-gold/5 overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-20 left-0 w-[500px] h-[500px] bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-gradient-to-tl from-safari-gold/15 to-safari-amber/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 right-10 w-24 h-24 border border-safari-gold/20 rounded-full" />
+        <div className="absolute bottom-1/4 left-20 w-16 h-16 border border-primary/20 rounded-full" />
         
         <div className="container-wide mx-auto px-4 md:px-8 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center max-w-3xl mx-auto"
+            className="text-center max-w-4xl mx-auto"
           >
-            <div className="inline-flex items-center gap-3 mb-6">
-              <Compass className="w-8 h-8 text-safari-gold" />
-              <span className="text-safari-gold text-sm font-semibold uppercase tracking-[0.2em]">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full border border-safari-gold/30 shadow-soft"
+            >
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-safari-gold to-safari-amber flex items-center justify-center">
+                <Compass className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-safari-brown text-sm font-semibold uppercase tracking-[0.2em]">
                 Trip Planner
               </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6">
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6"
+            >
               Plan Your <span className="text-gradient-gold">Dream Trip</span>
-            </h1>
-            <p className="text-lg text-muted-foreground">
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-lg text-muted-foreground max-w-2xl mx-auto"
+            >
               Let our travel experts create a personalized itinerary for your perfect
               Zanzibar and Tanzania adventure.
-            </p>
+            </motion.p>
           </motion.div>
         </div>
       </section>
 
-      {/* Form Section */}
-      <section className="py-16 md:py-24">
+      {/* Premium Form Section */}
+      <section className="py-20 md:py-28">
         <div className="container-wide mx-auto px-4 md:px-8">
           <div className="max-w-3xl mx-auto">
             <motion.div
@@ -256,51 +278,55 @@ Additional Notes: ${formData.additionalInfo || 'None'}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <Card className="shadow-luxury border-0">
+              <Card className="shadow-luxury border border-border/50 rounded-2xl bg-white">
                 <CardContent className="p-8 md:p-12">
-                  <h2 className="text-2xl font-semibold mb-2">Custom Trip Planning</h2>
-                  <p className="text-muted-foreground mb-8">
-                    Fill out the form below with your preferences, and our travel experts will
-                    create a personalized itinerary for your Zanzibar adventure.
-                  </p>
+                  <div className="text-center mb-10">
+                    <h2 className="font-display text-2xl font-semibold mb-3">Custom Trip Planning</h2>
+                    <p className="text-muted-foreground">
+                      Fill out the form below with your preferences, and our travel experts will
+                      create a personalized itinerary for your Zanzibar adventure.
+                    </p>
+                  </div>
 
-                  <form onSubmit={handleSubmit} className="space-y-8">
+                  <form onSubmit={handleSubmit} className="space-y-10">
                     {/* Personal Information */}
                     <div>
-                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <Users className="w-5 h-5 text-primary" />
+                      <h3 className="font-display text-lg font-semibold mb-5 flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center">
+                          <Users className="w-5 h-5 text-safari-gold" />
+                        </div>
                         Personal Information
                       </h3>
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid md:grid-cols-2 gap-5">
                         <div>
-                          <Label htmlFor="fullName">Full Name *</Label>
+                          <Label htmlFor="fullName" className="text-sm font-medium text-foreground">Full Name *</Label>
                           <Input
                             id="fullName"
                             value={formData.fullName}
                             onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
                             placeholder="John Doe"
-                            className="mt-1.5"
+                            className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold"
                           />
                         </div>
                         <div>
-                          <Label htmlFor="email">Email *</Label>
+                          <Label htmlFor="email" className="text-sm font-medium text-foreground">Email *</Label>
                           <Input
                             id="email"
                             type="email"
                             value={formData.email}
                             onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                             placeholder="john@example.com"
-                            className="mt-1.5"
+                            className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold"
                           />
                         </div>
                         <div className="md:col-span-2">
-                          <Label htmlFor="phone">Phone Number</Label>
+                          <Label htmlFor="phone" className="text-sm font-medium text-foreground">Phone Number</Label>
                           <Input
                             id="phone"
                             value={formData.phone}
                             onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                             placeholder="+255 XXX XXX XXX"
-                            className="mt-1.5"
+                            className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold"
                           />
                         </div>
                       </div>
@@ -308,25 +334,27 @@ Additional Notes: ${formData.additionalInfo || 'None'}
 
                     {/* Trip Details */}
                     <div>
-                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <CalendarIcon className="w-5 h-5 text-primary" />
+                      <h3 className="font-display text-lg font-semibold mb-5 flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center">
+                          <CalendarIcon className="w-5 h-5 text-safari-gold" />
+                        </div>
                         Trip Details
                       </h3>
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid md:grid-cols-2 gap-5">
                         {/* From Date */}
                         <div>
-                          <Label>From Date *</Label>
+                          <Label className="text-sm font-medium text-foreground">From Date *</Label>
                           <Popover>
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
-                                className="w-full mt-1.5 justify-start text-left font-normal"
+                                className="w-full mt-2 h-12 justify-start text-left font-normal rounded-xl border-border/50 hover:border-safari-gold"
                               >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                <CalendarIcon className="mr-2 h-4 w-4 text-safari-gold" />
                                 {formData.fromDate ? format(formData.fromDate, "PPP") : "Select start date"}
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                            <PopoverContent className="w-auto p-0 rounded-xl" align="start">
                               <Calendar
                                 mode="single"
                                 selected={formData.fromDate}
@@ -340,18 +368,18 @@ Additional Notes: ${formData.additionalInfo || 'None'}
 
                         {/* To Date */}
                         <div>
-                          <Label>To Date *</Label>
+                          <Label className="text-sm font-medium text-foreground">To Date *</Label>
                           <Popover>
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
-                                className="w-full mt-1.5 justify-start text-left font-normal"
+                                className="w-full mt-2 h-12 justify-start text-left font-normal rounded-xl border-border/50 hover:border-safari-gold"
                               >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                <CalendarIcon className="mr-2 h-4 w-4 text-safari-gold" />
                                 {formData.toDate ? format(formData.toDate, "PPP") : "Select end date"}
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                            <PopoverContent className="w-auto p-0 rounded-xl" align="start">
                               <Calendar
                                 mode="single"
                                 selected={formData.toDate}
@@ -365,12 +393,12 @@ Additional Notes: ${formData.additionalInfo || 'None'}
 
                         {/* Number of Travelers */}
                         <div>
-                          <Label>Number of Travelers *</Label>
+                          <Label className="text-sm font-medium text-foreground">Number of Travelers *</Label>
                           <Select
                             value={formData.travelers}
                             onValueChange={(value) => setFormData(prev => ({ ...prev, travelers: value }))}
                           >
-                            <SelectTrigger className="mt-1.5">
+                            <SelectTrigger className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -386,12 +414,12 @@ Additional Notes: ${formData.additionalInfo || 'None'}
 
                         {/* Budget */}
                         <div>
-                          <Label>Budget Range (USD)</Label>
+                          <Label className="text-sm font-medium text-foreground">Budget Range (USD)</Label>
                           <Select
                             value={formData.budget}
                             onValueChange={(value) => setFormData(prev => ({ ...prev, budget: value }))}
                           >
-                            <SelectTrigger className="mt-1.5">
+                            <SelectTrigger className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold">
                               <SelectValue placeholder="Select budget" />
                             </SelectTrigger>
                             <SelectContent>
@@ -406,12 +434,12 @@ Additional Notes: ${formData.additionalInfo || 'None'}
 
                         {/* Accommodation */}
                         <div className="md:col-span-2">
-                          <Label>Preferred Accommodation Type</Label>
+                          <Label className="text-sm font-medium text-foreground">Preferred Accommodation Type</Label>
                           <Select
                             value={formData.accommodation}
                             onValueChange={(value) => setFormData(prev => ({ ...prev, accommodation: value }))}
                           >
-                            <SelectTrigger className="mt-1.5">
+                            <SelectTrigger className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold">
                               <SelectValue placeholder="Select accommodation type" />
                             </SelectTrigger>
                             <SelectContent>
@@ -426,27 +454,35 @@ Additional Notes: ${formData.additionalInfo || 'None'}
                       </div>
                     </div>
 
-                    {/* Interests */}
+                    {/* Premium Interests Section */}
                     <div>
-                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <MapPin className="w-5 h-5 text-primary" />
+                      <h3 className="font-display text-lg font-semibold mb-5 flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500/20 to-green-500/10 flex items-center justify-center">
+                          <MapPin className="w-5 h-5 text-green-600" />
+                        </div>
                         Interests & Activities *
                       </h3>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {interests.map(interest => (
                           <button
                             key={interest.id}
                             type="button"
                             onClick={() => handleInterestToggle(interest.id)}
-                            className={`p-4 rounded-xl border-2 text-left transition-all flex items-center gap-3 ${
+                            className={`p-4 rounded-2xl border-2 text-left transition-all flex items-center gap-3 ${
                               formData.interests.includes(interest.id)
-                                ? "border-primary bg-primary/5"
-                                : "border-border hover:border-primary/50"
+                                ? "border-safari-gold bg-safari-gold/5 shadow-soft"
+                                : "border-border/50 hover:border-safari-gold/50"
                             }`}
                           >
-                            <interest.icon className={`w-5 h-5 ${
-                              formData.interests.includes(interest.id) ? "text-primary" : "text-muted-foreground"
-                            }`} />
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                              formData.interests.includes(interest.id) 
+                                ? "bg-safari-gold/20" 
+                                : "bg-muted"
+                            }`}>
+                              <interest.icon className={`w-5 h-5 ${
+                                formData.interests.includes(interest.id) ? "text-safari-gold" : "text-muted-foreground"
+                              }`} />
+                            </div>
                             <span className="text-sm font-medium">{interest.label}</span>
                           </button>
                         ))}
@@ -455,23 +491,23 @@ Additional Notes: ${formData.additionalInfo || 'None'}
 
                     {/* Additional Info */}
                     <div>
-                      <Label htmlFor="additionalInfo">Additional Information</Label>
+                      <Label htmlFor="additionalInfo" className="text-sm font-medium text-foreground">Additional Information</Label>
                       <Textarea
                         id="additionalInfo"
                         value={formData.additionalInfo}
                         onChange={(e) => setFormData(prev => ({ ...prev, additionalInfo: e.target.value }))}
                         placeholder="Tell us more about your dream trip, special requirements, or any questions..."
-                        className="mt-1.5 min-h-[120px]"
+                        className="mt-2 min-h-[140px] rounded-xl border-border/50 focus:border-safari-gold resize-none"
                       />
                     </div>
 
-                    {/* Dual Submit Options */}
-                    <div className="flex flex-col sm:flex-row gap-3">
+                    {/* Premium Submit Options */}
+                    <div className="flex flex-col sm:flex-row gap-4 pt-4">
                       <Button
                         type="submit"
                         size="xl"
                         disabled={loading}
-                        className="flex-1 bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold shadow-gold hover:shadow-glow"
+                        className="flex-1 h-14 bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold shadow-lg hover:shadow-xl rounded-xl"
                       >
                         {loading ? (
                           <>
@@ -489,7 +525,7 @@ Additional Notes: ${formData.additionalInfo || 'None'}
                         type="button"
                         size="xl"
                         onClick={handleWhatsAppSubmit}
-                        className="flex-1 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold shadow-lg hover:shadow-glow hover:from-green-500 hover:to-green-600"
+                        className="flex-1 h-14 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold shadow-lg hover:shadow-xl rounded-xl"
                       >
                         <MessageCircle className="w-5 h-5 mr-2" />
                         Submit via WhatsApp

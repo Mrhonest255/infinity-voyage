@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { GalleryImageSkeleton } from "@/components/ui/skeleton";
 import { 
   Camera, 
   X, 
@@ -114,45 +115,72 @@ const Gallery = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-16 bg-gradient-to-br from-safari-night via-safari-night/95 to-safari-brown/20 overflow-hidden">
+      {/* Premium Hero Section */}
+      <section className="relative pt-32 pb-20 bg-gradient-to-br from-safari-night via-safari-night/95 to-safari-brown/20 overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-safari-gold/10 rounded-full blur-3xl"></div>
           <div className="absolute bottom-10 right-20 w-96 h-96 bg-safari-sunset/10 rounded-full blur-3xl"></div>
         </div>
+        
+        {/* Decorative Elements */}
+        <div className="absolute top-1/4 right-20 w-24 h-24 border border-white/10 rounded-full" />
+        <div className="absolute bottom-1/4 left-20 w-16 h-16 border border-safari-gold/20 rounded-full" />
+        
         <div className="container-wide mx-auto px-4 md:px-8 relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto"
+            className="text-center max-w-4xl mx-auto"
           >
-            <Badge className="bg-safari-gold/20 text-safari-gold border-safari-gold/30 mb-4">
-              <Camera className="w-3 h-3 mr-1" /> Visual Journey
-            </Badge>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-              Our <span className="text-safari-gold">Gallery</span>
-            </h1>
-            <p className="text-primary-foreground/80 text-lg md:text-xl">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full border border-white/20"
+            >
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-safari-gold to-safari-amber flex items-center justify-center">
+                <Camera className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-white/90 text-sm font-semibold uppercase tracking-[0.2em]">
+                Visual Journey
+              </span>
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6"
+            >
+              Our Photo <span className="text-safari-gold">Gallery</span>
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto"
+            >
               Explore breathtaking moments from our safari adventures and Zanzibar excursions. 
               Every image tells a story of Africa's incredible beauty.
-            </p>
+            </motion.p>
           </motion.div>
         </div>
       </section>
 
       {/* Gallery Section */}
-      <section className="py-16 flex-1">
+      <section className="py-20 flex-1">
         <div className="container-wide mx-auto px-4 md:px-8">
-          {/* Category Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mb-10">
+          {/* Premium Category Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mb-12">
             <div className="flex justify-center">
-              <TabsList className="bg-muted/50 p-1 flex-wrap h-auto gap-1">
+              <TabsList className="bg-white shadow-soft border border-border/50 p-2 flex-wrap h-auto gap-2 rounded-2xl">
                 {categories.map((cat) => (
                   <TabsTrigger 
                     key={cat.id} 
                     value={cat.id}
-                    className="px-4 py-2 data-[state=active]:bg-safari-gold data-[state=active]:text-safari-night"
+                    className="px-5 py-2.5 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-safari-gold data-[state=active]:to-safari-amber data-[state=active]:text-safari-night data-[state=active]:shadow-lg font-medium transition-all"
                   >
                     <cat.icon className="w-4 h-4 mr-2" />
                     {cat.label}
@@ -163,13 +191,18 @@ const Gallery = () => {
           </Tabs>
 
           {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-safari-gold" />
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
+              {[...Array(12)].map((_, i) => (
+                <GalleryImageSkeleton 
+                  key={i} 
+                  className={i % 5 === 0 ? 'md:col-span-2 md:row-span-2' : ''} 
+                />
+              ))}
             </div>
           ) : (
             <motion.div 
               layout
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6"
             >
               <AnimatePresence mode="popLayout">
                 {filteredImages?.map((image, index) => (
@@ -180,7 +213,7 @@ const Gallery = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
-                    className={`relative group cursor-pointer overflow-hidden rounded-xl ${
+                    className={`relative group cursor-pointer overflow-hidden rounded-2xl shadow-soft hover:shadow-luxury transition-all duration-500 ${
                       index % 5 === 0 ? 'md:col-span-2 md:row-span-2' : ''
                     }`}
                     onClick={() => setSelectedImage(image)}
@@ -189,22 +222,22 @@ const Gallery = () => {
                       <img
                         src={image.url}
                         alt={image.title || 'Gallery image'}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         loading="lazy"
                       />
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 className="text-white font-semibold text-lg">{image.title}</h3>
+                    <div className="absolute inset-0 bg-gradient-to-t from-safari-night/90 via-safari-night/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute bottom-0 left-0 right-0 p-5">
+                        <h3 className="text-white font-display font-semibold text-lg mb-2">{image.title}</h3>
                         {image.category && (
-                          <Badge variant="secondary" className="mt-2 bg-safari-gold/80 text-safari-night text-xs">
+                          <Badge className="bg-white/20 backdrop-blur-sm text-white border-0 text-xs">
                             {image.category}
                           </Badge>
                         )}
                       </div>
                     </div>
                     <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="p-2 bg-white/20 backdrop-blur-sm rounded-full">
+                      <div className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl">
                         <ImageIcon className="w-5 h-5 text-white" />
                       </div>
                     </div>
@@ -216,7 +249,9 @@ const Gallery = () => {
 
           {(!filteredImages || filteredImages.length === 0) && !isLoading && (
             <div className="text-center py-20">
-              <ImageIcon className="w-16 h-16 mx-auto text-muted-foreground/50 mb-4" />
+              <div className="w-20 h-20 mx-auto rounded-2xl bg-muted/50 flex items-center justify-center mb-4">
+                <ImageIcon className="w-10 h-10 text-muted-foreground/50" />
+              </div>
               <p className="text-muted-foreground text-lg">No images found in this category.</p>
             </div>
           )}
@@ -301,32 +336,54 @@ const Gallery = () => {
         </DialogContent>
       </Dialog>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-safari-night to-safari-brown">
-        <div className="container-wide mx-auto px-4 md:px-8 text-center">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
-            Ready to Create Your Own <span className="text-safari-gold">Memories</span>?
-          </h2>
-          <p className="text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
-            Join us on an unforgettable African adventure. Book your safari today and capture moments that will last a lifetime.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              className="bg-safari-gold hover:bg-safari-amber text-safari-night"
-              asChild
+      {/* Premium CTA Section */}
+      <section className="py-24 bg-gradient-to-br from-safari-night via-safari-night/95 to-safari-brown/20 relative overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-safari-gold/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-safari-sunset/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+        <div className="absolute top-1/4 right-20 w-20 h-20 border border-white/10 rounded-full" />
+        
+        <div className="container-wide mx-auto px-4 md:px-8 text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-3xl mx-auto"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 mb-6 px-5 py-2.5 bg-white/10 backdrop-blur-sm rounded-full border border-white/20"
             >
-              <a href="/safaris">Explore Safaris</a>
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
-              asChild
-            >
-              <a href="/contact">Contact Us</a>
-            </Button>
-          </div>
+              <Camera className="w-5 h-5 text-safari-gold" />
+              <span className="text-white/90 text-sm font-medium">Your Adventure Awaits</span>
+            </motion.div>
+            
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
+              Ready to Create Your Own <span className="text-safari-gold">Memories</span>?
+            </h2>
+            <p className="text-white/70 text-lg mb-10 max-w-2xl mx-auto">
+              Join us on an unforgettable African adventure. Book your safari today and capture moments that will last a lifetime.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                asChild
+              >
+                <a href="/safaris">Explore Safaris</a>
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="border-2 border-white/30 text-white hover:bg-white/10 rounded-xl font-semibold"
+                asChild
+              >
+                <a href="/contact">Contact Us</a>
+              </Button>
+            </div>
+          </motion.div>
         </div>
       </section>
 

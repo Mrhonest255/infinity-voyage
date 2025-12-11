@@ -122,54 +122,81 @@ export default function SafariCalculator() {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 bg-gradient-to-br from-primary/10 via-background to-safari-gold/5">
-        <div className="container-wide mx-auto px-4 md:px-8">
+      {/* Premium Hero Section */}
+      <section className="relative pt-32 pb-20 bg-gradient-to-br from-safari-cream via-background to-safari-gold/5 overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-safari-gold/15 to-safari-amber/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-10 w-24 h-24 border border-safari-gold/20 rounded-full" />
+        <div className="absolute bottom-1/4 right-20 w-16 h-16 border border-primary/20 rounded-full" />
+        
+        <div className="container-wide mx-auto px-4 md:px-8 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center max-w-3xl mx-auto"
+            className="text-center max-w-4xl mx-auto"
           >
-            <div className="inline-flex items-center gap-3 mb-6">
-              <Calculator className="w-8 h-8 text-safari-gold" />
-              <span className="text-safari-gold text-sm font-semibold uppercase tracking-[0.2em]">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full border border-safari-gold/30 shadow-soft"
+            >
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-safari-gold to-safari-amber flex items-center justify-center">
+                <Calculator className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-safari-brown text-sm font-semibold uppercase tracking-[0.2em]">
                 Safari Planner
               </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6">
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6"
+            >
               Safari <span className="text-gradient-gold">Price Calculator</span>
-            </h1>
-            <p className="text-lg text-muted-foreground">
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-lg text-muted-foreground max-w-2xl mx-auto"
+            >
               Use our interactive calculator to estimate the cost of your safari adventure.
               Select your preferred destination, season, group size, and duration.
-            </p>
+            </motion.p>
           </motion.div>
         </div>
       </section>
 
-      {/* Calculator Section */}
-      <section className="py-16 md:py-24">
+      {/* Premium Calculator Section */}
+      <section className="py-20 md:py-28">
         <div className="container-wide mx-auto px-4 md:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Calculator Form */}
+            {/* Premium Calculator Form */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <Card className="shadow-luxury border-0">
-                <CardContent className="p-8">
-                  <h2 className="text-2xl font-semibold mb-8 flex items-center gap-3">
-                    <Calculator className="w-6 h-6 text-primary" />
+              <Card className="shadow-luxury border border-border/50 rounded-2xl bg-white">
+                <CardContent className="p-8 md:p-10">
+                  <h2 className="font-display text-2xl font-semibold mb-8 flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center">
+                      <Calculator className="w-6 h-6 text-safari-gold" />
+                    </div>
                     Safari Price Calculator
                   </h2>
 
-                  <div className="space-y-6">
+                  <div className="space-y-7">
                     {/* Destination */}
                     <div>
-                      <label className="block text-sm font-semibold mb-3">Safari Destination</label>
+                      <label className="block text-sm font-semibold mb-3 text-foreground">Safari Destination</label>
                       <Select value={destination} onValueChange={setDestination}>
-                        <SelectTrigger className="h-14 text-base">
+                        <SelectTrigger className="h-14 text-base rounded-xl border-border/50 focus:border-safari-gold">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -189,23 +216,25 @@ export default function SafariCalculator() {
 
                     {/* Season */}
                     <div>
-                      <label className="block text-sm font-semibold mb-3">
+                      <label className="block text-sm font-semibold mb-3 text-foreground">
                         Travel Season
-                        <span className="text-muted-foreground font-normal ml-2">
-                          Current season: {isHighSeason ? "High" : "Low"} Season
-                        </span>
+                        <Badge className="ml-2 bg-safari-gold/10 text-safari-brown border-0 font-normal">
+                          Current: {isHighSeason ? "High" : "Low"} Season
+                        </Badge>
                       </label>
                       <div className="grid grid-cols-2 gap-4">
                         <button
                           onClick={() => setSeason("high")}
-                          className={`p-4 rounded-xl border-2 text-left transition-all ${
+                          className={`p-5 rounded-2xl border-2 text-left transition-all ${
                             season === "high" 
-                              ? "border-primary bg-primary/5" 
-                              : "border-border hover:border-primary/50"
+                              ? "border-safari-gold bg-safari-gold/5 shadow-soft" 
+                              : "border-border/50 hover:border-safari-gold/50"
                           }`}
                         >
                           <div className="flex items-center gap-2 mb-2">
-                            <Sun className="w-5 h-5 text-safari-gold" />
+                            <div className="w-8 h-8 rounded-lg bg-safari-gold/20 flex items-center justify-center">
+                              <Sun className="w-4 h-4 text-safari-gold" />
+                            </div>
                             <span className="font-semibold">High Season</span>
                           </div>
                           <p className="text-xs text-muted-foreground">
@@ -214,14 +243,16 @@ export default function SafariCalculator() {
                         </button>
                         <button
                           onClick={() => setSeason("low")}
-                          className={`p-4 rounded-xl border-2 text-left transition-all ${
+                          className={`p-5 rounded-2xl border-2 text-left transition-all ${
                             season === "low" 
-                              ? "border-primary bg-primary/5" 
-                              : "border-border hover:border-primary/50"
+                              ? "border-primary bg-primary/5 shadow-soft" 
+                              : "border-border/50 hover:border-primary/50"
                           }`}
                         >
                           <div className="flex items-center gap-2 mb-2">
-                            <CloudRain className="w-5 h-5 text-primary" />
+                            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+                              <CloudRain className="w-4 h-4 text-primary" />
+                            </div>
                             <span className="font-semibold">Low Season</span>
                           </div>
                           <p className="text-xs text-muted-foreground">
@@ -233,9 +264,9 @@ export default function SafariCalculator() {
 
                     {/* Group Size */}
                     <div>
-                      <label className="block text-sm font-semibold mb-3">Group Size</label>
+                      <label className="block text-sm font-semibold mb-3 text-foreground">Group Size</label>
                       <Select value={groupSize} onValueChange={setGroupSize}>
-                        <SelectTrigger className="h-14 text-base">
+                        <SelectTrigger className="h-14 text-base rounded-xl border-border/50 focus:border-safari-gold">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -250,22 +281,22 @@ export default function SafariCalculator() {
 
                     {/* Number of People */}
                     <div>
-                      <label className="block text-sm font-semibold mb-3">Exact Number of People</label>
+                      <label className="block text-sm font-semibold mb-3 text-foreground">Exact Number of People</label>
                       <div className="flex items-center gap-4">
                         <Button
                           variant="outline"
                           size="icon"
                           onClick={() => setNumPeople(Math.max(1, numPeople - 1))}
-                          className="h-12 w-12"
+                          className="h-14 w-14 rounded-xl border-2 border-border/50 text-lg font-bold"
                         >
                           -
                         </Button>
-                        <span className="text-2xl font-bold w-12 text-center">{numPeople}</span>
+                        <span className="text-3xl font-bold w-16 text-center">{numPeople}</span>
                         <Button
                           variant="outline"
                           size="icon"
                           onClick={() => setNumPeople(Math.min(20, numPeople + 1))}
-                          className="h-12 w-12"
+                          className="h-14 w-14 rounded-xl border-2 border-border/50 text-lg font-bold"
                         >
                           +
                         </Button>
@@ -274,9 +305,9 @@ export default function SafariCalculator() {
 
                     {/* Duration */}
                     <div>
-                      <label className="block text-sm font-semibold mb-3">Safari Duration</label>
+                      <label className="block text-sm font-semibold mb-3 text-foreground">Safari Duration</label>
                       <Select value={duration} onValueChange={setDuration}>
-                        <SelectTrigger className="h-14 text-base">
+                        <SelectTrigger className="h-14 text-base rounded-xl border-border/50 focus:border-safari-gold">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -289,23 +320,23 @@ export default function SafariCalculator() {
                       </Select>
                     </div>
 
-                    {/* Price Display */}
-                    <div className="bg-gradient-to-br from-primary/10 to-safari-gold/10 rounded-2xl p-6 mt-8">
+                    {/* Premium Price Display */}
+                    <div className="bg-gradient-to-br from-safari-gold/10 via-safari-amber/5 to-safari-cream/30 rounded-2xl p-8 mt-8 border border-safari-gold/20">
                       <div className="flex justify-between items-center mb-4">
-                        <span className="text-muted-foreground">Price per person:</span>
+                        <span className="text-muted-foreground font-medium">Price per person:</span>
                         <span className="text-3xl font-bold text-primary">${calculatedPrice.perPerson}</span>
                       </div>
-                      <div className="flex justify-between items-center pt-4 border-t border-border">
-                        <span className="text-muted-foreground">Total price:</span>
+                      <div className="flex justify-between items-center pt-4 border-t border-safari-gold/20">
+                        <span className="text-muted-foreground font-medium">Total price:</span>
                         <span className="text-4xl font-bold text-safari-gold">${calculatedPrice.total}</span>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-4">
+                      <p className="text-sm text-muted-foreground mt-4">
                         Based on {numPeople} {numPeople === 1 ? "person" : "people"} for {selectedDuration?.label.toLowerCase()} in {season} season
                       </p>
                     </div>
 
-                    {/* Dual Booking Options */}
-                    <div className="flex flex-col sm:flex-row gap-3">
+                    {/* Premium Dual Booking Options */}
+                    <div className="flex flex-col sm:flex-row gap-4 pt-4">
                       <Link 
                         to={`/contact?subject=Safari%20Booking&safari=${encodeURIComponent(selectedDest?.name || '')}&people=${numPeople}&duration=${encodeURIComponent(selectedDuration?.label || '')}&price=${calculatedPrice.total}`}
                         className="flex-1"
@@ -313,7 +344,7 @@ export default function SafariCalculator() {
                         <Button 
                           size="xl" 
                           variant="outline"
-                          className="w-full border-2 border-primary hover:bg-primary/10 font-bold"
+                          className="w-full h-14 border-2 border-safari-gold text-safari-brown hover:bg-safari-gold/10 font-bold rounded-xl"
                         >
                           <Mail className="w-5 h-5 mr-2" />
                           Book via Email
@@ -321,7 +352,7 @@ export default function SafariCalculator() {
                       </Link>
                       <Button 
                         size="xl" 
-                        className="flex-1 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold shadow-lg hover:shadow-glow hover:from-green-500 hover:to-green-600"
+                        className="flex-1 h-14 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold shadow-lg hover:shadow-xl hover:from-green-500 hover:to-green-600 rounded-xl"
                         onClick={() => window.open(`https://wa.me/255758241294?text=Hello! I'm interested in a ${selectedDest?.name} safari for ${numPeople} people, ${selectedDuration?.label}. Estimated price: $${calculatedPrice.total}`, "_blank")}
                       >
                         <MessageCircle className="w-5 h-5 mr-2" />
@@ -333,7 +364,7 @@ export default function SafariCalculator() {
               </Card>
             </motion.div>
 
-            {/* Included Items & Info */}
+            {/* Premium Included Items & Info */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -341,16 +372,16 @@ export default function SafariCalculator() {
               className="space-y-8"
             >
               {/* What's Included */}
-              <Card className="shadow-elevated border-0">
+              <Card className="shadow-luxury border border-border/50 rounded-2xl bg-white">
                 <CardContent className="p-8">
-                  <h3 className="text-xl font-semibold mb-6">What's Included:</h3>
+                  <h3 className="font-display text-xl font-semibold mb-6">What's Included:</h3>
                   <div className="space-y-4">
                     {includedItems.map((item, index) => (
-                      <div key={index} className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                          <item.icon className="w-5 h-5 text-primary" />
+                      <div key={index} className="flex items-center gap-4 p-3 rounded-xl bg-safari-cream/30 border border-safari-gold/10">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center shrink-0">
+                          <item.icon className="w-6 h-6 text-safari-gold" />
                         </div>
-                        <span className="text-foreground">{item.text}</span>
+                        <span className="text-foreground font-medium">{item.text}</span>
                       </div>
                     ))}
                   </div>
@@ -358,19 +389,23 @@ export default function SafariCalculator() {
               </Card>
 
               {/* Season Info */}
-              <div className="grid grid-cols-2 gap-4">
-                <Card className="border-safari-gold/30 bg-safari-gold/5">
+              <div className="grid grid-cols-2 gap-5">
+                <Card className="border-2 border-safari-gold/30 bg-gradient-to-br from-safari-gold/5 to-safari-amber/5 rounded-2xl">
                   <CardContent className="p-6">
-                    <Sun className="w-8 h-8 text-safari-gold mb-3" />
+                    <div className="w-12 h-12 rounded-xl bg-safari-gold/20 flex items-center justify-center mb-4">
+                      <Sun className="w-6 h-6 text-safari-gold" />
+                    </div>
                     <h4 className="font-semibold mb-2">High Season</h4>
                     <p className="text-sm text-muted-foreground">
                       Best wildlife viewing. Clear skies, animals gather at water sources.
                     </p>
                   </CardContent>
                 </Card>
-                <Card className="border-primary/30 bg-primary/5">
+                <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl">
                   <CardContent className="p-6">
-                    <CloudRain className="w-8 h-8 text-primary mb-3" />
+                    <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-4">
+                      <CloudRain className="w-6 h-6 text-primary" />
+                    </div>
                     <h4 className="font-semibold mb-2">Low Season</h4>
                     <p className="text-sm text-muted-foreground">
                       Lower prices, fewer tourists, lush green landscapes.
@@ -380,23 +415,31 @@ export default function SafariCalculator() {
               </div>
 
               {/* Tips */}
-              <Card className="border-0 bg-muted/50">
+              <Card className="border border-border/50 bg-safari-cream/30 rounded-2xl">
                 <CardContent className="p-6">
-                  <h4 className="font-semibold mb-4 flex items-center gap-2">
-                    <Info className="w-5 h-5 text-primary" />
+                  <h4 className="font-semibold mb-4 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Info className="w-5 h-5 text-primary" />
+                    </div>
                     Safari Planning Tips
                   </h4>
                   <ul className="space-y-3 text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-safari-gold mt-0.5" />
+                    <li className="flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <Check className="w-3 h-3 text-safari-gold" />
+                      </div>
                       Book 3-6 months in advance for high season safaris
                     </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-safari-gold mt-0.5" />
+                    <li className="flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <Check className="w-3 h-3 text-safari-gold" />
+                      </div>
                       Groups of 4 or more enjoy better per-person rates
                     </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="w-4 h-4 text-safari-gold mt-0.5" />
+                    <li className="flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <Check className="w-3 h-3 text-safari-gold" />
+                      </div>
                       Multi-day safaris offer more immersive experiences
                     </li>
                   </ul>
@@ -407,22 +450,39 @@ export default function SafariCalculator() {
         </div>
       </section>
 
-      {/* Destinations Grid */}
-      <section className="py-16 bg-muted/30">
+      {/* Premium Destinations Grid */}
+      <section className="py-20 bg-gradient-to-br from-safari-cream/50 via-background to-safari-gold/5">
         <div className="container-wide mx-auto px-4 md:px-8">
-          <h2 className="text-3xl font-semibold text-center mb-12">Safari Destinations</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {safariDestinations.slice(0, 3).map((dest) => (
-              <Card key={dest.id} className="safari-card hover-lift">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">{dest.name}</h3>
-                  <p className="text-muted-foreground text-sm mb-4">{dest.description}</p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">From</span>
-                    <span className="text-xl font-bold text-primary">${dest.basePrice.low}</span>
-                  </div>
-                </CardContent>
-              </Card>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <span className="text-safari-gold text-sm font-semibold uppercase tracking-[0.2em]">Explore</span>
+            <h2 className="font-display text-3xl md:text-4xl font-semibold mt-4">Safari Destinations</h2>
+          </motion.div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {safariDestinations.slice(0, 3).map((dest, index) => (
+              <motion.div
+                key={dest.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="group bg-white rounded-2xl border border-border/50 shadow-soft hover:shadow-luxury transition-all duration-500 overflow-hidden">
+                  <CardContent className="p-8">
+                    <h3 className="font-display text-xl font-semibold mb-2 group-hover:text-safari-gold transition-colors">{dest.name}</h3>
+                    <p className="text-muted-foreground text-sm mb-6">{dest.description}</p>
+                    <div className="flex justify-between items-center pt-4 border-t border-border/50">
+                      <span className="text-sm text-muted-foreground">From</span>
+                      <span className="text-2xl font-bold text-safari-gold">${dest.basePrice.low}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>

@@ -7,7 +7,7 @@ export interface CartItem {
   tourName: string;
   slug: string;
   price: number;
-  currency: string;
+  currency?: string;
   duration: string | null;
   featuredImage: string | null;
   quantity: number;
@@ -73,6 +73,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       // Add new item to cart
       const newItem: CartItem = {
         ...item,
+        currency: item.currency || 'USD', // Default to USD if not provided
         id: `${item.tourId}-${Date.now()}`,
         quantity: 1,
         addedAt: new Date().toISOString(),

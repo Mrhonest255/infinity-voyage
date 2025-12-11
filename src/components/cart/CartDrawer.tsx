@@ -137,11 +137,11 @@ export const CartDrawer = ({ open, onOpenChange }: CartDrawerProps) => {
                           {/* Price */}
                           <div className="text-right">
                             <p className="text-sm font-bold text-primary">
-                              ${(item.price * item.quantity).toLocaleString()}
+                              {item.currency === 'USD' ? '$' : item.currency || '$'}{(item.price * item.quantity).toLocaleString()}
                             </p>
                             {item.quantity > 1 && (
                               <p className="text-xs text-muted-foreground">
-                                ${item.price.toLocaleString()} each
+                                {item.currency === 'USD' ? '$' : item.currency || '$'}{item.price.toLocaleString()} each
                               </p>
                             )}
                           </div>
@@ -172,11 +172,11 @@ export const CartDrawer = ({ open, onOpenChange }: CartDrawerProps) => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-medium">${totalPrice.toLocaleString()}</span>
+                  <span className="font-medium">{items[0]?.currency === 'USD' ? '$' : items[0]?.currency || '$'}{totalPrice.toLocaleString()}</span>
                 </div>
                 <div className="flex items-center justify-between text-lg font-bold">
                   <span>Total</span>
-                  <span className="text-primary">${totalPrice.toLocaleString()}</span>
+                  <span className="text-primary">{items[0]?.currency === 'USD' ? '$' : items[0]?.currency || '$'}{totalPrice.toLocaleString()}</span>
                 </div>
               </div>
 

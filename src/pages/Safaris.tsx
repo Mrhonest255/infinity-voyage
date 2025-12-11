@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { SEO, SEO_KEYWORDS } from "@/components/SEO";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
 type SafariTour = {
   id: string;
@@ -181,12 +182,26 @@ const Safaris = () => {
                         <span className="text-sm font-normal text-muted-foreground"> /person</span>
                       </p>
                     </div>
-                    <Link to={`/tour/${safari.slug}`}>
-                      <Button variant="safari" size="lg">
-                        View Details
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      {safari.price && (
+                        <AddToCartButton
+                          tourId={safari.id}
+                          tourName={safari.title}
+                          slug={safari.slug}
+                          price={safari.price}
+                          duration={safari.duration}
+                          featuredImage={safari.featured_image}
+                          variant="outline"
+                          size="lg"
+                        />
+                      )}
+                      <Link to={`/tour/${safari.slug}`}>
+                        <Button variant="safari" size="lg">
+                          View Details
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </motion.div>

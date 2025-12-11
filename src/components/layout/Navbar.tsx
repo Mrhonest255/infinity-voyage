@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { CartButton } from "@/components/cart/CartButton";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -19,6 +21,7 @@ const navLinks = [
 
 export const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const location = useLocation();
   const { data: settings } = useSiteSettings();
   
@@ -134,7 +137,8 @@ export const Navbar = () => {
             </div>
 
             {/* CTA Buttons - Hidden on desktop for clean look */}
-            <div className="hidden">
+            <div className="hidden lg:flex items-center gap-3">
+              <CartButton onClick={() => setIsCartOpen(true)} />
               <a
                 href={`tel:${phone.replace(/\s/g, '')}`}
                 className="flex items-center gap-2.5 text-sm font-medium text-foreground/70 hover:text-primary"
@@ -147,35 +151,38 @@ export const Navbar = () => {
             </div>
 
             {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden relative p-2.5 rounded-xl text-foreground hover:bg-muted transition-colors"
-              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-            >
-              <AnimatePresence mode="wait">
-                {isMobileMenuOpen ? (
-                  <motion.div
-                    key="close"
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <X className="w-6 h-6" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="menu"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Menu className="w-6 h-6" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </button>
+            <div className="flex items-center gap-2 lg:hidden">
+              <CartButton onClick={() => setIsCartOpen(true)} />
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="relative p-2.5 rounded-xl text-foreground hover:bg-muted transition-colors"
+                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              >
+                <AnimatePresence mode="wait">
+                  {isMobileMenuOpen ? (
+                    <motion.div
+                      key="close"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <X className="w-6 h-6" />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="menu"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Menu className="w-6 h-6" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </button>
+            </div>
           </nav>
         </div>
       </motion.header>
@@ -271,6 +278,9 @@ export const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      
+      {/* Cart Drawer */}
+      <CartDrawer open={isCartOpen} onOpenChange={setIsCartOpen} />
     </>
   );
 };

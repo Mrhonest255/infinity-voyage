@@ -6,6 +6,7 @@ import { ArrowRight, Clock, Check, Loader2, Star, MapPin, Users } from "lucide-r
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 
 import serengetiImg from "@/assets/serengeti.jpg";
 import zanzibarImg from "@/assets/zanzibar.jpg";
@@ -314,15 +315,31 @@ export const TourPackages = () => {
                       <p className="text-lg font-semibold text-muted-foreground">Contact for price</p>
                     )}
                   </div>
-                  <Link to={`/tour/${tour.slug}`}>
-                    <Button 
-                      size="lg" 
-                      className="rounded-xl bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold hover:shadow-gold transition-all duration-300 hover:scale-105 group/btn"
-                    >
-                      View Details
-                      <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1" />
-                    </Button>
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    {tour.price && (
+                      <AddToCartButton
+                        tourId={tour.id}
+                        tourName={tour.title}
+                        slug={tour.slug}
+                        price={tour.price}
+                        currency={tour.currency || undefined}
+                        duration={tour.duration}
+                        featuredImage={tour.featured_image}
+                        iconOnly={true}
+                        variant="outline"
+                        className="h-12 w-12"
+                      />
+                    )}
+                    <Link to={`/tour/${tour.slug}`}>
+                      <Button 
+                        size="lg" 
+                        className="rounded-xl bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold hover:shadow-gold transition-all duration-300 hover:scale-105 group/btn"
+                      >
+                        View Details
+                        <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1" />
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
 

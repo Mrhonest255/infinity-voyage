@@ -12,6 +12,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import { Footer } from '@/components/layout/Footer';
 import { TourReviews } from '@/components/tours/TourReviews';
+import { AddToCartButton } from '@/components/cart/AddToCartButton';
 
 const TourPage = () => {
   const { slug } = useParams();
@@ -618,6 +619,21 @@ const TourPage = () => {
                       </div>
                     </div>
                     <div className="p-6">
+                      {tour.price && (
+                        <div className="mb-4">
+                          <AddToCartButton
+                            tourId={tour.id}
+                            tourName={tour.title}
+                            slug={tour.slug || slug || ''}
+                            price={tour.price}
+                            currency={tour.currency || undefined}
+                            duration={tour.duration}
+                            featuredImage={tour.featured_image}
+                            size="lg"
+                            className="w-full"
+                          />
+                        </div>
+                      )}
                       <BookingForm 
                         tourId={tour.id} 
                         tourName={tour.title}

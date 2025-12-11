@@ -121,74 +121,94 @@ const Contact = () => {
       <Navbar />
       
       {/* Hero */}
-      <section className="relative pt-32 pb-20">
+      <section className="relative pt-32 pb-24 overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={heroImage}
             alt="Contact Us"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-safari-night/70" />
+          <div className="absolute inset-0 bg-gradient-to-b from-safari-night/80 via-safari-night/60 to-safari-night/90" />
+        </div>
+        {/* Decorative elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-safari-gold/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
         </div>
         <div className="relative container-wide mx-auto px-4 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center"
+            className="text-center max-w-3xl mx-auto"
           >
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-4">
-              Contact Us
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <span className="w-10 h-px bg-safari-gold" />
+              <span className="text-safari-gold text-sm font-semibold uppercase tracking-[0.2em]">
+                Get in Touch
+              </span>
+              <span className="w-10 h-px bg-safari-gold" />
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-primary-foreground mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              Let's Plan Your <span className="text-gradient-luxury">Adventure</span>
             </h1>
             <p className="text-xl text-primary-foreground/80 max-w-2xl mx-auto">
-              Have questions? We're here to help plan your perfect African adventure
+              Have questions? We're here to help create your perfect African experience
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section className="section-padding">
+      <section className="section-padding bg-gradient-to-b from-background to-muted/30">
         <div className="container-wide mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid lg:grid-cols-2 gap-16">
             {/* Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
+              className="bg-card rounded-3xl p-8 md:p-10 shadow-luxury border border-border/30"
             >
-              <h2 className="font-display text-3xl font-semibold text-foreground mb-2">
-                Send us a Message
-              </h2>
-              <p className="text-muted-foreground mb-8">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-xl bg-safari-gold/10 flex items-center justify-center">
+                  <Mail className="w-5 h-5 text-safari-gold" />
+                </div>
+                <h2 className="text-2xl md:text-3xl font-semibold text-foreground" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  Send us a Message
+                </h2>
+              </div>
+              <p className="text-muted-foreground mb-8 pl-[52px]">
                 Fill out the form below and we'll respond within 24 hours
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
+                    <Label htmlFor="firstName" className="text-sm font-medium">First Name *</Label>
                     <Input 
                       id="firstName" 
                       placeholder="John" 
                       value={formData.firstName}
                       onChange={(e) => handleChange('firstName', e.target.value)}
                       required 
+                      className="h-12 rounded-xl border-border/50 focus:border-safari-gold transition-colors"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
+                    <Label htmlFor="lastName" className="text-sm font-medium">Last Name *</Label>
                     <Input 
                       id="lastName" 
                       placeholder="Doe" 
                       value={formData.lastName}
                       onChange={(e) => handleChange('lastName', e.target.value)}
                       required 
+                      className="h-12 rounded-xl border-border/50 focus:border-safari-gold transition-colors"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-sm font-medium">Email *</Label>
                   <Input 
                     id="email" 
                     type="email" 
@@ -196,27 +216,29 @@ const Contact = () => {
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
                     required 
+                    className="h-12 rounded-xl border-border/50 focus:border-safari-gold transition-colors"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
                   <Input 
                     id="phone" 
                     type="tel" 
                     placeholder="+1 234 567 890" 
                     value={formData.phone}
                     onChange={(e) => handleChange('phone', e.target.value)}
+                    className="h-12 rounded-xl border-border/50 focus:border-safari-gold transition-colors"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="interest">I'm interested in</Label>
+                  <Label htmlFor="interest" className="text-sm font-medium">I'm interested in</Label>
                   <select
                     id="interest"
                     value={formData.interest}
                     onChange={(e) => handleChange('interest', e.target.value)}
-                    className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex h-12 w-full rounded-xl border border-border/50 bg-background px-4 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-safari-gold/50 focus:border-safari-gold transition-colors"
                   >
                     <option>Safari Experience</option>
                     <option>Zanzibar Beach Holiday</option>
@@ -229,7 +251,7 @@ const Contact = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message">Your Message</Label>
+                  <Label htmlFor="message" className="text-sm font-medium">Your Message *</Label>
                   <Textarea
                     id="message"
                     placeholder="Tell us about your dream trip..."
@@ -237,16 +259,16 @@ const Contact = () => {
                     value={formData.message}
                     onChange={(e) => handleChange('message', e.target.value)}
                     required
+                    className="rounded-xl border-border/50 focus:border-safari-gold transition-colors resize-none"
                   />
                 </div>
 
                 {/* Dual Submit Options */}
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex flex-col sm:flex-row gap-3 pt-2">
                   <Button 
                     type="submit" 
-                    variant="safari" 
                     size="lg" 
-                    className="flex-1"
+                    className="flex-1 h-14 rounded-xl bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold shadow-gold hover:shadow-glow transition-all duration-300 hover:scale-[1.02]"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
@@ -279,80 +301,103 @@ const Contact = () => {
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
+              className="space-y-8"
             >
-              <h2 className="font-display text-3xl font-semibold text-foreground mb-2">
-                Get in Touch
-              </h2>
-              <p className="text-muted-foreground mb-8">
-                We're available 24/7 to assist you with your travel plans
-              </p>
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Phone className="w-5 h-5 text-primary" />
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-semibold text-foreground" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                    Get in Touch
+                  </h2>
+                </div>
+                <p className="text-muted-foreground pl-[52px]">
+                  We're available 24/7 to assist you with your travel plans
+                </p>
+              </div>
 
-              <div className="space-y-6 mb-12">
-                <div className="flex items-start gap-4 p-4 rounded-xl bg-muted/50">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              <div className="space-y-4">
+                <div className="group flex items-start gap-4 p-5 rounded-2xl bg-card shadow-soft border border-border/30 hover:border-safari-gold/30 hover:shadow-elevated transition-all duration-300">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Visit Our Office</h3>
                     <p className="text-muted-foreground">
-                      Kisauni, Zanzibar<br />
-                      Tanzania, East Africa
+                      Kisauni, Stone Town<br />
+                      Zanzibar, Tanzania
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 rounded-xl bg-muted/50">
-                  <div className="w-12 h-12 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0">
+                <div className="group flex items-start gap-4 p-5 rounded-2xl bg-card shadow-soft border border-border/30 hover:border-safari-gold/30 hover:shadow-elevated transition-all duration-300">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-safari-gold/20 to-safari-gold/5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <Phone className="w-6 h-6 text-safari-gold" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground mb-1">Call Us</h3>
-                    <p className="text-muted-foreground">
-                      +255 758 241 294<br />
-                      WhatsApp Available
-                    </p>
+                    <h3 className="font-semibold text-foreground mb-1">Call or WhatsApp</h3>
+                    <a href="tel:+255758241294" className="text-muted-foreground hover:text-safari-gold transition-colors block">
+                      +255 758 241 294
+                    </a>
+                    <span className="text-xs text-safari-gold font-medium">WhatsApp Available 24/7</span>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 rounded-xl bg-muted/50">
-                  <div className="w-12 h-12 rounded-full bg-safari-sage/10 flex items-center justify-center shrink-0">
+                <div className="group flex items-start gap-4 p-5 rounded-2xl bg-card shadow-soft border border-border/30 hover:border-safari-gold/30 hover:shadow-elevated transition-all duration-300">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-safari-sage/20 to-safari-sage/5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <Mail className="w-6 h-6 text-safari-sage" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Email Us</h3>
-                    <p className="text-muted-foreground">
-                      info@infinityvoyagetours.com<br />
+                    <a href="mailto:info@infinityvoyagetours.com" className="text-muted-foreground hover:text-safari-gold transition-colors block">
+                      info@infinityvoyagetours.com
+                    </a>
+                    <a href="mailto:bookings@infinityvoyagetours.com" className="text-muted-foreground hover:text-safari-gold transition-colors text-sm">
                       bookings@infinityvoyagetours.com
-                    </p>
+                    </a>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 rounded-xl bg-muted/50">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="group flex items-start gap-4 p-5 rounded-2xl bg-card shadow-soft border border-border/30 hover:border-safari-gold/30 hover:shadow-elevated transition-all duration-300">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <Clock className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Office Hours</h3>
                     <p className="text-muted-foreground">
-                      Monday - Friday: 8:00 AM - 6:00 PM (EAT)<br />
-                      24/7 Emergency Support Available
+                      Monday - Saturday: 8:00 AM - 6:00 PM (EAT)<br />
+                      <span className="text-safari-gold text-sm font-medium">24/7 Emergency Support</span>
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* WhatsApp CTA */}
-              <div className="bg-gradient-sunset rounded-xl p-6 text-center">
-                <MessageCircle className="w-10 h-10 text-primary-foreground mx-auto mb-4" />
-                <h3 className="font-display text-xl font-semibold text-primary-foreground mb-2">
-                  Quick Response via WhatsApp
-                </h3>
-                <p className="text-primary-foreground/80 mb-4">
-                  Get instant answers to your questions
-                </p>
-                <Button variant="hero" size="lg" className="w-full">
-                  Chat on WhatsApp
-                </Button>
+              {/* Premium WhatsApp CTA Card */}
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-safari-night via-safari-night/95 to-primary/20 p-8 text-center">
+                {/* Decorative elements */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-safari-gold/10 rounded-full blur-2xl" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-primary/10 rounded-full blur-xl" />
+                
+                <div className="relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-green-500 flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <MessageCircle className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-semibold text-primary-foreground mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                    Prefer WhatsApp?
+                  </h3>
+                  <p className="text-primary-foreground/80 mb-6 max-w-xs mx-auto">
+                    Get instant responses and plan your trip in real-time with our travel experts
+                  </p>
+                  <Button 
+                    size="lg"
+                    className="rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold h-14 px-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                    onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hello! I'm interested in booking a safari with Infinity Voyage Tours.")}`, "_blank")}
+                  >
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    Start Chat Now
+                  </Button>
+                </div>
               </div>
             </motion.div>
           </div>

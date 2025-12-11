@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Clock, Check, Loader2 } from "lucide-react";
+import { ArrowRight, Clock, Check, Loader2, Star, MapPin, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -223,8 +223,8 @@ export const TourPackages = () => {
           </div>
         </div>
 
-        {/* Packages Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7">
+        {/* Packages Grid - Premium 2x2 Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {filteredTours.map((tour, index) => (
             <motion.div
               key={tour.id}
@@ -232,79 +232,103 @@ export const TourPackages = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group safari-card hover-lift"
+              className="group relative bg-card rounded-3xl overflow-hidden shadow-soft hover:shadow-luxury transition-all duration-500 border border-border/30 hover:border-safari-gold/30"
             >
-              {/* Image */}
-              <div className="relative h-56 overflow-hidden img-zoom">
+              {/* Image - 60% height */}
+              <div className="relative h-72 lg:h-80 overflow-hidden">
                 <img
                   src={tour.featured_image || getPlaceholderImage(index)}
                   alt={tour.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-safari-night/70 via-safari-night/20 to-transparent" />
-                <div className="absolute top-4 left-4 flex gap-2">
-                  {tour.duration && (
-                    <Badge
-                      variant="secondary"
-                      className="bg-background/95 backdrop-blur-md text-xs font-semibold px-3 py-1.5 rounded-lg"
-                    >
-                      <Clock className="w-3 h-3 mr-1.5" />
-                      {tour.duration}
-                    </Badge>
-                  )}
-                  {tour.is_featured && (
-                    <Badge className="badge-premium shadow-gold">
-                      ✦ Popular
-                    </Badge>
-                  )}
+                {/* Multi-layer overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-safari-night via-safari-night/30 to-transparent opacity-80" />
+                <div className="absolute inset-0 bg-gradient-to-r from-safari-night/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Top badges */}
+                <div className="absolute top-5 left-5 right-5 flex items-start justify-between">
+                  <div className="flex flex-wrap gap-2">
+                    {tour.is_featured && (
+                      <Badge className="badge-premium shadow-gold animate-pulse">
+                        ✦ Featured
+                      </Badge>
+                    )}
+                    {tour.duration && (
+                      <Badge
+                        variant="secondary"
+                        className="bg-background/95 backdrop-blur-md text-xs font-semibold px-3 py-1.5 rounded-full shadow-soft"
+                      >
+                        <Clock className="w-3 h-3 mr-1.5" />
+                        {tour.duration}
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 bg-background/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-soft">
+                    <Star className="w-4 h-4 fill-safari-gold text-safari-gold" />
+                    <span className="text-sm font-bold">5.0</span>
+                  </div>
+                </div>
+
+                {/* Bottom content overlay */}
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <h3 className="text-2xl lg:text-3xl font-semibold text-white mb-2 group-hover:text-safari-gold transition-colors duration-300" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                    {tour.title}
+                  </h3>
+                  <p className="text-white/80 text-sm line-clamp-2 max-w-md">
+                    {tour.short_description || 'Experience the adventure of a lifetime with our expertly curated safari package'}
+                  </p>
                 </div>
               </div>
 
-              {/* Content */}
-              <div className="p-6">
-                <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">
-                  {tour.title}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-5 line-clamp-2 leading-relaxed">
-                  {tour.short_description || 'Experience the adventure of a lifetime'}
-                </p>
-
-                {/* Features */}
+              {/* Content Section */}
+              <div className="p-6 pt-5">
+                {/* Features grid */}
                 {tour.included && tour.included.length > 0 && (
-                  <div className="space-y-2.5 mb-5">
-                    {tour.included.slice(0, 3).map((feature) => (
+                  <div className="grid grid-cols-2 gap-3 mb-5">
+                    {tour.included.slice(0, 4).map((feature, idx) => (
                       <div
-                        key={feature}
+                        key={idx}
                         className="flex items-center gap-2.5 text-sm text-muted-foreground"
                       >
-                        <div className="w-5 h-5 rounded-full bg-safari-gold/10 flex items-center justify-center">
+                        <div className="w-5 h-5 rounded-full bg-safari-gold/10 flex items-center justify-center flex-shrink-0">
                           <Check className="w-3 h-3 text-safari-gold" />
                         </div>
-                        {feature}
+                        <span className="truncate">{feature}</span>
                       </div>
                     ))}
                   </div>
                 )}
 
-                {/* Footer */}
+                {/* Footer with price and CTA */}
                 <div className="flex items-center justify-between pt-5 border-t border-border/50">
                   <div>
-                    <span className="text-xs text-muted-foreground">From</span>
+                    <span className="text-xs text-muted-foreground uppercase tracking-wider">Starting from</span>
                     {tour.price ? (
-                      <p className="text-2xl font-bold text-gradient-gold">
+                      <p className="text-3xl font-bold text-gradient-gold" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                         ${tour.price.toLocaleString()}
+                        <span className="text-sm font-normal text-muted-foreground ml-1">/person</span>
                       </p>
                     ) : (
-                      <p className="text-sm font-medium text-muted-foreground">Contact us</p>
+                      <p className="text-lg font-semibold text-muted-foreground">Contact for price</p>
                     )}
                   </div>
                   <Link to={`/tour/${tour.slug}`}>
-                    <Button variant="ghost" size="sm" className="text-primary font-semibold hover:bg-primary/10 rounded-lg">
+                    <Button 
+                      size="lg" 
+                      className="rounded-xl bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold hover:shadow-gold transition-all duration-300 hover:scale-105 group/btn"
+                    >
                       View Details
-                      <ArrowRight className="w-4 h-4 ml-1" />
+                      <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1" />
                     </Button>
                   </Link>
                 </div>
+              </div>
+
+              {/* Decorative corner accent */}
+              <div className="absolute top-0 right-0 w-20 h-20 overflow-hidden pointer-events-none">
+                <div className="absolute top-4 -right-8 w-24 h-6 bg-gradient-to-r from-safari-gold to-safari-amber rotate-45 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
             </motion.div>
           ))}

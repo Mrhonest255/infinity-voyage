@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Search, Calendar as CalendarIcon, Users, Minus, Plus } from "lucide-react";
-import { motion } from "framer-motion";
+import { Search, Calendar as CalendarIcon, Users, Minus, Plus, MapPin, Compass, Play, ChevronDown } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { format } from "date-fns";
 import heroImage from "@/assets/hero-safari.jpg";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -37,6 +37,12 @@ export const Hero = () => {
   const [guests, setGuests] = useState(2);
   const [showGuests, setShowGuests] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
+  
+  // Parallax scroll effect
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 800], [0, 300]);
+  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   // YouTube video ID - from settings or default
   const videoUrl = settings?.homepage?.heroVideo || "https://www.youtube.com/watch?v=DZnw2TeLuEU";
@@ -58,90 +64,194 @@ export const Hero = () => {
   const heroSubtitle = settings?.homepage?.heroSubtitle?.trim() || "Your Gateway to Endless Exploration";
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Fallback Background Image - shows while video loads */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src={heroImage}
-          alt="African Safari"
-          className={`w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}
-        />
-      </div>
-
-      {/* YouTube Video Background */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 scale-150">
-          <iframe
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1&origin=${window.location.origin}&disablekb=1&fs=0`}
-            title="Background Video"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[177.78vh] min-w-full min-h-[56.25vw] h-screen"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen={false}
-            onLoad={() => setVideoLoaded(true)}
-            style={{
-              border: 'none',
-              pointerEvents: 'none',
-            }}
+    <section ref={heroRef} className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
+      {/* Parallax Background Container */}
+      <motion.div style={{ y }} className="absolute inset-0 z-0">
+        {/* Fallback Background Image - shows while video loads */}
+        <div className="absolute inset-0">
+          <img
+            src={heroImage}
+            alt="African Safari"
+            className={`w-full h-full object-cover scale-110 transition-opacity duration-1000 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}
           />
         </div>
-        {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-safari-night/50 via-safari-night/40 to-safari-night/70" />
+
+        {/* YouTube Video Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 scale-[1.3]">
+            <iframe
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1&origin=${window.location.origin}&disablekb=1&fs=0`}
+              title="Background Video"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[177.78vh] min-w-full min-h-[56.25vw] h-screen"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen={false}
+              onLoad={() => setVideoLoaded(true)}
+              style={{
+                border: 'none',
+                pointerEvents: 'none',
+              }}
+            />
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Premium Multi-Layer Overlay */}
+      <div className="absolute inset-0 z-[1]">
+        <div className="absolute inset-0 bg-gradient-to-b from-safari-night/60 via-safari-night/30 to-safari-night/80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-safari-night/40 via-transparent to-safari-night/40" />
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 container-wide mx-auto px-4 md:px-8 pt-32 pb-16">
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden">
+        {/* Corner decorations */}
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 0.15 }} 
+          transition={{ delay: 1, duration: 1 }}
+          className="absolute top-20 left-8 md:left-16"
+        >
+          <div className="w-24 h-24 md:w-32 md:h-32 border-l-2 border-t-2 border-safari-gold/40" />
+        </motion.div>
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 0.15 }} 
+          transition={{ delay: 1, duration: 1 }}
+          className="absolute bottom-32 right-8 md:right-16"
+        >
+          <div className="w-24 h-24 md:w-32 md:h-32 border-r-2 border-b-2 border-safari-gold/40" />
+        </motion.div>
+        
+        {/* Floating compass icon */}
+        <motion.div
+          initial={{ opacity: 0, rotate: -30 }}
+          animate={{ opacity: 0.1, rotate: 0 }}
+          transition={{ delay: 1.5, duration: 1 }}
+          className="absolute top-1/4 right-[10%] hidden lg:block"
+        >
+          <Compass className="w-48 h-48 text-safari-gold" strokeWidth={0.5} />
+        </motion.div>
+      </div>
+
+      {/* Main Content */}
+      <motion.div style={{ opacity }} className="relative z-10 container-wide mx-auto px-4 md:px-8 pt-32 pb-24">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
-          className="text-center mb-16"
+          className="text-center max-w-5xl mx-auto"
         >
-          {/* Luxury tagline */}
+          {/* Luxury tagline with animated lines */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="inline-flex items-center gap-3 mb-8"
+            className="inline-flex items-center gap-4 mb-10"
           >
-            <span className="w-12 h-px bg-gradient-to-r from-transparent via-safari-gold to-transparent" />
-            <span className="text-safari-gold text-sm font-medium uppercase tracking-[0.3em]">
-              Luxury African Experiences
+            <motion.span 
+              initial={{ width: 0 }}
+              animate={{ width: 60 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="h-px bg-gradient-to-r from-transparent via-safari-gold to-safari-gold" 
+            />
+            <span className="text-safari-gold text-xs md:text-sm font-medium uppercase tracking-[0.4em] flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              Tanzania's Premier Safari Experts
             </span>
-            <span className="w-12 h-px bg-gradient-to-r from-transparent via-safari-gold to-transparent" />
+            <motion.span 
+              initial={{ width: 0 }}
+              animate={{ width: 60 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="h-px bg-gradient-to-l from-transparent via-safari-gold to-safari-gold" 
+            />
           </motion.div>
 
-          {/* Main headline with elegant typography */}
-          <h1 className="text-5xl md:text-7xl lg:text-[6rem] xl:text-[7rem] font-semibold text-primary-foreground mb-8 leading-[0.95] tracking-tight">
-            <span className="block">Discover Tanzania's</span>
-            <span className="block text-gradient-luxury">Untamed Beauty</span>
+          {/* Main headline - Premium Typography */}
+          <h1 className="mb-8 leading-[0.9] tracking-tight">
+            <motion.span 
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-primary-foreground"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            >
+              Discover Tanzania's
+            </motion.span>
+            <motion.span 
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[9rem] font-bold text-gradient-luxury mt-2"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            >
+              Untamed Beauty
+            </motion.span>
           </h1>
 
-          {/* Subtitle with refined styling */}
-          <p className="text-lg md:text-xl lg:text-2xl text-primary-foreground/80 tracking-[0.15em] uppercase font-light max-w-3xl mx-auto leading-relaxed">
-            Embark on an extraordinary journey through the Serengeti,
-            <br className="hidden md:block" />
-            climb Kilimanjaro, and relax on Zanzibar's pristine beaches
-          </p>
+          {/* Subtitle with elegant styling */}
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-primary-foreground/85 tracking-wide font-light max-w-3xl mx-auto leading-relaxed mb-12"
+            style={{ fontFamily: "'Inter', sans-serif" }}
+          >
+            Embark on an extraordinary journey through the <span className="text-safari-gold font-medium">Serengeti</span>,
+            climb <span className="text-safari-gold font-medium">Kilimanjaro</span>, and relax on <span className="text-safari-gold font-medium">Zanzibar's</span> pristine beaches
+          </motion.p>
 
-          {/* Decorative line */}
+          {/* Decorative divider */}
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 1, delay: 0.8 }}
-            className="w-24 h-0.5 bg-gradient-to-r from-safari-gold via-safari-amber to-safari-gold mx-auto mt-10"
-          />
+            className="flex items-center justify-center gap-4 mb-12"
+          >
+            <span className="w-16 md:w-24 h-px bg-gradient-to-r from-transparent to-safari-gold/60" />
+            <div className="w-2 h-2 rounded-full bg-safari-gold" />
+            <span className="w-16 md:w-24 h-px bg-gradient-to-l from-transparent to-safari-gold/60" />
+          </motion.div>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+          >
+            <Button 
+              size="lg"
+              onClick={() => navigate('/safaris')}
+              className="h-14 px-10 text-base font-semibold rounded-full bg-gradient-to-r from-safari-gold via-safari-amber to-safari-gold text-safari-night shadow-gold hover:shadow-glow transition-all duration-500 hover:scale-105 group"
+            >
+              Explore Safaris
+              <motion.span
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="ml-2"
+              >
+                →
+              </motion.span>
+            </Button>
+            <Button 
+              size="lg"
+              variant="outline"
+              onClick={() => navigate('/plan-my-trip')}
+              className="h-14 px-10 text-base font-semibold rounded-full border-2 border-primary-foreground/30 text-primary-foreground bg-transparent hover:bg-primary-foreground/10 hover:border-safari-gold transition-all duration-300"
+            >
+              Plan Your Journey
+            </Button>
+          </motion.div>
         </motion.div>
 
-        {/* Removed Play Button since video is now auto-playing in background */}
-
-        {/* Search Box - Premium Glass Design */}
+        {/* Premium Search Box */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="max-w-5xl mx-auto mt-12"
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="max-w-5xl mx-auto"
         >
-          <div className="glass-light rounded-3xl shadow-luxury p-2 md:p-3">
+          <div className="glass-light rounded-3xl shadow-luxury p-2 md:p-3 border border-white/20">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
               {/* Destination */}
               <div className="relative">
@@ -278,24 +388,30 @@ export const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
         >
-          <div className="flex flex-col items-center gap-3 text-primary-foreground/80">
-            <span className="text-xs font-medium uppercase tracking-[0.25em]">Explore</span>
+          <button 
+            onClick={() => {
+              const nextSection = document.querySelector('section:nth-of-type(2)');
+              nextSection?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="flex flex-col items-center gap-3 text-primary-foreground/80 hover:text-safari-gold transition-colors group cursor-pointer"
+          >
+            <span className="text-[10px] font-medium uppercase tracking-[0.3em]">Scroll to Explore</span>
             <motion.div
-              animate={{ y: [0, 10, 0] }}
+              animate={{ y: [0, 8, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="w-7 h-12 rounded-full border-2 border-safari-gold/50 flex justify-center pt-2.5 backdrop-blur-sm"
+              className="w-8 h-14 rounded-full border-2 border-safari-gold/40 group-hover:border-safari-gold flex justify-center pt-3 backdrop-blur-sm transition-colors"
             >
               <motion.div 
-                animate={{ opacity: [0.5, 1, 0.5] }}
+                animate={{ opacity: [0.4, 1, 0.4], y: [0, 8, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="w-1.5 h-3 rounded-full bg-gradient-to-b from-safari-gold to-safari-amber" 
+                className="w-1.5 h-4 rounded-full bg-gradient-to-b from-safari-gold to-safari-amber" 
               />
             </motion.div>
-          </div>
+          </button>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 };

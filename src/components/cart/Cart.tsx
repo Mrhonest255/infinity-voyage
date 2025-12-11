@@ -243,8 +243,8 @@ export function CartDrawer() {
                   size="lg"
                   className="w-full h-14 bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold text-lg rounded-2xl shadow-gold hover:shadow-glow transition-all"
                 >
-                  <Link to="/contact" onClick={closeCart}>
-                    Request Booking
+                  <Link to="/checkout" onClick={closeCart}>
+                    Proceed to Checkout
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Link>
                 </Button>

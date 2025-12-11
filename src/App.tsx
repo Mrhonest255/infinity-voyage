@@ -35,6 +35,7 @@ import Transfers from "./pages/Transfers";
 import PlanMyTrip from "./pages/PlanMyTrip";
 import Blog from "./pages/Blog";
 import TrackBooking from "./pages/TrackBooking";
+import Checkout from "./pages/Checkout";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,7 @@ const App = () => (
               <Route path="/plan-my-trip" element={<PlanMyTrip />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/track-booking" element={<TrackBooking />} />
+              <Route path="/checkout" element={<Checkout />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/tours" element={<AdminTours />} />

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { HelpCircle, MessageCircle, Mail, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEO } from "@/components/SEO";
 
 const FAQ = () => {
   const faqs = [
@@ -115,6 +116,12 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO 
+        title="Tanzania Safari FAQ - Common Questions Answered"
+        description="Find answers to frequently asked questions about Tanzania safaris and Zanzibar tours. Booking policies, visa requirements, best time to visit, what to pack, and more."
+        keywords="Tanzania safari FAQ, safari questions, Tanzania visa, best time safari, what to pack safari, safari cancellation policy"
+        url="/faq"
+      />
       <Navbar />
       
       {/* Hero Section */}

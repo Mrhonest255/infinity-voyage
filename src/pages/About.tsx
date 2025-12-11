@@ -2,6 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { motion } from "framer-motion";
 import { Check, Users, Award, Globe } from "lucide-react";
+import { SEO } from "@/components/SEO";
 
 import heroImage from "@/assets/hero-safari.jpg";
 import serengetiImg from "@/assets/serengeti.jpg";
@@ -34,6 +35,12 @@ const values = [
 const About = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="About Us - Tanzania Safari & Zanzibar Tour Experts"
+        description="Infinity Voyage Tours & Safaris - Your trusted Tanzania tour operator since 2015. 5000+ happy travelers, expert local guides, sustainable tourism practices. Discover why we're the best choice for your African adventure."
+        keywords="about Infinity Voyage, Tanzania tour operator, local safari guides, sustainable tourism Tanzania, experienced safari company"
+        url="/about"
+      />
       <Navbar />
       
       {/* Hero */}

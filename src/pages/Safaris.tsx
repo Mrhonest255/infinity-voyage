@@ -8,6 +8,7 @@ import { ArrowRight, Clock, Check, MapPin, Filter } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { SEO, SEO_KEYWORDS } from "@/components/SEO";
 
 type SafariTour = {
   id: string;
@@ -61,6 +62,12 @@ const Safaris = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Tanzania Safari Tours - Serengeti, Ngorongoro, Tarangire"
+        description="Book unforgettable Tanzania safari adventures. Serengeti game drives, Ngorongoro Crater, Tarangire elephants, Lake Manyara flamingos. Expert guides, luxury camps, best prices. Great Migration specialists!"
+        keywords={SEO_KEYWORDS.safaris}
+        url="/safaris"
+      />
       <Navbar />
       
       {/* Hero */}
@@ -72,10 +79,10 @@ const Safaris = () => {
             className="text-center"
           >
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-4">
-              Mainland Safaris
+              Tanzania Safari Tours
             </h1>
             <p className="text-xl text-primary-foreground/80 max-w-2xl mx-auto">
-              Explore Tanzania's iconic national parks and witness the incredible wildlife of East Africa
+              Explore Tanzania's iconic national parks and witness the incredible wildlife of East Africa. Serengeti, Ngorongoro, Tarangire & more!
             </p>
           </motion.div>
         </div>

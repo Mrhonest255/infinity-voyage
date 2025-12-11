@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Clock, Check, MapPin, Sun, Waves, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from 'react-router-dom';
+import { SEO, SEO_KEYWORDS } from "@/components/SEO";
 
 import zanzibarImg from "@/assets/zanzibar.jpg";
 import stoneTownImg from "@/assets/stone-town.jpg";
@@ -95,6 +96,12 @@ const Zanzibar = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Zanzibar Tours & Excursions - Stone Town, Spice Tours, Beaches"
+        description="Discover Zanzibar with our expert-guided tours. Stone Town UNESCO heritage, spice tours, prison island, dolphin watching, snorkeling at Mnemba Island, Safari Blue & more. Book your Zanzibar adventure today!"
+        keywords={SEO_KEYWORDS.zanzibar}
+        url="/zanzibar"
+      />
       <Navbar />
       
       {/* Hero */}

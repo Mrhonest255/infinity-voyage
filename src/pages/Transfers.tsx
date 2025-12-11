@@ -15,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { SEO, SEO_KEYWORDS } from "@/components/SEO";
 import { 
   Plane, 
   Car, 
@@ -264,6 +265,12 @@ Please confirm this transfer booking!`;
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Zanzibar Airport Transfers - Reliable Pickup & Drop Service"
+        description="Book reliable Zanzibar airport transfers. Professional drivers, modern vehicles, fixed prices. Airport to Stone Town, Nungwi, Paje, Kendwa hotels. 24/7 service, flight monitoring included!"
+        keywords={SEO_KEYWORDS.transfers}
+        url="/transfers"
+      />
       <Navbar />
       
       {/* Hero Section */}

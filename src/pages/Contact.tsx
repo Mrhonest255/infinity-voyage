@@ -10,6 +10,7 @@ import { Phone, Mail, MapPin, Clock, Send, MessageCircle, Loader2 } from "lucide
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { SEO } from "@/components/SEO";
 
 import heroImage from "@/assets/hero-safari.jpg";
 
@@ -111,6 +112,12 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Contact Us - Book Your Tanzania Safari or Zanzibar Tour"
+        description="Get in touch with Infinity Voyage Tours. WhatsApp +255 758 241 294, Email info@infinityvoyagetours.com. Stone Town, Zanzibar office. 24/7 support for safari bookings and tour inquiries."
+        keywords="contact Infinity Voyage, Tanzania safari booking, Zanzibar tour booking, safari inquiry, tour quote Tanzania"
+        url="/contact"
+      />
       <Navbar />
       
       {/* Hero */}

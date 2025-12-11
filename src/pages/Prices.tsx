@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, Clock, Users, MapPin, Star, ArrowRight, Loader2, Calendar, Plane, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { SEO, SEO_KEYWORDS } from "@/components/SEO";
 
 const Prices = () => {
   const { data: tours, isLoading } = useQuery({
@@ -120,6 +121,12 @@ const Prices = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO 
+        title="Tanzania Safari & Zanzibar Tour Prices 2025 - Best Rates"
+        description="View transparent pricing for Tanzania safaris and Zanzibar tours. Compare packages, check what's included, and find the best deals. Budget to luxury options available. No hidden fees!"
+        keywords={SEO_KEYWORDS.prices}
+        url="/prices"
+      />
       <Navbar />
       
       {/* Hero Section */}

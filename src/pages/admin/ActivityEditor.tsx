@@ -179,6 +179,9 @@ const ActivityEditor = () => {
   };
 
   const generateWithAI = async () => {
+    console.log('=== Generate AI clicked ===');
+    console.log('Current formData.title:', formData.title);
+    
     if (!formData.title.trim()) {
       toast({ title: 'Title required', description: 'Please enter a title first.', variant: 'destructive' });
       return;
@@ -186,9 +189,13 @@ const ActivityEditor = () => {
 
     setGenerating(true);
     try {
+      console.log('Calling supabase.functions.invoke...');
       const { data, error } = await supabase.functions.invoke('generate-tour-content', {
         body: { title: formData.title, type: 'activity' }
       });
+      
+      console.log('Supabase response - data:', data);
+      console.log('Supabase response - error:', error);
 
       if (error) {
         console.error('Supabase function error:', error);
@@ -204,6 +211,8 @@ const ActivityEditor = () => {
       }
 
       const content = data.content;
+      console.log('AI content received:', content);
+      
       if (!content) {
         throw new Error('No content in AI response');
       }
@@ -220,7 +229,8 @@ const ActivityEditor = () => {
         highlights: Array.isArray(content.highlights) ? content.highlights : prev.highlights,
         slug: generateSlug(formData.title),
       }));
-
+      
+      console.log('Form data updated successfully');
       toast({ title: 'Content generated!', description: 'AI has generated activity content.' });
     } catch (error: any) {
       console.error('Generate AI error:', error);
@@ -230,18 +240,25 @@ const ActivityEditor = () => {
         variant: 'destructive' 
       });
     } finally {
+      console.log('Generate AI finished, setting generating to false');
       setGenerating(false);
     }
   };
 
   const saveMutation = useMutation({
     mutationFn: async () => {
+      console.log('=== Save Activity clicked ===');
+      console.log('isNew:', isNew);
+      console.log('formData:', formData);
+      
       // Validate required fields
       if (!formData.title.trim()) {
         throw new Error('Title is required');
       }
       
       const slug = formData.slug || generateSlug(formData.title);
+      console.log('Generated slug:', slug);
+      
       if (!slug) {
         throw new Error('Could not generate slug from title');
       }
@@ -275,14 +292,18 @@ const ActivityEditor = () => {
         activityData.created_by = user.id;
       }
 
-      console.log('Saving activity:', isNew ? 'INSERT' : 'UPDATE', activityData);
+      console.log('Activity data to save:', activityData);
 
       if (isNew) {
+        console.log('Inserting new activity...');
         const { data, error } = await supabase
           .from('activities')
           .insert(activityData as any)
           .select()
           .single();
+        
+        console.log('Insert result - data:', data);
+        console.log('Insert result - error:', error);
         
         if (error) {
           console.error('Insert error:', error);
@@ -290,12 +311,16 @@ const ActivityEditor = () => {
         }
         return data;
       } else {
+        console.log('Updating activity with id:', id);
         const { data, error } = await supabase
           .from('activities')
           .update(activityData as any)
           .eq('id', id)
           .select()
           .single();
+        
+        console.log('Update result - data:', data);
+        console.log('Update result - error:', error);
         
         if (error) {
           console.error('Update error:', error);
@@ -304,7 +329,8 @@ const ActivityEditor = () => {
         return data;
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('Save successful! Data:', data);
       queryClient.invalidateQueries({ queryKey: ['admin-activities'] });
       toast({ title: 'Activity saved successfully!' });
       navigate('/admin/activities');

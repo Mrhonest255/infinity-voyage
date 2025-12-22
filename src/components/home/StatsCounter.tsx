@@ -41,12 +41,14 @@ interface CounterProps {
 
 const Counter = ({ end, duration = 2, suffix = "" }: CounterProps) => {
   const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
 
   useEffect(() => {
-    if (!isInView) return;
-
+    if (!isInView || hasAnimated) return;
+    
+    setHasAnimated(true);
     let startTime: number;
     let animationFrame: number;
 
@@ -56,19 +58,27 @@ const Counter = ({ end, duration = 2, suffix = "" }: CounterProps) => {
       
       // Easing function for smooth animation
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-      setCount(Math.floor(easeOutQuart * end));
+      const newCount = Math.floor(easeOutQuart * end);
+      setCount(newCount);
 
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animate);
+      } else {
+        // Ensure final value is set
+        setCount(end);
       }
     };
 
-    animationFrame = requestAnimationFrame(animate);
+    // Small delay to ensure visibility
+    const timeout = setTimeout(() => {
+      animationFrame = requestAnimationFrame(animate);
+    }, 100);
 
     return () => {
+      clearTimeout(timeout);
       if (animationFrame) cancelAnimationFrame(animationFrame);
     };
-  }, [end, duration, isInView]);
+  }, [end, duration, isInView, hasAnimated]);
 
   return (
     <span ref={ref}>

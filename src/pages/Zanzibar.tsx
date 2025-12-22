@@ -28,52 +28,39 @@ interface Excursion {
 
 const Zanzibar = () => {
   const { isAdmin } = useAuth();
-  const [tours, setTours] = useState<Excursion[]>([]);
+  const [activities, setActivities] = useState<Excursion[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchZanzibarTours();
-  }, []);
+    fetchZanzibarActivities();
+  }, [isAdmin]);
 
-  const fetchZanzibarTours = async () => {
+  const fetchZanzibarActivities = async () => {
     setLoading(true);
     try {
+      // Fetch from activities table (created in Admin > Zanzibar Activities)
       let query = supabase
-        .from('tours')
+        .from('activities')
         .select('id, title, slug, duration, featured_image, price, category, highlights, short_description');
 
-      // For non-admins only show published tours
+      // For non-admins only show published activities
       if (!isAdmin) {
         query = query.eq('is_published', true);
       }
 
       const { data, error } = await query.order('created_at', { ascending: false });
-      if (error) throw error;
+      
+      if (error) {
+        console.error('Error fetching activities:', error);
+        throw error;
+      }
+      
       if (data) {
-        // Filter for Zanzibar-relevant tours: beach, cultural, marine, excursion categories
-        // OR tours with "zanzibar" in title/description
-        const zanzibarCategories = ['beach', 'cultural', 'marine', 'excursion', 'leisure', 'nature', 'water', 'snorkeling', 'diving', 'island'];
-        const zanzibarOnly = (data as any[]).filter((t) => {
-          const cat = (t.category || '').toLowerCase();
-          const title = (t.title || '').toLowerCase();
-          const desc = (t.short_description || '').toLowerCase();
-          // Include if category is zanzibar-relevant OR title/description mentions zanzibar
-          return zanzibarCategories.includes(cat) || 
-                 title.includes('zanzibar') || 
-                 title.includes('beach') ||
-                 title.includes('spice') ||
-                 title.includes('stone town') ||
-                 title.includes('nakupenda') ||
-                 title.includes('dolphin') ||
-                 title.includes('snorkel') ||
-                 desc.includes('zanzibar') ||
-                 cat.includes('zanz');
-        });
-        // If no Zanzibar tours found, show all tours as fallback
-        setTours((zanzibarOnly.length > 0 ? zanzibarOnly : data) as Excursion[]);
+        console.log('Fetched activities:', data);
+        setActivities(data as Excursion[]);
       }
     } catch (err) {
-      console.error('Error fetching Zanzibar tours', err);
+      console.error('Error fetching Zanzibar activities', err);
     } finally {
       setLoading(false);
     }
@@ -142,7 +129,7 @@ const Zanzibar = () => {
             {/* Stats */}
             <div className="flex flex-wrap items-center justify-center gap-8 mt-10">
               <div className="text-center">
-                <p className="text-3xl font-bold text-cyan-300">{tours.length}+</p>
+                <p className="text-3xl font-bold text-cyan-300">{activities.length}+</p>
                 <p className="text-sm text-white/60">Excursions</p>
               </div>
               <div className="w-px h-10 bg-white/20 hidden sm:block" />
@@ -243,8 +230,30 @@ const Zanzibar = () => {
             </p>
           </motion.div>
 
+          {/* Empty State */}
+          {activities.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-16"
+            >
+              <div className="w-20 h-20 rounded-full bg-cyan-500/10 flex items-center justify-center mx-auto mb-4">
+                <Waves className="w-10 h-10 text-cyan-500" />
+              </div>
+              <h3 className="text-xl font-semibold text-foreground mb-2">No Excursions Available Yet</h3>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                We're preparing amazing Zanzibar excursions for you. Please check back soon or contact us for custom tours.
+              </p>
+              <Link to="/contact">
+                <Button className="mt-6 bg-gradient-to-r from-cyan-500 to-cyan-400">
+                  Contact Us
+                </Button>
+              </Link>
+            </motion.div>
+          )}
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {tours.map((excursion, index) => (
+            {activities.map((excursion, index) => (
               <motion.div
                 key={excursion.id}
                 initial={{ opacity: 0, y: 30 }}
@@ -314,12 +323,17 @@ const Zanzibar = () => {
                   )}
 
                   {/* CTA */}
-                  <Link to={`/tour/${excursion.slug}`} className="block">
+                  <a 
+                    href={`https://wa.me/255758241294?text=Hello! I'm interested in booking "${excursion.title}" excursion. Please provide more details.`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
                     <Button className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-white font-semibold hover:shadow-lg transition-all group/btn">
                       Book Now
                       <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1" />
                     </Button>
-                  </Link>
+                  </a>
                 </div>
               </motion.div>
             ))}

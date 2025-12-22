@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Component, ErrorInfo, ReactNode } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -14,7 +14,67 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, Save, Sparkles, Loader2, Plus, X, MapPin, DollarSign } from 'lucide-react';
+import { ArrowLeft, Save, Sparkles, Loader2, Plus, X, MapPin, DollarSign, AlertTriangle } from 'lucide-react';
+
+// Error Boundary Component
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class ActivityEditorErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryState> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('ActivityEditor Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <AdminLayout>
+          <div className="max-w-2xl mx-auto py-12">
+            <Card className="border-destructive">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-destructive">
+                  <AlertTriangle className="h-5 w-5" />
+                  Something went wrong
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  An error occurred while loading the activity editor.
+                </p>
+                {this.state.error && (
+                  <pre className="bg-muted p-4 rounded-lg text-sm overflow-auto">
+                    {this.state.error.message}
+                  </pre>
+                )}
+                <div className="flex gap-2">
+                  <Button onClick={() => window.location.reload()}>
+                    Reload Page
+                  </Button>
+                  <Button variant="outline" onClick={() => window.history.back()}>
+                    Go Back
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </AdminLayout>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 // Define pickup zones for pricing
 const PICKUP_ZONES = [
@@ -130,10 +190,24 @@ const ActivityEditor = () => {
         body: { title: formData.title, type: 'activity' }
       });
 
-      if (error) throw error;
-      if (data.error) throw new Error(data.error);
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(error.message || 'Failed to call AI function');
+      }
+      
+      if (!data) {
+        throw new Error('No data received from AI function');
+      }
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
 
       const content = data.content;
+      if (!content) {
+        throw new Error('No content in AI response');
+      }
+      
       setFormData(prev => ({
         ...prev,
         description: content.description || prev.description,
@@ -141,15 +215,20 @@ const ActivityEditor = () => {
         duration: content.duration || prev.duration,
         price: content.price || prev.price,
         location: content.location || prev.location,
-        included: content.included || prev.included,
-        excluded: content.excluded || prev.excluded,
-        highlights: content.highlights || prev.highlights,
+        included: Array.isArray(content.included) ? content.included : prev.included,
+        excluded: Array.isArray(content.excluded) ? content.excluded : prev.excluded,
+        highlights: Array.isArray(content.highlights) ? content.highlights : prev.highlights,
         slug: generateSlug(formData.title),
       }));
 
       toast({ title: 'Content generated!', description: 'AI has generated activity content.' });
     } catch (error: any) {
-      toast({ title: 'Generation failed', description: error.message, variant: 'destructive' });
+      console.error('Generate AI error:', error);
+      toast({ 
+        title: 'Generation failed', 
+        description: error?.message || 'An unexpected error occurred. Please try again.', 
+        variant: 'destructive' 
+      });
     } finally {
       setGenerating(false);
     }
@@ -157,41 +236,86 @@ const ActivityEditor = () => {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const activityData = {
-        title: formData.title,
-        slug: formData.slug || generateSlug(formData.title),
-        description: formData.description,
-        short_description: formData.short_description,
-        duration: formData.duration,
+      // Validate required fields
+      if (!formData.title.trim()) {
+        throw new Error('Title is required');
+      }
+      
+      const slug = formData.slug || generateSlug(formData.title);
+      if (!slug) {
+        throw new Error('Could not generate slug from title');
+      }
+
+      // Build activity data - exclude zone_prices if not in the database schema
+      const activityData: Record<string, any> = {
+        title: formData.title.trim(),
+        slug: slug,
+        description: formData.description || null,
+        short_description: formData.short_description || null,
+        duration: formData.duration || null,
         price: formData.price,
-        zone_prices: formData.zone_prices,
-        location: formData.location,
-        category: formData.category,
-        included: formData.included,
-        excluded: formData.excluded,
-        highlights: formData.highlights,
-        featured_image: formData.featured_image,
-        gallery: formData.gallery,
+        location: formData.location || null,
+        category: formData.category || 'excursion',
+        included: formData.included.length > 0 ? formData.included : null,
+        excluded: formData.excluded.length > 0 ? formData.excluded : null,
+        highlights: formData.highlights.length > 0 ? formData.highlights : null,
+        featured_image: formData.featured_image || null,
+        gallery: formData.gallery.length > 0 ? formData.gallery : null,
         is_featured: formData.is_featured,
         is_published: formData.is_published,
-        created_by: user?.id,
       };
 
+      // Only add zone_prices if it has values
+      if (Object.keys(formData.zone_prices).length > 0) {
+        activityData.zone_prices = formData.zone_prices;
+      }
+
+      // Add created_by only for new records
+      if (isNew && user?.id) {
+        activityData.created_by = user.id;
+      }
+
+      console.log('Saving activity:', isNew ? 'INSERT' : 'UPDATE', activityData);
+
       if (isNew) {
-        const { error } = await (supabase.from('activities').insert(activityData as any) as any);
-        if (error) throw error;
+        const { data, error } = await supabase
+          .from('activities')
+          .insert(activityData as any)
+          .select()
+          .single();
+        
+        if (error) {
+          console.error('Insert error:', error);
+          throw new Error(error.message || 'Failed to create activity');
+        }
+        return data;
       } else {
-        const { error } = await (supabase.from('activities').update(activityData as any).eq('id', id) as any);
-        if (error) throw error;
+        const { data, error } = await supabase
+          .from('activities')
+          .update(activityData as any)
+          .eq('id', id)
+          .select()
+          .single();
+        
+        if (error) {
+          console.error('Update error:', error);
+          throw new Error(error.message || 'Failed to update activity');
+        }
+        return data;
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-activities'] });
-      toast({ title: 'Activity saved' });
+      toast({ title: 'Activity saved successfully!' });
       navigate('/admin/activities');
     },
     onError: (error: Error) => {
-      toast({ title: 'Save failed', description: error.message, variant: 'destructive' });
+      console.error('Save mutation error:', error);
+      toast({ 
+        title: 'Save failed', 
+        description: error?.message || 'An unexpected error occurred. Please try again.', 
+        variant: 'destructive' 
+      });
     },
   });
 
@@ -514,4 +638,11 @@ const ActivityEditor = () => {
   );
 };
 
-export default ActivityEditor;
+// Wrap the editor with error boundary for better error handling
+const ActivityEditorWithErrorBoundary = () => (
+  <ActivityEditorErrorBoundary>
+    <ActivityEditor />
+  </ActivityEditorErrorBoundary>
+);
+
+export default ActivityEditorWithErrorBoundary;

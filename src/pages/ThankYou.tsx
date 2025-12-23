@@ -137,40 +137,7 @@ const TrackingCodeDisplay = ({ code }: { code: string }) => {
 };
 
 const ThankYou = () => {
-  const [searchParams] = useSearchParams();
-  const trackingCode = searchParams.get('code') || 'IV-XXXXXX';
-  const customerName = searchParams.get('name') || 'Valued Guest';
-  const customerEmail = searchParams.get('email') || '';
-  const tourName = searchParams.get('tour') || 'Tanzania Safari Adventure';
-  const travelDate = searchParams.get('date') || 'To be confirmed';
-  const guests = parseInt(searchParams.get('guests') || '2');
-  const [showConfetti, setShowConfetti] = useState(true);
-
-  useEffect(() => {
-    // Stop confetti after 5 seconds
-    const timer = setTimeout(() => setShowConfetti(false), 5000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleDownloadPDF = () => {
-    downloadBookingPDF({
-      trackingCode,
-      customerName,
-      customerEmail,
-      tourName,
-      travelDate,
-      numberOfGuests: guests,
-      status: 'pending',
-    });
-  };
-
-  const steps = [
-    { icon: Package, title: "Booking Received", description: "We got your request", completed: true },
-    { icon: Clock, title: "Under Review", description: "Our team is reviewing", completed: false },
-    { icon: Calendar, title: "Confirmation", description: "We'll confirm soon", completed: false },
-    { icon: Heart, title: "Your Adventure", description: "Get ready to explore!", completed: false },
-  ];
-
+  // ...existing code...
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -178,28 +145,28 @@ const ThankYou = () => {
       {/* Confetti */}
       {showConfetti && <Confetti />}
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-16 overflow-hidden">
-        {/* Background */}
+      {/* Premium Hero Section */}
+      <section className="relative pt-40 pb-24 overflow-hidden">
+        {/* Background Elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-background to-safari-gold/5" />
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-green-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-safari-gold/10 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-green-500/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-safari-gold/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
 
         <div className="relative container-wide mx-auto px-4 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-3xl mx-auto text-center"
+            transition={{ duration: 0.8 }}
+            className="max-w-4xl mx-auto text-center"
           >
             {/* Success Icon */}
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
+              initial={{ scale: 0, rotate: -20 }}
+              animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-              className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 mb-8 shadow-xl"
+              className="inline-flex items-center justify-center w-28 h-28 rounded-[2rem] bg-gradient-to-br from-green-500 to-emerald-600 mb-10 shadow-2xl shadow-green-500/20"
             >
-              <CheckCircle2 className="w-12 h-12 text-white" />
+              <CheckCircle2 className="w-14 h-14 text-white" />
             </motion.div>
 
             {/* Title */}
@@ -207,23 +174,23 @@ const ThankYou = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-4"
+              className="text-5xl md:text-7xl font-bold text-safari-night mb-6"
               style={{ fontFamily: "'Cormorant Garamond', serif" }}
             >
-              Booking <span className="text-gradient-gold">Confirmed!</span>
+              Booking <span className="italic text-safari-gold">Confirmed!</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="text-xl text-muted-foreground mb-10"
+              className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed"
             >
-              Thank you for choosing Infinity Voyage Tours. Your adventure awaits!
+              Thank you for choosing <span className="text-safari-night font-bold">Infinity Voyage Tours</span>. Your extraordinary African adventure starts here!
             </motion.p>
 
             {/* Tracking Code Display */}
-            <div className="mb-12">
+            <div className="mb-16">
               <TrackingCodeDisplay code={trackingCode} />
             </div>
 
@@ -232,34 +199,32 @@ const ThankYou = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="mb-12"
+              className="mb-16"
             >
-              <Card className="bg-card/80 backdrop-blur border-border/50">
-                <CardContent className="p-6 md:p-8">
-                  <h3 className="text-lg font-semibold mb-6 flex items-center justify-center gap-2">
+              <Card className="bg-white/80 backdrop-blur-xl border-border/40 shadow-2xl rounded-[3rem] overflow-hidden">
+                <CardContent className="p-10 md:p-16">
+                  <div className="inline-flex items-center gap-3 mb-10 px-6 py-3 bg-safari-gold/10 rounded-full border border-safari-gold/20">
                     <Sparkles className="w-5 h-5 text-safari-gold" />
-                    What Happens Next
-                  </h3>
+                    <span className="text-safari-gold text-sm font-bold uppercase tracking-widest">What Happens Next</span>
+                  </div>
                   
-                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-12 relative">
+                    {/* Connecting Line (Desktop) */}
+                    <div className="hidden md:block absolute top-8 left-[15%] right-[15%] h-0.5 bg-border/30 -z-10" />
+                    
                     {steps.map((step, index) => (
-                      <div key={step.title} className="flex items-center gap-4 md:flex-col md:text-center flex-1">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
+                      <div key={step.title} className="flex flex-col items-center text-center group">
+                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 ${
                           step.completed 
-                            ? 'bg-green-500 text-white' 
-                            : 'bg-muted text-muted-foreground'
+                            ? 'bg-green-500 text-white shadow-xl shadow-green-500/20 scale-110' 
+                            : 'bg-muted text-muted-foreground group-hover:bg-safari-gold/10 group-hover:text-safari-gold'
                         }`}>
-                          <step.icon className="w-6 h-6" />
+                          <step.icon className="w-8 h-8" />
                         </div>
-                        <div>
-                          <p className={`font-semibold ${step.completed ? 'text-green-600' : 'text-foreground'}`}>
-                            {step.title}
-                          </p>
-                          <p className="text-sm text-muted-foreground">{step.description}</p>
-                        </div>
-                        {index < steps.length - 1 && (
-                          <div className="hidden md:block flex-1 h-px bg-border mx-4" />
-                        )}
+                        <h4 className={`text-lg font-bold mb-2 ${step.completed ? 'text-safari-night' : 'text-muted-foreground'}`}>
+                          {step.title}
+                        </h4>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
                       </div>
                     ))}
                   </div>
@@ -272,31 +237,31 @@ const ThankYou = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1 }}
-              className="flex flex-wrap justify-center gap-4"
+              className="flex flex-col sm:flex-row justify-center gap-6"
             >
               <Button 
-                variant="safari" 
-                size="lg" 
-                className="shadow-gold"
+                size="xl"
+                className="bg-safari-night hover:bg-safari-gold hover:text-safari-night text-white font-bold rounded-full px-10 h-16 text-lg shadow-2xl transition-all duration-300"
                 onClick={handleDownloadPDF}
               >
-                <Download className="w-5 h-5 mr-2" />
+                <Download className="w-5 h-5 mr-3" />
                 Download Voucher PDF
               </Button>
 
               <Link to="/track-booking">
-                <Button variant="outline" size="lg">
-                  <Package className="w-5 h-5 mr-2" />
+                <Button variant="outline" size="xl" className="border-2 border-border/50 hover:border-safari-gold hover:bg-safari-gold/5 rounded-full px-10 h-16 text-lg font-bold transition-all duration-300">
+                  <Package className="w-5 h-5 mr-3" />
                   Track Your Booking
                 </Button>
               </Link>
               
               <Button 
                 variant="outline" 
-                size="lg"
+                size="xl"
+                className="border-2 border-border/50 hover:border-safari-gold hover:bg-safari-gold/5 rounded-full px-10 h-16 text-lg font-bold transition-all duration-300"
                 onClick={() => window.open(`https://wa.me/255758241294?text=Hello! I just made a booking with code ${trackingCode}. I would like more information.`, '_blank')}
               >
-                <MessageCircle className="w-5 h-5 mr-2" />
+                <MessageCircle className="w-5 h-5 mr-3" />
                 Chat with Us
               </Button>
             </motion.div>
@@ -305,25 +270,26 @@ const ThankYou = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-24 bg-muted/30 relative overflow-hidden">
         <div className="container-wide mx-auto px-4 md:px-8">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center mb-10"
+              className="text-center mb-16"
             >
-              <h2 className="text-2xl md:text-3xl font-semibold mb-4">
-                Why You're in <span className="text-gradient-gold">Good Hands</span>
+              <h2 className="text-3xl md:text-5xl font-bold text-safari-night mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                Why You're in <span className="italic text-safari-gold">Good Hands</span>
               </h2>
+              <div className="w-24 h-1 bg-safari-gold mx-auto rounded-full" />
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-8">
               {[
-                { icon: "⏰", title: "24-Hour Response", desc: "Our team will contact you within 24 hours" },
-                { icon: "🎯", title: "Personalized Service", desc: "Tailored itineraries just for you" },
-                { icon: "🛡️", title: "Safe & Secure", desc: "Licensed and insured travel company" },
+                { icon: "⏰", title: "24-Hour Response", desc: "Our team will contact you within 24 hours to finalize details." },
+                { icon: "🎯", title: "Personalized Service", desc: "Every itinerary is tailored to your specific preferences and needs." },
+                { icon: "🛡️", title: "Safe & Secure", desc: "We are a fully licensed and insured travel company based in Tanzania." },
               ].map((item, index) => (
                 <motion.div
                   key={item.title}
@@ -331,11 +297,13 @@ const ThankYou = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="text-center p-6 rounded-2xl bg-background border border-border"
+                  className="bg-white p-10 rounded-[2.5rem] border border-border/40 shadow-xl hover:shadow-2xl transition-all duration-500 group"
                 >
-                  <span className="text-4xl mb-4 block">{item.icon}</span>
-                  <h3 className="font-semibold mb-2">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  <div className="w-20 h-20 rounded-2xl bg-safari-gold/10 flex items-center justify-center text-4xl mb-8 group-hover:scale-110 transition-transform duration-500">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-safari-night mb-4">{item.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -344,35 +312,29 @@ const ThankYou = () => {
       </section>
 
       {/* Explore More */}
-      <section className="py-16">
+      <section className="py-32">
         <div className="container-wide mx-auto px-4 md:px-8 text-center">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-2xl font-semibold mb-6">
-              While You Wait, Explore More
+            <h2 className="text-3xl md:text-4xl font-bold text-safari-night mb-12" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              While You Wait, <span className="italic text-safari-gold">Explore More</span>
             </h2>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link to="/safaris">
-                <Button variant="outline" size="lg">
-                  Explore Safaris
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-              <Link to="/zanzibar">
-                <Button variant="outline" size="lg">
-                  Discover Zanzibar
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-              <Link to="/gallery">
-                <Button variant="outline" size="lg">
-                  View Gallery
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
+            <div className="flex flex-wrap justify-center gap-6">
+              {[
+                { label: "Explore Safaris", path: "/safaris" },
+                { label: "Discover Zanzibar", path: "/zanzibar" },
+                { label: "View Gallery", path: "/gallery" }
+              ].map((link) => (
+                <Link key={link.path} to={link.path}>
+                  <Button variant="outline" size="xl" className="border-2 border-border/50 hover:border-safari-gold hover:bg-safari-gold/5 rounded-full px-10 h-16 text-lg font-bold transition-all duration-300">
+                    {link.label}
+                    <ArrowRight className="w-5 h-5 ml-3" />
+                  </Button>
+                </Link>
+              ))}
             </div>
           </motion.div>
         </div>

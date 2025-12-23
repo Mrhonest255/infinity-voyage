@@ -18,6 +18,7 @@ export interface SocialSettings {
   twitter: string;
   youtube: string;
   tripadvisor: string;
+  tiktok: string;
 }
 
 export interface HomepageSettings {

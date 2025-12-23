@@ -174,11 +174,11 @@ export const TourPackages = () => {
   return (
     <section className="section-padding bg-background relative overflow-hidden">
       {/* Decorative elements */}
-      <div className="absolute top-1/2 right-0 w-[600px] h-[600px] bg-primary/3 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute top-1/2 right-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-primary/3 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
       <div className="container-wide mx-auto relative">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 sm:gap-8 mb-10 sm:mb-12 lg:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -186,26 +186,26 @@ export const TourPackages = () => {
             transition={{ duration: 0.6 }}
           >
             {/* Section label */}
-            <div className="flex items-center gap-3 mb-4">
-              <span className="w-10 h-px bg-safari-gold" />
-              <span className="text-safari-gold text-sm font-semibold uppercase tracking-[0.2em]">
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <span className="w-8 sm:w-10 h-px bg-safari-gold" />
+              <span className="text-safari-gold text-xs sm:text-sm font-semibold uppercase tracking-[0.15em] sm:tracking-[0.2em]">
                 Curated Experiences
               </span>
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-3 sm:mb-4">
               Our Top <span className="text-gradient-gold">Tour Packages</span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-xl">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-xl">
               Handpicked safari and beach experiences designed for unforgettable memories.
             </p>
           </motion.div>
-          <div className="flex flex-wrap gap-4 items-center">
-            <div className="flex rounded-2xl bg-muted/60 p-1.5 border border-border/50">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center">
+            <div className="flex rounded-xl sm:rounded-2xl bg-muted/60 p-1 sm:p-1.5 border border-border/50 w-full sm:w-auto overflow-x-auto scroll-smooth-touch">
               {["all", "safari", "zanzibar"].map((key) => (
                 <button
                   key={key}
                   onClick={() => setActiveFilter(key as "all" | "safari" | "zanzibar")}
-                  className={`px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 ${
+                  className={`px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl transition-all duration-300 whitespace-nowrap flex-1 sm:flex-none touch-target ${
                     activeFilter === key
                       ? "bg-primary text-primary-foreground shadow-elevated"
                       : "text-foreground hover:bg-primary/10"
@@ -215,7 +215,7 @@ export const TourPackages = () => {
                 </button>
               ))}
             </div>
-            <Link to="/safaris">
+            <Link to="/safaris" className="hidden sm:block">
               <Button variant="outline" size="lg" className="rounded-xl border-2 hover:border-primary">
                 View All
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -225,7 +225,7 @@ export const TourPackages = () => {
         </div>
 
         {/* Packages Grid - Premium 2x2 Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {filteredTours.map((tour, index) => (
             <motion.div
               key={tour.id}
@@ -233,10 +233,10 @@ export const TourPackages = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group relative bg-card rounded-3xl overflow-hidden shadow-soft hover:shadow-luxury transition-all duration-500 border border-border/30 hover:border-safari-gold/30"
+              className="group relative bg-card rounded-2xl sm:rounded-3xl overflow-hidden card-modern border border-border/30 hover:border-safari-gold/30"
             >
               {/* Image - 60% height */}
-              <div className="relative h-72 lg:h-80 overflow-hidden">
+              <div className="relative h-56 sm:h-64 lg:h-72 xl:h-80 overflow-hidden">
                 <img
                   src={tour.featured_image || getPlaceholderImage(index)}
                   alt={tour.title}
@@ -247,54 +247,54 @@ export const TourPackages = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-safari-night/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 {/* Top badges */}
-                <div className="absolute top-5 left-5 right-5 flex items-start justify-between">
-                  <div className="flex flex-wrap gap-2">
+                <div className="absolute top-3 sm:top-5 left-3 sm:left-5 right-3 sm:right-5 flex items-start justify-between">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {tour.is_featured && (
-                      <Badge className="badge-premium shadow-gold animate-pulse">
+                      <Badge className="badge-premium shadow-gold animate-pulse text-[10px] sm:text-xs">
                         ✦ Featured
                       </Badge>
                     )}
                     {tour.duration && (
                       <Badge
                         variant="secondary"
-                        className="bg-background/95 backdrop-blur-md text-xs font-semibold px-3 py-1.5 rounded-full shadow-soft"
+                        className="bg-background/95 backdrop-blur-md text-[10px] sm:text-xs font-semibold px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-soft"
                       >
-                        <Clock className="w-3 h-3 mr-1.5" />
+                        <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 sm:mr-1.5" />
                         {tour.duration}
                       </Badge>
                     )}
                   </div>
                   
                   {/* Rating */}
-                  <div className="flex items-center gap-1 bg-background/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-soft">
-                    <Star className="w-4 h-4 fill-safari-gold text-safari-gold" />
-                    <span className="text-sm font-bold">5.0</span>
+                  <div className="flex items-center gap-1 bg-background/95 backdrop-blur-md px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-soft">
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-safari-gold text-safari-gold" />
+                    <span className="text-xs sm:text-sm font-bold">5.0</span>
                   </div>
                 </div>
 
                 {/* Bottom content overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-2xl lg:text-3xl font-semibold text-white mb-2 group-hover:text-safari-gold transition-colors duration-300" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white mb-1.5 sm:mb-2 group-hover:text-safari-gold transition-colors duration-300" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                     {tour.title}
                   </h3>
-                  <p className="text-white/80 text-sm line-clamp-2 max-w-md">
+                  <p className="text-white/80 text-xs sm:text-sm line-clamp-2 max-w-md">
                     {tour.short_description || 'Experience the adventure of a lifetime with our expertly curated safari package'}
                   </p>
                 </div>
               </div>
 
               {/* Content Section */}
-              <div className="p-6 pt-5">
+              <div className="p-4 sm:p-6 pt-4 sm:pt-5">
                 {/* Features grid */}
                 {tour.included && tour.included.length > 0 && (
-                  <div className="grid grid-cols-2 gap-3 mb-5">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-5">
                     {tour.included.slice(0, 4).map((feature, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-2.5 text-sm text-muted-foreground"
+                        className="flex items-center gap-2 sm:gap-2.5 text-xs sm:text-sm text-muted-foreground"
                       >
-                        <div className="w-5 h-5 rounded-full bg-safari-gold/10 flex items-center justify-center flex-shrink-0">
-                          <Check className="w-3 h-3 text-safari-gold" />
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-safari-gold/10 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-safari-gold" />
                         </div>
                         <span className="truncate">{feature}</span>
                       </div>
@@ -303,19 +303,19 @@ export const TourPackages = () => {
                 )}
 
                 {/* Footer with price and CTA */}
-                <div className="flex items-center justify-between pt-5 border-t border-border/50">
-                  <div>
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider">Starting from</span>
+                <div className="flex items-center justify-between pt-4 sm:pt-5 border-t border-border/50 gap-3">
+                  <div className="min-w-0">
+                    <span className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">Starting from</span>
                     {tour.price ? (
-                      <p className="text-3xl font-bold text-gradient-gold" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                      <p className="text-2xl sm:text-3xl font-bold text-gradient-gold" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                         ${tour.price.toLocaleString()}
-                        <span className="text-sm font-normal text-muted-foreground ml-1">/person</span>
+                        <span className="text-xs sm:text-sm font-normal text-muted-foreground ml-1">/person</span>
                       </p>
                     ) : (
-                      <p className="text-lg font-semibold text-muted-foreground">Contact for price</p>
+                      <p className="text-sm sm:text-lg font-semibold text-muted-foreground">Contact for price</p>
                     )}
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                     <AddToCartButton
                       item={{
                         id: tour.id,
@@ -331,12 +331,12 @@ export const TourPackages = () => {
                       <motion.div
                         whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        className="relative px-6 py-3 rounded-2xl bg-gradient-to-r from-safari-gold via-safari-amber to-safari-gold bg-[length:200%_100%] text-safari-night font-bold shadow-lg hover:shadow-gold transition-all duration-300 overflow-hidden flex items-center gap-2 group/btn animate-shimmer"
+                        className="relative px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gradient-to-r from-safari-gold via-safari-amber to-safari-gold bg-[length:200%_100%] text-safari-night font-bold shadow-lg hover:shadow-gold transition-all duration-300 overflow-hidden flex items-center gap-1.5 sm:gap-2 group/btn animate-shimmer text-sm sm:text-base"
                       >
                         {/* Shine effect */}
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
                         <span className="relative z-10">View</span>
-                        <ArrowRight className="w-4 h-4 relative z-10 transition-transform group-hover/btn:translate-x-1" />
+                        <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 relative z-10 transition-transform group-hover/btn:translate-x-1" />
                       </motion.div>
                     </Link>
                   </div>

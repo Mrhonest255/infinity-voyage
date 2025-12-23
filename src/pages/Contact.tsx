@@ -121,7 +121,7 @@ const Contact = () => {
       <Navbar />
       
       {/* Hero */}
-      <section className="relative pt-32 pb-24 overflow-hidden">
+      <section className="relative pt-24 sm:pt-32 pb-16 sm:pb-24 overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={heroImage}
@@ -132,8 +132,8 @@ const Contact = () => {
         </div>
         {/* Decorative elements */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-safari-gold/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-10 w-48 sm:w-72 h-48 sm:h-72 bg-safari-gold/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-64 sm:w-96 h-64 sm:h-96 bg-primary/10 rounded-full blur-3xl" />
         </div>
         <div className="relative container-wide mx-auto px-4 md:px-8">
           <motion.div
@@ -141,17 +141,17 @@ const Contact = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center max-w-3xl mx-auto"
           >
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <span className="w-10 h-px bg-safari-gold" />
-              <span className="text-safari-gold text-sm font-semibold uppercase tracking-[0.2em]">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <span className="w-6 sm:w-10 h-px bg-safari-gold" />
+              <span className="text-safari-gold text-[10px] sm:text-sm font-semibold uppercase tracking-[0.15em] sm:tracking-[0.2em]">
                 Get in Touch
               </span>
-              <span className="w-10 h-px bg-safari-gold" />
+              <span className="w-6 sm:w-10 h-px bg-safari-gold" />
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-primary-foreground mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-primary-foreground mb-4 sm:mb-6 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
               Let's Plan Your <span className="text-gradient-luxury">Adventure</span>
             </h1>
-            <p className="text-xl text-primary-foreground/80 max-w-2xl mx-auto">
+            <p className="text-base sm:text-xl text-primary-foreground/80 max-w-2xl mx-auto px-4">
               Have questions? We're here to help create your perfect African experience
             </p>
           </motion.div>
@@ -159,56 +159,56 @@ const Contact = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="section-padding bg-gradient-to-b from-background to-muted/30">
-        <div className="container-wide mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16">
+      <section className="py-12 sm:py-20 md:py-28 bg-gradient-to-b from-background to-muted/30">
+        <div className="container-wide mx-auto px-4 md:px-8">
+          <div className="grid lg:grid-cols-2 gap-10 sm:gap-16">
             {/* Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-card rounded-3xl p-8 md:p-10 shadow-luxury border border-border/30"
+              className="bg-card rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-luxury border border-border/30"
             >
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-safari-gold/10 flex items-center justify-center">
-                  <Mail className="w-5 h-5 text-safari-gold" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-safari-gold/10 flex items-center justify-center">
+                  <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-safari-gold" />
                 </div>
-                <h2 className="text-2xl md:text-3xl font-semibold text-foreground" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <h2 className="text-xl sm:text-3xl font-semibold text-foreground" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   Send us a Message
                 </h2>
               </div>
-              <p className="text-muted-foreground mb-8 pl-[52px]">
+              <p className="text-xs sm:text-base text-muted-foreground mb-6 sm:mb-8 pl-0 sm:pl-[60px]">
                 Fill out the form below and we'll respond within 24 hours
               </p>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-sm font-medium">First Name *</Label>
+                    <Label htmlFor="firstName" className="text-xs sm:text-sm font-medium">First Name *</Label>
                     <Input 
                       id="firstName" 
                       placeholder="John" 
                       value={formData.firstName}
                       onChange={(e) => handleChange('firstName', e.target.value)}
                       required 
-                      className="h-12 rounded-xl border-border/50 focus:border-safari-gold transition-colors"
+                      className="h-12 sm:h-14 rounded-xl border-border/50 focus:border-safari-gold transition-colors text-sm sm:text-base"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-sm font-medium">Last Name *</Label>
+                    <Label htmlFor="lastName" className="text-xs sm:text-sm font-medium">Last Name *</Label>
                     <Input 
                       id="lastName" 
                       placeholder="Doe" 
                       value={formData.lastName}
                       onChange={(e) => handleChange('lastName', e.target.value)}
                       required 
-                      className="h-12 rounded-xl border-border/50 focus:border-safari-gold transition-colors"
+                      className="h-12 sm:h-14 rounded-xl border-border/50 focus:border-safari-gold transition-colors text-sm sm:text-base"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">Email *</Label>
+                  <Label htmlFor="email" className="text-xs sm:text-sm font-medium">Email *</Label>
                   <Input 
                     id="email" 
                     type="email" 
@@ -216,29 +216,29 @@ const Contact = () => {
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
                     required 
-                    className="h-12 rounded-xl border-border/50 focus:border-safari-gold transition-colors"
+                    className="h-12 sm:h-14 rounded-xl border-border/50 focus:border-safari-gold transition-colors text-sm sm:text-base"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
+                  <Label htmlFor="phone" className="text-xs sm:text-sm font-medium">Phone Number</Label>
                   <Input 
                     id="phone" 
                     type="tel" 
                     placeholder="+1 234 567 890" 
                     value={formData.phone}
                     onChange={(e) => handleChange('phone', e.target.value)}
-                    className="h-12 rounded-xl border-border/50 focus:border-safari-gold transition-colors"
+                    className="h-12 sm:h-14 rounded-xl border-border/50 focus:border-safari-gold transition-colors text-sm sm:text-base"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="interest" className="text-sm font-medium">I'm interested in</Label>
+                  <Label htmlFor="interest" className="text-xs sm:text-sm font-medium">I'm interested in</Label>
                   <select
                     id="interest"
                     value={formData.interest}
                     onChange={(e) => handleChange('interest', e.target.value)}
-                    className="flex h-12 w-full rounded-xl border border-border/50 bg-background px-4 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-safari-gold/50 focus:border-safari-gold transition-colors"
+                    className="flex h-12 sm:h-14 w-full rounded-xl border border-border/50 bg-background px-4 py-2 text-sm sm:text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-safari-gold/50 focus:border-safari-gold transition-colors"
                   >
                     <option>Safari Experience</option>
                     <option>Zanzibar Beach Holiday</option>
@@ -251,7 +251,7 @@ const Contact = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message" className="text-sm font-medium">Your Message *</Label>
+                  <Label htmlFor="message" className="text-xs sm:text-sm font-medium">Your Message *</Label>
                   <Textarea
                     id="message"
                     placeholder="Tell us about your dream trip..."
@@ -259,16 +259,16 @@ const Contact = () => {
                     value={formData.message}
                     onChange={(e) => handleChange('message', e.target.value)}
                     required
-                    className="rounded-xl border-border/50 focus:border-safari-gold transition-colors resize-none"
+                    className="rounded-xl border-border/50 focus:border-safari-gold transition-colors resize-none text-sm sm:text-base"
                   />
                 </div>
 
                 {/* Dual Submit Options */}
-                <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
                   <Button 
                     type="submit" 
                     size="lg" 
-                    className="flex-1 h-14 rounded-xl bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold shadow-gold hover:shadow-glow transition-all duration-300 hover:scale-[1.02]"
+                    className="flex-1 h-12 sm:h-14 rounded-xl bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold shadow-gold hover:shadow-glow transition-all duration-300 hover:scale-[1.02] text-sm sm:text-base"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
@@ -286,7 +286,7 @@ const Contact = () => {
                   <Button 
                     type="button" 
                     size="lg" 
-                    className="flex-1 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold hover:from-green-500 hover:to-green-600"
+                    className="flex-1 h-12 sm:h-14 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold hover:from-green-500 hover:to-green-600 rounded-xl text-sm sm:text-base"
                     onClick={handleWhatsApp}
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />

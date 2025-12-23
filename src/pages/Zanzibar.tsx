@@ -65,6 +65,7 @@ const Zanzibar = () => {
       setLoading(false);
     }
   };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -92,7 +93,7 @@ const Zanzibar = () => {
       <Navbar />
       
       {/* Premium Hero */}
-      <section className="relative pt-32 pb-28 min-h-[55vh] flex items-center overflow-hidden">
+      <section className="relative pt-24 sm:pt-32 pb-16 sm:pb-28 min-h-[50vh] sm:min-h-[55vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={zanzibarImg}
@@ -114,33 +115,33 @@ const Zanzibar = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/90 px-5 py-2 rounded-full text-sm font-medium mb-6 border border-white/10"
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/90 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-sm font-medium mb-4 sm:mb-6 border border-white/10"
             >
-              <Anchor className="w-4 h-4 text-cyan-400" />
+              <Anchor className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400" />
               Island Paradise
             </motion.div>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
               <span className="text-cyan-300">Zanzibar</span> Excursions
             </h1>
-            <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed px-4">
               Discover paradise with pristine beaches, rich culture, and unforgettable island adventures
             </p>
             
             {/* Stats */}
-            <div className="flex flex-wrap items-center justify-center gap-8 mt-10">
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 mt-8 sm:mt-10">
               <div className="text-center">
-                <p className="text-3xl font-bold text-cyan-300">{activities.length}+</p>
-                <p className="text-sm text-white/60">Excursions</p>
+                <p className="text-2xl sm:text-3xl font-bold text-cyan-300">{activities.length}+</p>
+                <p className="text-[10px] sm:text-sm text-white/60 uppercase tracking-wider">Excursions</p>
               </div>
-              <div className="w-px h-10 bg-white/20 hidden sm:block" />
+              <div className="w-px h-8 sm:h-10 bg-white/20 hidden sm:block" />
               <div className="text-center">
-                <p className="text-3xl font-bold text-cyan-300">26°C</p>
-                <p className="text-sm text-white/60">Avg. Temperature</p>
+                <p className="text-2xl sm:text-3xl font-bold text-cyan-300">26°C</p>
+                <p className="text-[10px] sm:text-sm text-white/60 uppercase tracking-wider">Avg. Temp</p>
               </div>
-              <div className="w-px h-10 bg-white/20 hidden sm:block" />
+              <div className="w-px h-8 sm:h-10 bg-white/20 hidden sm:block" />
               <div className="text-center">
-                <p className="text-3xl font-bold text-cyan-300">4.9★</p>
-                <p className="text-sm text-white/60">Guest Rating</p>
+                <p className="text-2xl sm:text-3xl font-bold text-cyan-300">4.9★</p>
+                <p className="text-[10px] sm:text-sm text-white/60 uppercase tracking-wider">Rating</p>
               </div>
             </div>
           </motion.div>
@@ -160,49 +161,49 @@ const Zanzibar = () => {
       </section>
 
       {/* Info Cards - Premium Design */}
-      <section className="py-8 -mt-10 relative z-10">
+      <section className="py-6 sm:py-8 -mt-8 sm:-mt-10 relative z-10">
         <div className="container-wide mx-auto px-4 md:px-8">
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-background/95 backdrop-blur-sm rounded-2xl p-6 shadow-luxury border border-border/50 flex items-center gap-4 hover:shadow-elevated transition-all duration-500"
+              className="bg-background/95 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-luxury border border-border/50 flex items-center gap-3 sm:gap-4 hover:shadow-elevated transition-all duration-500"
             >
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-500/10 flex items-center justify-center shrink-0">
-                <Sun className="w-7 h-7 text-amber-500" />
+              <div className="w-10 h-10 sm:w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-500/10 flex items-center justify-center shrink-0">
+                <Sun className="w-5 h-5 sm:w-7 sm:h-7 text-amber-500" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">Best Time to Visit</h3>
-                <p className="text-sm text-muted-foreground">June to October (Dry Season)</p>
+                <h3 className="font-semibold text-foreground text-sm sm:text-base">Best Time to Visit</h3>
+                <p className="text-[10px] sm:text-sm text-muted-foreground">June to October (Dry Season)</p>
               </div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-background/95 backdrop-blur-sm rounded-2xl p-6 shadow-luxury border border-border/50 flex items-center gap-4 hover:shadow-elevated transition-all duration-500"
+              className="bg-background/95 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-luxury border border-border/50 flex items-center gap-3 sm:gap-4 hover:shadow-elevated transition-all duration-500"
             >
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 flex items-center justify-center shrink-0">
-                <Waves className="w-7 h-7 text-cyan-500" />
+              <div className="w-10 h-10 sm:w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 flex items-center justify-center shrink-0">
+                <Waves className="w-5 h-5 sm:w-7 sm:h-7 text-cyan-500" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">Water Temperature</h3>
-                <p className="text-sm text-muted-foreground">25-29°C year-round</p>
+                <h3 className="font-semibold text-foreground text-sm sm:text-base">Water Temperature</h3>
+                <p className="text-[10px] sm:text-sm text-muted-foreground">25-29°C year-round</p>
               </div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-background/95 backdrop-blur-sm rounded-2xl p-6 shadow-luxury border border-border/50 flex items-center gap-4 hover:shadow-elevated transition-all duration-500"
+              className="bg-background/95 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-luxury border border-border/50 flex items-center gap-3 sm:gap-4 hover:shadow-elevated transition-all duration-500 sm:col-span-2 md:col-span-1"
             >
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 flex items-center justify-center shrink-0">
-                <MapPin className="w-7 h-7 text-emerald-500" />
+              <div className="w-10 h-10 sm:w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 flex items-center justify-center shrink-0">
+                <MapPin className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-500" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">Location</h3>
-                <p className="text-sm text-muted-foreground">East African Coast, Indian Ocean</p>
+                <h3 className="font-semibold text-foreground text-sm sm:text-base">Location</h3>
+                <p className="text-[10px] sm:text-sm text-muted-foreground">East African Coast, Indian Ocean</p>
               </div>
             </motion.div>
           </div>
@@ -210,22 +211,22 @@ const Zanzibar = () => {
       </section>
 
       {/* Excursions Grid - Premium Cards */}
-      <section className="section-padding bg-gradient-to-b from-background to-muted/20">
-        <div className="container-wide mx-auto">
+      <section className="py-12 sm:py-20 md:py-28 bg-gradient-to-b from-background to-muted/20">
+        <div className="container-wide mx-auto px-4 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-14"
+            className="text-center mb-10 sm:mb-14"
           >
-            <div className="inline-flex items-center gap-2 bg-cyan-500/10 text-cyan-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-              <Sparkles className="w-4 h-4" />
+            <div className="inline-flex items-center gap-2 bg-cyan-500/10 text-cyan-600 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-sm font-semibold mb-3 sm:mb-4">
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               Island Adventures
             </div>
-            <h2 className="text-4xl md:text-5xl font-semibold text-foreground mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            <h2 className="text-3xl sm:text-5xl font-semibold text-foreground mb-3 sm:mb-4 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
               Available <span className="text-cyan-500">Excursions</span>
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
               Book individual excursions or combine multiple for the perfect Zanzibar experience
             </p>
           </motion.div>
@@ -235,24 +236,24 @@ const Zanzibar = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center py-16"
+              className="text-center py-12 sm:py-16"
             >
-              <div className="w-20 h-20 rounded-full bg-cyan-500/10 flex items-center justify-center mx-auto mb-4">
-                <Waves className="w-10 h-10 text-cyan-500" />
+              <div className="w-16 h-16 sm:w-20 h-20 rounded-full bg-cyan-500/10 flex items-center justify-center mx-auto mb-4">
+                <Waves className="w-8 h-8 sm:w-10 sm:h-10 text-cyan-500" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">No Excursions Available Yet</h3>
-              <p className="text-muted-foreground max-w-md mx-auto">
+              <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">No Excursions Available Yet</h3>
+              <p className="text-xs sm:text-base text-muted-foreground max-w-md mx-auto px-4">
                 We're preparing amazing Zanzibar excursions for you. Please check back soon or contact us for custom tours.
               </p>
               <Link to="/contact">
-                <Button className="mt-6 bg-gradient-to-r from-cyan-500 to-cyan-400">
+                <Button className="mt-6 bg-gradient-to-r from-cyan-500 to-cyan-400 h-11 sm:h-12 px-6 sm:px-8 rounded-xl text-sm sm:text-base">
                   Contact Us
                 </Button>
               </Link>
             </motion.div>
           )}
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
             {activities.map((excursion, index) => (
               <motion.div
                 key={excursion.id}
@@ -263,7 +264,7 @@ const Zanzibar = () => {
                 className="group bg-background rounded-2xl overflow-hidden border border-border/50 shadow-soft hover:shadow-luxury hover:border-cyan-500/20 transition-all duration-500"
               >
                 {/* Image */}
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative h-48 sm:h-56 overflow-hidden">
                   <img
                     src={excursion.featured_image || zanzibarImg}
                     alt={excursion.title}
@@ -271,12 +272,12 @@ const Zanzibar = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-safari-night/50 via-transparent to-transparent" />
                   <div className="absolute top-3 left-3 flex gap-2">
-                    <Badge className="bg-gradient-to-r from-cyan-500 to-cyan-400 text-white text-xs font-semibold shadow-md">
+                    <Badge className="bg-gradient-to-r from-cyan-500 to-cyan-400 text-white text-[10px] font-semibold shadow-md">
                       {excursion.category}
                     </Badge>
                   </div>
                   <div className="absolute top-3 right-3">
-                    <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm text-foreground text-xs">
+                    <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm text-foreground text-[10px]">
                       <Clock className="w-3 h-3 mr-1" />
                       {excursion.duration}
                     </Badge>
@@ -284,8 +285,8 @@ const Zanzibar = () => {
                   
                   {/* Price badge */}
                   <div className="absolute bottom-3 right-3">
-                    <div className="bg-white/95 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-lg">
-                      <span className="text-lg font-bold text-cyan-600">
+                    <div className="bg-white/95 backdrop-blur-sm rounded-lg px-2.5 py-1 sm:px-3 sm:py-1.5 shadow-lg">
+                      <span className="text-base sm:text-lg font-bold text-cyan-600">
                         {excursion.price ? `$${excursion.price.toLocaleString()}` : "Contact"}
                       </span>
                     </div>
@@ -293,11 +294,11 @@ const Zanzibar = () => {
                 </div>
 
                 {/* Content */}
-                <div className="p-5">
+                <div className="p-4 sm:p-5">
                   <div className="flex items-center gap-1 mb-2">
-                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    <span className="text-sm font-medium text-foreground">4.9</span>
-                    <span className="text-xs text-muted-foreground">(24 reviews)</span>
+                    <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-amber-400 text-amber-400" />
+                    <span className="text-xs sm:text-sm font-medium text-foreground">4.9</span>
+                    <span className="text-[10px] sm:text-xs text-muted-foreground">(24 reviews)</span>
                   </div>
                   
                   <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-cyan-600 transition-colors line-clamp-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>

@@ -104,54 +104,52 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="relative bg-safari-night text-primary-foreground overflow-hidden">
+    <footer className="relative bg-safari-night text-white overflow-hidden">
       {/* Decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-5">
-        <div className="absolute top-10 left-10 w-64 h-64 bg-safari-gold rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-safari-sunset rounded-full blur-3xl"></div>
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-safari-gold/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-safari-sunset/5 rounded-full blur-[120px]" />
       </div>
 
       {/* Newsletter Section */}
-      <div className="relative border-b border-primary-foreground/10 bg-gradient-to-r from-primary-foreground/5 to-transparent">
-        <div className="container-wide mx-auto px-4 md:px-8 py-12 md:py-16">
-          <div className="max-w-5xl mx-auto">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+      <div className="relative border-b border-white/5 bg-white/[0.02] backdrop-blur-sm">
+        <div className="container-wide mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
               <div className="text-center lg:text-left flex-1">
-                <div className="inline-flex items-center gap-2 bg-safari-gold/20 text-safari-gold px-4 py-2 rounded-full mb-4 text-sm font-semibold">
-                  <Award className="w-4 h-4" />
-                  Exclusive Offers
+                <div className="inline-flex items-center gap-3 bg-safari-gold/10 text-safari-gold px-6 py-2.5 rounded-full mb-6 text-sm font-bold uppercase tracking-widest border border-safari-gold/20">
+                  <Award className="w-5 h-5" />
+                  Exclusive Safari Offers
                 </div>
-                <h3 className="font-display text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-primary-foreground to-primary-foreground/80 bg-clip-text text-transparent">
-                  Start Your African Adventure
+                <h3 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  Start Your <span className="italic text-safari-gold">African Adventure</span>
                 </h3>
-                <p className="text-primary-foreground/80 text-lg">
-                  Subscribe for exclusive offers, travel tips, and early access to new safari experiences
+                <p className="text-white/60 text-lg lg:text-xl max-w-2xl leading-relaxed">
+                  Subscribe for exclusive offers, travel tips, and early access to new safari experiences across Tanzania.
                 </p>
               </div>
-              <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row w-full lg:w-auto gap-3 flex-shrink-0">
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-foreground/40" />
+              <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row w-full lg:w-auto gap-4 flex-shrink-0">
+                <div className="relative group">
+                  <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-safari-gold transition-transform group-focus-within:scale-110" />
                   <Input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="Your email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 w-full sm:w-80 pl-12 h-12 focus:border-safari-gold focus:ring-safari-gold transition-all"
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30 w-full sm:w-80 lg:w-96 pl-14 h-16 rounded-2xl focus:border-safari-gold focus:ring-safari-gold/20 transition-all text-lg"
                   />
                 </div>
                 <Button 
                   type="submit"
                   disabled={isSubmitting}
-                  variant="gold" 
-                  size="lg"
-                  className="h-12 px-8 bg-gradient-to-r from-safari-gold to-safari-amber hover:from-safari-amber hover:to-safari-gold shadow-lg hover:shadow-xl transition-all"
+                  className="h-16 px-10 bg-safari-gold hover:bg-safari-amber text-safari-night font-bold rounded-2xl shadow-2xl shadow-safari-gold/20 transition-all duration-300 text-lg group"
                 >
                   {isSubmitting ? (
                     "Subscribing..."
                   ) : (
                     <>
-                      <Send className="w-4 h-4 mr-2" />
                       Subscribe
+                      <Send className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </Button>
@@ -161,61 +159,62 @@ export const Footer = () => {
         </div>
       </div>
 
-      {/* Main Footer */}
-      <div className="relative container-wide mx-auto px-4 md:px-8 py-16 md:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
-          {/* About */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center gap-3 mb-6">
+      {/* Main Footer Content */}
+      <div className="container-wide mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 lg:gap-12">
+          {/* Brand Column */}
+          <div className="lg:col-span-4 space-y-10">
+            <Link to="/" className="inline-block group">
               {logo ? (
-                <img src={logo} alt={siteName} className="w-12 h-12 object-contain" />
+                <div className="flex items-center gap-4">
+                  <img src={logo} alt={siteName} className="h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-105" />
+                  <div className="flex flex-col">
+                    <span className="font-display text-3xl font-bold leading-none" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{siteName}</span>
+                    <span className="text-safari-gold text-xs font-bold uppercase tracking-[0.3em] mt-1">{tagline}</span>
+                  </div>
+                </div>
               ) : (
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-safari-gold to-safari-amber flex items-center justify-center shadow-lg">
-                  <span className="text-safari-night font-display font-bold text-xl">
-                    IV
+                <div className="flex flex-col">
+                  <span className="font-display text-4xl font-bold leading-none" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                    Infinity <span className="italic text-safari-gold">Voyage</span>
                   </span>
+                  <span className="text-safari-gold text-xs font-bold uppercase tracking-[0.3em] mt-2">{tagline}</span>
                 </div>
               )}
-              <div>
-                <span className="font-display text-xl font-bold block">{siteName}</span>
-                <span className="text-xs text-primary-foreground/60">{tagline}</span>
-              </div>
-            </div>
-            <p className="text-primary-foreground/80 mb-6 leading-relaxed">
-              Your gateway to endless exploration. We craft unforgettable African experiences tailored just for you.
+            </Link>
+            
+            <p className="text-white/50 text-lg leading-relaxed max-w-md">
+              Crafting extraordinary safari experiences and beach escapes in Tanzania. From the Serengeti plains to the turquoise waters of Zanzibar.
             </p>
-            <div className="flex gap-3">
-              {socialLinks.map((social, index) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={index}
-                    href={social.href}
-                    aria-label={social.label}
-                    className="group w-11 h-11 rounded-lg bg-primary-foreground/10 flex items-center justify-center hover:bg-safari-gold hover:scale-110 transition-all duration-300"
-                  >
-                    <Icon className="w-5 h-5 group-hover:text-safari-night transition-colors" />
-                  </a>
-                );
-              })}
+
+            <div className="flex items-center gap-4">
+              {socialLinks.map((social, index) => (
+                <a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white/60 hover:bg-safari-gold hover:text-safari-night hover:-translate-y-1 transition-all duration-300 border border-white/5"
+                  aria-label={social.label}
+                >
+                  <social.icon className="w-5 h-5" />
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h4 className="font-display text-lg font-bold mb-6 flex items-center gap-2">
-              <ChevronRight className="w-4 h-4 text-safari-gold" />
-              Quick Links
-            </h4>
-            <ul className="space-y-3">
+          <div className="lg:col-span-2 space-y-8">
+            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-safari-gold">Explore</h4>
+            <ul className="space-y-4">
               {quickLinks.map((link) => (
                 <li key={link.path}>
-                  <Link
-                    to={link.path}
-                    className="group text-primary-foreground/80 hover:text-safari-gold transition-colors flex items-center gap-2"
+                  <Link 
+                    to={link.path} 
+                    className="text-white/60 hover:text-safari-gold transition-colors flex items-center group text-lg"
                   >
-                    <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <span>{link.label}</span>
+                    <ChevronRight className="w-4 h-4 mr-2 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
+                    {link.label}
                   </Link>
                 </li>
               ))}
@@ -223,103 +222,64 @@ export const Footer = () => {
           </div>
 
           {/* Destinations */}
-          <div>
-            <h4 className="font-display text-lg font-bold mb-6 flex items-center gap-2">
-              <Globe className="w-4 h-4 text-safari-gold" />
-              Top Destinations
-            </h4>
-            <ul className="space-y-3">
-              {destinations.map((dest, index) => (
-                <li key={index}>
-                  <a
-                    href="#"
-                    className="group text-primary-foreground/80 hover:text-safari-gold transition-colors flex items-center gap-2"
-                  >
-                    <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <span>{dest}</span>
-                  </a>
+          <div className="lg:col-span-3 space-y-8">
+            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-safari-gold">Destinations</h4>
+            <ul className="space-y-4">
+              {destinations.map((dest) => (
+                <li key={dest} className="text-white/60 hover:text-safari-gold transition-colors flex items-center group text-lg cursor-pointer">
+                  <MapPin className="w-4 h-4 mr-3 text-safari-gold/40 group-hover:text-safari-gold transition-colors" />
+                  {dest}
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact */}
-          <div>
-            <h4 className="font-display text-lg font-bold mb-6 flex items-center gap-2">
-              <Phone className="w-4 h-4 text-safari-gold" />
-              Contact Us
-            </h4>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3 group">
-                <MapPin className="w-5 h-5 text-safari-gold shrink-0 mt-1 group-hover:scale-110 transition-transform" />
-                <span className="text-primary-foreground/80 leading-relaxed">
-                  {address}
-                </span>
-              </li>
-              <li className="flex items-center gap-3 group">
-                <Phone className="w-5 h-5 text-safari-gold shrink-0 group-hover:scale-110 transition-transform" />
-                <a
-                  href={`tel:${phone.replace(/\s/g, '')}`}
-                  className="text-primary-foreground/80 hover:text-safari-gold transition-colors"
-                >
-                  {phone}
-                </a>
-              </li>
-              <li className="flex items-center gap-3 group">
-                <Mail className="w-5 h-5 text-safari-gold shrink-0 group-hover:scale-110 transition-transform" />
-                <a
-                  href={`mailto:${emailContact}`}
-                  className="text-primary-foreground/80 hover:text-safari-gold transition-colors break-all"
-                >
-                  {emailContact}
-                </a>
-              </li>
-              <li className="flex items-center gap-3 group pt-2">
-                <Clock className="w-5 h-5 text-safari-gold shrink-0 group-hover:scale-110 transition-transform" />
-                <span className="text-primary-foreground/80 text-sm">
-                  Mon - Sat: 8:00 AM - 6:00 PM<br />
-                  <span className="text-primary-foreground/60">Sun: 10:00 AM - 4:00 PM</span>
-                </span>
-              </li>
-            </ul>
+          {/* Contact Info */}
+          <div className="lg:col-span-3 space-y-8">
+            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-safari-gold">Get in Touch</h4>
+            <div className="space-y-6">
+              <a href={`tel:${phone}`} className="flex items-start gap-4 group">
+                <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-safari-gold/20 transition-colors border border-white/5">
+                  <Phone className="w-5 h-5 text-safari-gold" />
+                </div>
+                <div>
+                  <span className="block text-xs font-bold uppercase tracking-widest text-white/30 mb-1">Call Us</span>
+                  <span className="text-lg font-medium group-hover:text-safari-gold transition-colors">{phone}</span>
+                </div>
+              </a>
+              <a href={`mailto:${emailContact}`} className="flex items-start gap-4 group">
+                <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-safari-gold/20 transition-colors border border-white/5">
+                  <Mail className="w-5 h-5 text-safari-gold" />
+                </div>
+                <div>
+                  <span className="block text-xs font-bold uppercase tracking-widest text-white/30 mb-1">Email Us</span>
+                  <span className="text-lg font-medium group-hover:text-safari-gold transition-colors">{emailContact}</span>
+                </div>
+              </a>
+              <div className="flex items-start gap-4 group">
+                <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-safari-gold/20 transition-colors border border-white/5">
+                  <MapPin className="w-5 h-5 text-safari-gold" />
+                </div>
+                <div>
+                  <span className="block text-xs font-bold uppercase tracking-widest text-white/30 mb-1">Visit Us</span>
+                  <span className="text-lg font-medium group-hover:text-safari-gold transition-colors">{address}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Copyright */}
-      <div className="relative border-t border-primary-foreground/10 bg-primary-foreground/5">
-        <div className="container-wide mx-auto px-4 md:px-8 py-6 md:py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-            <div className="flex items-center gap-2 text-primary-foreground/70">
-              <p>© {new Date().getFullYear()} {siteName}.</p>
-              <span className="hidden sm:inline">All rights reserved.</span>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
-              <Link 
-                to="/privacy" 
-                className="text-primary-foreground/70 hover:text-safari-gold transition-colors flex items-center gap-1 group"
-              >
-                Privacy Policy
-                <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </Link>
-              <Link 
-                to="/terms" 
-                className="text-primary-foreground/70 hover:text-safari-gold transition-colors flex items-center gap-1 group"
-              >
-                Terms of Service
-                <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </Link>
-              <Link 
-                to="/faq" 
-                className="text-primary-foreground/70 hover:text-safari-gold transition-colors flex items-center gap-1 group"
-              >
-                FAQ
-                <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </Link>
-            </div>
-            <div className="flex items-center gap-2 text-primary-foreground/60 text-xs">
-              <Heart className="w-3 h-3 text-safari-gold fill-safari-gold" />
-              <span>Made with passion for adventure</span>
+        {/* Bottom Bar */}
+        <div className="mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-white/40 text-sm">
+            © {new Date().getFullYear()} {siteName}. All rights reserved.
+          </p>
+          <div className="flex items-center gap-8">
+            <Link to="/terms" className="text-white/40 hover:text-safari-gold text-sm transition-colors">Terms & Conditions</Link>
+            <Link to="/privacy" className="text-white/40 hover:text-safari-gold text-sm transition-colors">Privacy Policy</Link>
+            <div className="flex items-center gap-2 text-white/40 text-sm">
+              <Globe className="w-4 h-4" />
+              <span>English (USD)</span>
             </div>
           </div>
         </div>

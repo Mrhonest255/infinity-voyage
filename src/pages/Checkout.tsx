@@ -188,175 +188,198 @@ Please confirm availability and send me a quote!`;
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-safari-cream/30 to-background">
+    <div className="min-h-screen flex flex-col bg-background">
       <SEO title="Checkout - Complete Your Booking" description="Review your selected tours and complete your booking with Infinity Voyage Tours" />
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-16 bg-gradient-to-br from-safari-night via-safari-brown to-safari-night overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-safari-gold rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-safari-amber rounded-full blur-3xl" />
+      {/* Premium Hero Section */}
+      <section className="relative pt-40 pb-24 bg-safari-night overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-safari-gold/10 rounded-full blur-[120px] animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-safari-sunset/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
         </div>
         
         <div className="container-wide mx-auto px-4 md:px-8 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center text-white"
+            transition={{ duration: 0.8 }}
+            className="text-center"
           >
-            <div className="inline-flex items-center gap-3 mb-6 px-5 py-2.5 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
+            >
               <ShoppingBag className="w-5 h-5 text-safari-gold" />
-              <span className="text-sm font-medium">{items.length} {items.length === 1 ? "Tour" : "Tours"} Selected</span>
-            </div>
-            <h1 className="font-display text-4xl md:text-5xl font-semibold mb-4">
-              Complete Your <span className="text-safari-gold">Booking</span>
+              <span className="text-white/90 text-sm font-bold uppercase tracking-widest">
+                {items.length} {items.length === 1 ? "Tour" : "Tours"} in Cart
+              </span>
+            </motion.div>
+            
+            <h1 className="font-display text-5xl md:text-7xl font-bold text-white mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              Complete Your <span className="italic text-safari-gold">Booking</span>
             </h1>
-            <p className="text-white/70 max-w-xl mx-auto">
-              Review your selected tours and fill in your details to book your African adventure
+            <p className="text-white/70 text-xl max-w-2xl mx-auto leading-relaxed">
+              Review your selected adventures and provide your details to finalize your extraordinary journey through Tanzania.
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* Main Content */}
-      <section className="py-12 md:py-20 -mt-8">
+      <section className="py-24 relative -mt-12">
         <div className="container-wide mx-auto px-4 md:px-8">
-          <div className="grid lg:grid-cols-5 gap-8">
+          <div className="grid lg:grid-cols-12 gap-12">
             {/* Cart Items - Left Side */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-5">
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
+                className="sticky top-32"
               >
-                <h2 className="font-display text-2xl font-semibold mb-6 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-safari-gold to-safari-amber flex items-center justify-center">
-                    <ShoppingBag className="w-5 h-5 text-white" />
+                <div className="flex items-center gap-4 mb-10">
+                  <div className="w-12 h-12 rounded-2xl bg-safari-gold/10 flex items-center justify-center">
+                    <ShoppingBag className="w-6 h-6 text-safari-gold" />
                   </div>
-                  Your Selected Tours
-                </h2>
+                  <h2 className="font-display text-3xl font-bold text-safari-night" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                    Your Selection
+                  </h2>
+                </div>
 
-                <div className="space-y-4">
+                <div className="space-y-6 mb-10">
                   {items.map((item, index) => (
                     <CartItemCard key={item.id} item={item} index={index} onRemove={() => removeItem(item.id)} />
                   ))}
                 </div>
 
-                {/* Total */}
-                <div className="mt-6 p-6 bg-gradient-to-br from-safari-gold/10 to-safari-amber/5 rounded-2xl border border-safari-gold/20">
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-medium">Total Estimated Price</span>
-                    <span className="font-display text-3xl font-bold text-safari-gold">
-                      ${totalPrice.toLocaleString()}
-                    </span>
+                {/* Total Card */}
+                <div className="p-10 bg-safari-night rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-safari-gold/10 rounded-full blur-3xl group-hover:bg-safari-gold/20 transition-all duration-700" />
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-white/60 font-medium uppercase tracking-widest text-sm">Estimated Total</span>
+                      <Sparkles className="w-5 h-5 text-safari-gold" />
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-5xl font-bold text-safari-gold">
+                        ${totalPrice.toLocaleString()}
+                      </span>
+                      <span className="text-white/40 text-sm">USD</span>
+                    </div>
+                    <div className="mt-8 pt-8 border-t border-white/10">
+                      <p className="text-white/50 text-sm leading-relaxed">
+                        * Final price will be confirmed by our travel experts based on your specific travel dates and group size.
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Final price may vary based on dates and availability
-                  </p>
                 </div>
               </motion.div>
             </div>
 
             {/* Booking Form - Right Side */}
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-7">
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
+                transition={{ delay: 0.2 }}
               >
-                <Card className="border border-border/50 shadow-luxury rounded-2xl bg-white overflow-hidden">
+                <Card className="border-0 shadow-2xl rounded-[3rem] bg-white overflow-hidden">
                   <CardContent className="p-0">
                     {/* Form Header */}
-                    <div className="bg-gradient-to-r from-safari-gold to-safari-amber p-6 text-safari-night">
-                      <h2 className="font-display text-2xl font-semibold flex items-center gap-3">
-                        <User className="w-6 h-6" />
-                        Your Details
-                      </h2>
-                      <p className="text-safari-night/70 mt-1">Fill in your information to complete the booking</p>
+                    <div className="bg-safari-gold p-12 text-safari-night">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="w-12 h-12 rounded-2xl bg-safari-night/10 flex items-center justify-center">
+                          <User className="w-6 h-6" />
+                        </div>
+                        <h2 className="font-display text-3xl font-bold" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                          Guest Information
+                        </h2>
+                      </div>
+                      <p className="text-safari-night/70 text-lg">Please provide your details to receive a personalized quote.</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
+                    <form onSubmit={handleSubmit} className="p-10 md:p-16 space-y-10">
                       {/* Personal Info Grid */}
-                      <div className="grid md:grid-cols-2 gap-5">
-                        <div>
-                          <Label htmlFor="fullName" className="text-sm font-medium flex items-center gap-2">
-                            <User className="w-4 h-4 text-safari-gold" />
-                            Full Name *
-                          </Label>
-                          <Input
-                            id="fullName"
-                            value={formData.fullName}
-                            onChange={(e) => setFormData((p) => ({ ...p, fullName: e.target.value }))}
-                            placeholder="John Doe"
-                            className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold"
-                            required
-                          />
+                      <div className="grid md:grid-cols-2 gap-8">
+                        <div className="space-y-3">
+                          <Label htmlFor="fullName" className="text-sm font-bold uppercase tracking-widest text-safari-night">Full Name *</Label>
+                          <div className="relative">
+                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-safari-gold" />
+                            <Input
+                              id="fullName"
+                              value={formData.fullName}
+                              onChange={(e) => setFormData((p) => ({ ...p, fullName: e.target.value }))}
+                              placeholder="John Doe"
+                              className="h-14 pl-12 rounded-2xl border-border/50 focus:ring-safari-gold/20 focus:border-safari-gold text-lg"
+                              required
+                            />
+                          </div>
                         </div>
 
-                        <div>
-                          <Label htmlFor="email" className="text-sm font-medium flex items-center gap-2">
-                            <Mail className="w-4 h-4 text-safari-gold" />
-                            Email *
-                          </Label>
-                          <Input
-                            id="email"
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))}
-                            placeholder="john@example.com"
-                            className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold"
-                            required
-                          />
+                        <div className="space-y-3">
+                          <Label htmlFor="email" className="text-sm font-bold uppercase tracking-widest text-safari-night">Email Address *</Label>
+                          <div className="relative">
+                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-safari-gold" />
+                            <Input
+                              id="email"
+                              type="email"
+                              value={formData.email}
+                              onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))}
+                              placeholder="john@example.com"
+                              className="h-14 pl-12 rounded-2xl border-border/50 focus:ring-safari-gold/20 focus:border-safari-gold text-lg"
+                              required
+                            />
+                          </div>
                         </div>
 
-                        <div>
-                          <Label htmlFor="phone" className="text-sm font-medium flex items-center gap-2">
-                            <Phone className="w-4 h-4 text-safari-gold" />
-                            Phone Number *
-                          </Label>
-                          <Input
-                            id="phone"
-                            value={formData.phone}
-                            onChange={(e) => setFormData((p) => ({ ...p, phone: e.target.value }))}
-                            placeholder="+1 234 567 8900"
-                            className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold"
-                            required
-                          />
+                        <div className="space-y-3">
+                          <Label htmlFor="phone" className="text-sm font-bold uppercase tracking-widest text-safari-night">Phone Number *</Label>
+                          <div className="relative">
+                            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-safari-gold" />
+                            <Input
+                              id="phone"
+                              value={formData.phone}
+                              onChange={(e) => setFormData((p) => ({ ...p, phone: e.target.value }))}
+                              placeholder="+1 234 567 8900"
+                              className="h-14 pl-12 rounded-2xl border-border/50 focus:ring-safari-gold/20 focus:border-safari-gold text-lg"
+                              required
+                            />
+                          </div>
                         </div>
 
-                        <div>
-                          <Label htmlFor="nationality" className="text-sm font-medium flex items-center gap-2">
-                            <MapPin className="w-4 h-4 text-safari-gold" />
-                            Nationality
-                          </Label>
-                          <Input
-                            id="nationality"
-                            value={formData.nationality}
-                            onChange={(e) => setFormData((p) => ({ ...p, nationality: e.target.value }))}
-                            placeholder="e.g. American, British"
-                            className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold"
-                          />
+                        <div className="space-y-3">
+                          <Label htmlFor="nationality" className="text-sm font-bold uppercase tracking-widest text-safari-night">Nationality</Label>
+                          <div className="relative">
+                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-safari-gold" />
+                            <Input
+                              id="nationality"
+                              value={formData.nationality}
+                              onChange={(e) => setFormData((p) => ({ ...p, nationality: e.target.value }))}
+                              placeholder="e.g. American, British"
+                              className="h-14 pl-12 rounded-2xl border-border/50 focus:ring-safari-gold/20 focus:border-safari-gold text-lg"
+                            />
+                          </div>
                         </div>
                       </div>
 
                       {/* Travel Details */}
-                      <div className="grid md:grid-cols-2 gap-5">
-                        <div>
-                          <Label className="text-sm font-medium flex items-center gap-2">
-                            <CalendarIcon className="w-4 h-4 text-safari-gold" />
-                            Travel Date *
-                          </Label>
+                      <div className="grid md:grid-cols-2 gap-8">
+                        <div className="space-y-3">
+                          <Label className="text-sm font-bold uppercase tracking-widest text-safari-night">Preferred Travel Date *</Label>
                           <Popover>
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
-                                className="w-full mt-2 h-12 justify-start text-left font-normal rounded-xl border-border/50 hover:border-safari-gold"
+                                className="w-full h-14 justify-start text-left font-normal rounded-2xl border-border/50 hover:border-safari-gold hover:bg-safari-gold/5 transition-all text-lg"
                               >
-                                <CalendarIcon className="mr-2 h-4 w-4 text-safari-gold" />
+                                <CalendarIcon className="mr-3 h-5 w-5 text-safari-gold" />
                                 {formData.travelDate ? format(formData.travelDate, "PPP") : "Select date"}
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0 rounded-xl" align="start">
+                            <PopoverContent className="w-auto p-0 rounded-2xl shadow-2xl border-border/40" align="start">
                               <Calendar
                                 mode="single"
                                 selected={formData.travelDate}
@@ -368,33 +391,30 @@ Please confirm availability and send me a quote!`;
                           </Popover>
                         </div>
 
-                        <div>
-                          <Label className="text-sm font-medium flex items-center gap-2">
-                            <Users className="w-4 h-4 text-safari-gold" />
-                            Number of Travelers *
-                          </Label>
+                        <div className="space-y-3">
+                          <Label className="text-sm font-bold uppercase tracking-widest text-safari-night">Number of Travelers *</Label>
                           <Select
                             value={formData.travelers}
                             onValueChange={(value) => setFormData((p) => ({ ...p, travelers: value }))}
                           >
-                            <SelectTrigger className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold">
+                            <SelectTrigger className="h-14 rounded-2xl border-border/50 focus:ring-safari-gold/20 focus:border-safari-gold text-lg">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="rounded-2xl shadow-2xl border-border/40">
                               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                                <SelectItem key={num} value={num.toString()}>
+                                <SelectItem key={num} value={num.toString()} className="rounded-xl">
                                   {num} {num === 1 ? "person" : "people"}
                                 </SelectItem>
                               ))}
-                              <SelectItem value="10+">10+ people (Group)</SelectItem>
+                              <SelectItem value="10+" className="rounded-xl">10+ people (Group)</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
                       </div>
 
                       {/* Special Requests */}
-                      <div>
-                        <Label htmlFor="specialRequests" className="text-sm font-medium">
+                      <div className="space-y-3">
+                        <Label htmlFor="specialRequests" className="text-sm font-bold uppercase tracking-widest text-safari-night">
                           Special Requests or Questions
                         </Label>
                         <Textarea
@@ -402,58 +422,60 @@ Please confirm availability and send me a quote!`;
                           value={formData.specialRequests}
                           onChange={(e) => setFormData((p) => ({ ...p, specialRequests: e.target.value }))}
                           placeholder="Dietary requirements, mobility needs, special occasions, or any questions..."
-                          className="mt-2 min-h-[100px] rounded-xl border-border/50 focus:border-safari-gold resize-none"
+                          className="min-h-[150px] rounded-[2rem] border-border/50 focus:ring-safari-gold/20 focus:border-safari-gold resize-none p-6 text-lg"
                         />
                       </div>
 
                       {/* Trust Badges */}
-                      <div className="grid grid-cols-3 gap-4 py-4 border-y border-border/50">
-                        <div className="text-center">
-                          <Shield className="w-6 h-6 text-safari-gold mx-auto mb-2" />
-                          <span className="text-xs text-muted-foreground">Secure Booking</span>
+                      <div className="grid grid-cols-3 gap-6 py-10 border-y border-border/40">
+                        <div className="text-center group">
+                          <div className="w-14 h-14 rounded-2xl bg-safari-gold/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <Shield className="w-7 h-7 text-safari-gold" />
+                          </div>
+                          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Secure Booking</span>
                         </div>
-                        <div className="text-center">
-                          <Award className="w-6 h-6 text-safari-gold mx-auto mb-2" />
-                          <span className="text-xs text-muted-foreground">Best Price</span>
+                        <div className="text-center group">
+                          <div className="w-14 h-14 rounded-2xl bg-safari-gold/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <Award className="w-7 h-7 text-safari-gold" />
+                          </div>
+                          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Best Price</span>
                         </div>
-                        <div className="text-center">
-                          <CheckCircle2 className="w-6 h-6 text-safari-gold mx-auto mb-2" />
-                          <span className="text-xs text-muted-foreground">24hr Confirmation</span>
+                        <div className="text-center group">
+                          <div className="w-14 h-14 rounded-2xl bg-safari-gold/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <CheckCircle2 className="w-7 h-7 text-safari-gold" />
+                          </div>
+                          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">24hr Response</span>
                         </div>
                       </div>
 
                       {/* Submit Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-4">
-                        <motion.button
+                      <div className="flex flex-col sm:flex-row gap-6 pt-4">
+                        <Button
                           type="submit"
                           disabled={loading}
-                          whileHover={{ scale: 1.02, y: -2 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="flex-1 h-14 rounded-2xl bg-gradient-to-r from-safari-gold via-safari-amber to-safari-gold bg-[length:200%_100%] text-safari-night font-bold text-lg shadow-lg hover:shadow-gold transition-all duration-300 flex items-center justify-center gap-2 animate-shimmer disabled:opacity-50"
+                          className="flex-1 h-20 bg-safari-night hover:bg-safari-gold hover:text-safari-night text-white font-bold rounded-full text-xl shadow-2xl transition-all duration-300 group"
                         >
                           {loading ? (
                             <>
-                              <Loader2 className="w-5 h-5 animate-spin" />
+                              <Loader2 className="w-6 h-6 mr-3 animate-spin" />
                               Processing...
                             </>
                           ) : (
                             <>
-                              <Mail className="w-5 h-5" />
-                              Submit Booking Request
+                              <Mail className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
+                              Submit Request
                             </>
                           )}
-                        </motion.button>
+                        </Button>
 
-                        <motion.button
+                        <Button
                           type="button"
                           onClick={handleWhatsAppSubmit}
-                          whileHover={{ scale: 1.02, y: -2 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="flex-1 h-14 rounded-2xl bg-gradient-to-r from-green-600 to-green-500 text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+                          className="flex-1 h-20 bg-green-600 hover:bg-green-500 text-white font-bold rounded-full text-xl shadow-2xl transition-all duration-300 group"
                         >
-                          <MessageCircle className="w-5 h-5" />
+                          <MessageCircle className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
                           Book via WhatsApp
-                        </motion.button>
+                        </Button>
                       </div>
                     </form>
                   </CardContent>
@@ -476,41 +498,46 @@ function CartItemCard({ item, index, onRemove }: { item: CartItem; index: number
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="flex gap-4 p-4 bg-white rounded-2xl border border-border/50 shadow-soft hover:shadow-md transition-shadow"
+      className="flex gap-6 p-6 bg-white rounded-[2rem] border border-border/40 shadow-xl hover:shadow-2xl transition-all duration-500 group"
     >
       {/* Image */}
-      <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-safari-cream">
+      <div className="w-28 h-28 rounded-2xl overflow-hidden flex-shrink-0 bg-safari-cream relative">
         {item.image ? (
-          <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+          <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <MapPin className="w-8 h-8 text-safari-gold/50" />
+            <MapPin className="w-10 h-10 text-safari-gold/50" />
           </div>
         )}
+        <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
-        <div className="flex justify-between items-start gap-2">
-          <h4 className="font-semibold text-foreground line-clamp-2">{item.title}</h4>
-          <button
-            onClick={onRemove}
-            className="p-1.5 rounded-lg hover:bg-red-50 text-muted-foreground hover:text-red-500 transition-colors flex-shrink-0"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
+      <div className="flex-1 min-w-0 flex flex-col justify-between">
+        <div>
+          <div className="flex justify-between items-start gap-4">
+            <h4 className="font-bold text-safari-night text-lg line-clamp-2 leading-tight group-hover:text-safari-gold transition-colors">{item.title}</h4>
+            <button
+              onClick={onRemove}
+              className="p-2 rounded-xl hover:bg-red-50 text-muted-foreground hover:text-red-500 transition-all duration-300 flex-shrink-0"
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
+          </div>
+
+          {item.duration && (
+            <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground font-medium">
+              <Clock className="w-4 h-4 text-safari-gold" />
+              <span>{item.duration}</span>
+            </div>
+          )}
         </div>
 
-        {item.duration && (
-          <div className="flex items-center gap-1.5 mt-1 text-sm text-muted-foreground">
-            <Clock className="w-3.5 h-3.5 text-safari-gold" />
-            <span>{item.duration}</span>
+        <div className="flex items-center justify-between mt-4">
+          <div className="px-3 py-1 bg-muted/50 rounded-full text-xs font-bold text-muted-foreground">
+            Qty: {item.quantity}
           </div>
-        )}
-
-        <div className="flex items-center justify-between mt-3">
-          <span className="text-sm text-muted-foreground">Qty: {item.quantity}</span>
-          <span className="font-bold text-safari-gold text-lg">
+          <span className="font-bold text-safari-gold text-2xl">
             ${(item.price * item.quantity).toLocaleString()}
           </span>
         </div>

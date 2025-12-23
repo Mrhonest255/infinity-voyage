@@ -10,14 +10,14 @@
     --background: 0 0% 100%;
     --foreground: 220 30% 12%;
 
-    --card: 220 25% 98%;
+    --card: 220 25% 99%;
     --card-foreground: 220 30% 12%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 220 30% 12%;
 
     /* Royal Blue as primary - deeper, richer */
-    --primary: 220 85% 40%;
+    --primary: 220 85% 42%;
     --primary-foreground: 0 0% 100%;
 
     /* Light blue-gray secondary */
@@ -25,12 +25,12 @@
     --secondary-foreground: 220 30% 20%;
 
     /* Muted blue-gray tones */
-    --muted: 220 20% 94%;
-    --muted-foreground: 220 15% 45%;
+    --muted: 220 20% 95%;
+    --muted-foreground: 220 15% 42%;
 
     /* Gold accent - richer, more luxurious */
-    --accent: 42 92% 48%;
-    --accent-foreground: 220 30% 12%;
+    --accent: 42 95% 50%;
+    --accent-foreground: 220 30% 10%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
@@ -58,14 +58,22 @@
     --gradient-luxury: linear-gradient(135deg, hsl(42 92% 48%) 0%, hsl(38 85% 40%) 50%, hsl(42 92% 48%) 100%);
     --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
 
-    /* Premium Shadows */
-    --shadow-soft: 0 4px 24px -6px hsl(220 40% 20% / 0.08);
-    --shadow-elevated: 0 12px 48px -12px hsl(220 40% 20% / 0.18);
-    --shadow-glow: 0 0 60px hsl(42 92% 48% / 0.35);
-    --shadow-luxury: 0 25px 80px -20px hsl(220 40% 15% / 0.25);
-    --shadow-gold: 0 8px 32px hsl(42 92% 48% / 0.25);
+    /* Premium Shadows - Enhanced */
+    --shadow-soft: 0 4px 20px -4px hsl(220 40% 20% / 0.08);
+    --shadow-elevated: 0 16px 48px -12px hsl(220 40% 20% / 0.15);
+    --shadow-glow: 0 0 80px hsl(42 95% 50% / 0.4);
+    --shadow-luxury: 0 30px 80px -20px hsl(220 40% 15% / 0.22);
+    --shadow-gold: 0 10px 40px hsl(42 95% 50% / 0.3);
+    --shadow-card: 0 4px 16px -2px hsl(220 40% 20% / 0.06), 0 1px 3px hsl(220 40% 20% / 0.04);
+    --shadow-card-hover: 0 20px 50px -10px hsl(220 40% 20% / 0.15);
 
-    --sidebar-background: 0 0% 100%;
+    /* Luxury UI Utilities */
+    --radius-luxury: 3rem;
+    --radius-card: 2.5rem;
+    --radius-button: 100px;
+  }
+
+  .dark {
     --sidebar-foreground: 220 30% 20%;
     --sidebar-primary: 220 85% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -136,21 +144,27 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
     font-weight: 600;
-    letter-spacing: -0.025em;
-    line-height: 1.1;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-wrap: balance;
   }
 
   h1 {
-    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-size: clamp(2rem, 5vw + 1rem, 4.5rem);
     font-weight: 700;
+    line-height: 1.1;
   }
 
   h2 {
-    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    font-size: clamp(1.75rem, 4vw + 0.5rem, 3.25rem);
   }
 
   h3 {
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-size: clamp(1.35rem, 2.5vw + 0.5rem, 2rem);
+  }
+  
+  h4 {
+    font-size: clamp(1.15rem, 1.5vw + 0.5rem, 1.5rem);
   }
 
   /* Selection styling */
@@ -211,26 +225,31 @@
     box-shadow: var(--shadow-gold);
   }
 
-  /* Glassmorphism */
+  /* Glassmorphism - Enhanced */
   .glass {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
   }
 
   .glass-light {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   }
 
   .glass-dark {
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(30px) saturate(150%);
+    -webkit-backdrop-filter: blur(30px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .glass-premium {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl;
   }
 
   /* Luxury border glow */
@@ -278,20 +297,37 @@
 
 @layer components {
   .safari-card {
-    @apply bg-card rounded-2xl overflow-hidden shadow-soft transition-all duration-500 hover:shadow-luxury hover:-translate-y-2;
-    border: 1px solid hsl(var(--border) / 0.5);
+    @apply bg-card rounded-2xl overflow-hidden transition-all duration-500;
+    border: 1px solid hsl(var(--border) / 0.4);
+    box-shadow: var(--shadow-card);
   }
 
   .safari-card:hover {
-    border-color: hsl(var(--accent) / 0.3);
+    border-color: hsl(var(--accent) / 0.4);
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-6px);
+  }
+  
+  @media (max-width: 768px) {
+    .safari-card:hover {
+      transform: translateY(-3px);
+    }
   }
 
   .section-padding {
-    @apply py-20 md:py-32 px-4 md:px-8;
+    @apply py-16 sm:py-20 md:py-28 lg:py-32 px-4 sm:px-6 md:px-8;
+  }
+  
+  .section-padding-sm {
+    @apply py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8;
   }
 
   .container-wide {
-    @apply max-w-7xl mx-auto;
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .container-narrow {
+    @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
   /* Premium button styles */
@@ -450,4 +486,190 @@
     50% { transform: scale(0.95); }
     75% { transform: scale(1.05); }
   }
+  
+  /* Mobile-first touch targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Smooth scroll on touch devices */
+  .scroll-smooth-touch {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* Modern card with animated border */
+  .card-modern {
+    @apply relative bg-card rounded-2xl overflow-hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-card);
+  }
+  
+  .card-modern::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, transparent 40%, hsl(var(--accent) / 0.5) 50%, transparent 60%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  
+  .card-modern:hover::before {
+    opacity: 1;
+  }
+  
+  .card-modern:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+  
+  @media (max-width: 768px) {
+    .card-modern:hover {
+      transform: translateY(-2px);
+    }
+  }
+  
+  /* Gradient text animation */
+  .text-gradient-animated {
+    background: linear-gradient(90deg, 
+      hsl(42 95% 50%), 
+      hsl(38 90% 55%), 
+      hsl(45 95% 60%),
+      hsl(42 95% 50%)
+    );
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-flow 4s ease-in-out infinite;
+  }
+  
+  @keyframes gradient-flow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  /* Responsive grid helpers */
+  .grid-auto-fit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 1.5rem;
+  }
+  
+  .grid-auto-fill {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 1.5rem;
+  }
+  
+  /* Improved focus styles */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-safari-gold/50 focus-visible:ring-offset-2;
+  }
+  
+  /* Smooth reveal animation */
+  .reveal-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  
+  .reveal-up.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Interactive hover scale */
+  .hover-scale {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
+  
+  @media (max-width: 768px) {
+    .hover-scale:hover {
+      transform: scale(1.01);
+    }
+  }
+  
+  /* Skeleton loading */
+  .skeleton {
+    @apply bg-muted animate-pulse rounded-lg;
+  }
+  
+  /* Scroll indicator */
+  .scroll-indicator {
+    animation: bounce-down 2s infinite;
+  }
+  
+  @keyframes bounce-down {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+  
+  /* Section header styling */
+  .section-header {
+    @apply text-center mb-12 md:mb-16;
+  }
+  
+  .section-label {
+    @apply inline-flex items-center gap-3 mb-4 text-safari-gold text-xs sm:text-sm font-semibold uppercase tracking-[0.2em];
+  }
+  
+  .section-title {
+    @apply text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground mb-4;
+  }
+  
+  .section-description {
+    @apply text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed;
+  }
+  
+  /* Button shine effect */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-shine::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    transform: rotate(45deg) translateX(-100%);
+    transition: transform 0.6s ease;
+  }
+  
+  .btn-shine:hover::after {
+    transform: rotate(45deg) translateX(100%);
+  }
+}
+
+/* Custom Scrollbar for Luxury Feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-safari-night;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-safari-gold/30 rounded-full hover:bg-safari-gold/50 transition-colors;
 }

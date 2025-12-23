@@ -275,12 +275,12 @@ Please confirm this transfer booking!`;
       <Navbar />
       
       {/* Premium Hero Section */}
-      <section className="relative pt-32 pb-24 bg-gradient-to-br from-safari-cream via-background to-safari-gold/5 overflow-hidden">
+      <section className="relative pt-24 sm:pt-32 pb-16 sm:pb-24 bg-gradient-to-br from-safari-cream via-background to-safari-gold/5 overflow-hidden">
         {/* Decorative Elements */}
-        <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-gradient-to-br from-safari-gold/15 to-safari-amber/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-3xl" />
-        <div className="absolute top-1/4 left-10 w-24 h-24 border border-safari-gold/20 rounded-full" />
-        <div className="absolute bottom-1/4 right-20 w-16 h-16 border border-primary/20 rounded-full" />
+        <div className="absolute top-20 right-0 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-gradient-to-br from-safari-gold/15 to-safari-amber/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-10 w-16 sm:w-24 h-16 sm:h-24 border border-safari-gold/20 rounded-full hidden sm:block" />
+        <div className="absolute bottom-1/4 right-20 w-12 sm:w-16 h-12 sm:h-16 border border-primary/20 rounded-full hidden sm:block" />
         
         <div className="container-wide mx-auto px-4 md:px-8 relative">
           <motion.div
@@ -292,13 +292,13 @@ Please confirm this transfer booking!`;
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.1 }}
-              className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full border border-safari-gold/30 shadow-soft"
+              className="inline-flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8 px-4 sm:px-6 py-2 sm:py-3 bg-white/80 backdrop-blur-sm rounded-full border border-safari-gold/30 shadow-soft"
             >
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-safari-gold to-safari-amber flex items-center justify-center">
-                <Car className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-safari-gold to-safari-amber flex items-center justify-center">
+                <Car className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-safari-brown text-sm font-semibold uppercase tracking-[0.2em]">
-                Premium Transportation
+              <span className="text-safari-brown text-[10px] sm:text-sm font-semibold uppercase tracking-[0.15em] sm:tracking-[0.2em]">
+                Reliable Transfers
               </span>
             </motion.div>
             
@@ -306,72 +306,71 @@ Please confirm this transfer booking!`;
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight"
+              className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-foreground mb-4 sm:mb-6 leading-tight"
             >
-              Airport <span className="text-gradient-gold">Transfer Services</span>
+              Zanzibar <span className="text-gradient-gold">Private Transfers</span>
             </motion.h1>
             
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+              className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto px-4"
             >
-              Reliable and comfortable transportation from Zanzibar Airport to your hotel.
-              Start your vacation stress-free with our professional transfer service.
+              Safe, comfortable, and punctual transportation across the island. 
+              Professional drivers and modern air-conditioned vehicles.
             </motion.p>
-            
-            {/* Quick Stats */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex flex-wrap justify-center gap-6 md:gap-10"
-            >
-              {[
-                { value: '24/7', label: 'Service' },
-                { value: '100%', label: 'Reliable' },
-                { value: 'Fixed', label: 'Pricing' },
-              ].map((stat, index) => (
-                <div key={index} className="text-center">
-                  <p className="text-2xl md:text-3xl font-bold text-safari-gold">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                </div>
-              ))}
-            </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Transfer Options */}
-      <section className="py-20 md:py-28">
+      {/* Why Choose Us - Premium Design */}
+      <section className="py-12 sm:py-16 bg-white">
         <div className="container-wide mx-auto px-4 md:px-8">
-          {/* Section Header */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+            {whyChooseUs.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="flex flex-col items-center text-center p-6 sm:p-8 rounded-2xl bg-safari-cream/30 border border-safari-gold/10 hover:shadow-soft transition-all duration-300"
+              >
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center mb-4 sm:mb-6">
+                  <item.icon className="w-6 h-6 sm:w-8 sm:h-8 text-safari-gold" />
+                </div>
+                <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">{item.title}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Transfers Grid - Premium Cards */}
+      <section className="py-12 sm:py-20 md:py-28 bg-gradient-to-b from-background to-muted/20">
+        <div className="container-wide mx-auto px-4 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-10 sm:mb-16"
           >
-            <span className="text-safari-gold text-sm font-semibold uppercase tracking-[0.2em]">Our Routes</span>
-            <h2 className="font-display text-3xl md:text-4xl font-semibold mt-4">
-              Available <span className="text-gradient-gold">Transfer Routes</span>
-            </h2>
-            <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
-              Choose from our selection of transfer routes covering all major destinations in Zanzibar
-            </p>
+            <span className="text-safari-gold text-[10px] sm:text-sm font-semibold uppercase tracking-[0.2em]">Our Routes</span>
+            <h2 className="font-display text-3xl sm:text-5xl font-semibold mt-2 sm:mt-4">Available <span className="text-gradient-gold">Transfers</span></h2>
           </motion.div>
-          
+
           {isLoading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[...Array(6)].map((_, i) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {[1, 2, 3].map((i) => (
                 <TransferCardSkeleton key={i} />
               ))}
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {transfers?.map((transfer, index) => {
-                const TypeIcon = getTypeIcon(transfer.transfer_type);
+                const Icon = getTypeIcon(transfer.transfer_type);
                 return (
                   <motion.div
                     key={transfer.id}
@@ -380,112 +379,87 @@ Please confirm this transfer booking!`;
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <Card className="group bg-white rounded-2xl border border-border/50 shadow-soft hover:shadow-luxury transition-all duration-500 overflow-hidden h-full flex flex-col">
+                    <Card className="group h-full bg-white rounded-2xl overflow-hidden border border-border/50 shadow-soft hover:shadow-luxury transition-all duration-500">
                       {/* Image */}
-                      <div className="h-52 relative overflow-hidden">
-                        {transfer.featured_image ? (
-                          <img 
-                            src={transfer.featured_image} 
-                            alt={transfer.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-safari-cream to-safari-gold/20 flex items-center justify-center">
-                            <Car className="w-16 h-16 text-safari-gold/50" />
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-safari-night/70 via-safari-night/20 to-transparent" />
-                        <div className="absolute bottom-4 left-4">
-                          <Badge className="bg-white/95 text-safari-brown font-semibold shadow-lg border-0">
-                            <TypeIcon className="w-3 h-3 mr-1.5 text-safari-gold" />
+                      <div className="relative h-48 sm:h-56 overflow-hidden">
+                        <img
+                          src={transfer.featured_image || "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80"}
+                          alt={transfer.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-safari-night/60 via-transparent to-transparent" />
+                        <div className="absolute top-4 left-4">
+                          <Badge className="bg-white/90 backdrop-blur-sm text-safari-night border-0 font-semibold text-[10px] sm:text-xs px-3 py-1">
+                            <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1.5 inline" />
                             {getTypeLabel(transfer.transfer_type)}
                           </Badge>
                         </div>
                         {transfer.is_featured && (
                           <div className="absolute top-4 right-4">
-                            <Badge className="bg-gradient-to-r from-safari-gold to-safari-amber text-white font-semibold border-0 shadow-lg">
-                              ★ Featured
+                            <Badge className="bg-safari-gold text-white border-0 font-semibold text-[10px] sm:text-xs px-3 py-1">
+                              Popular
                             </Badge>
                           </div>
                         )}
                       </div>
 
-                      <CardContent className="p-6 flex-1 flex flex-col">
-                        <h2 className="font-display text-xl font-semibold mb-3 group-hover:text-safari-gold transition-colors">{transfer.title}</h2>
-                        
-                        {/* Route */}
-                        <div className="flex items-center gap-3 text-sm text-muted-foreground mb-4 p-3 bg-safari-cream/50 rounded-xl">
-                          <MapPin className="w-5 h-5 text-safari-gold shrink-0" />
-                          <span className="font-medium">{transfer.route_from} → {transfer.route_to}</span>
+                      <CardContent className="p-5 sm:p-8">
+                        <div className="flex items-center gap-2 text-safari-gold mb-2 sm:mb-3">
+                          <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                          <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider">
+                            {transfer.route_from} → {transfer.route_to}
+                          </span>
                         </div>
-
-                        {transfer.duration && (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-                            <Clock className="w-4 h-4 text-safari-gold" />
-                            <span>{transfer.duration}</span>
-                          </div>
-                        )}
-
-                        <p className="text-muted-foreground text-sm mb-6 line-clamp-2">
+                        <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 group-hover:text-safari-gold transition-colors">
+                          {transfer.title}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-muted-foreground mb-6 line-clamp-2">
                           {transfer.short_description || transfer.description}
                         </p>
 
-                        {/* Premium Pricing */}
-                        <div className="grid grid-cols-2 gap-3 mb-6">
-                          {transfer.price_small_group && (
-                            <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-4 text-center border border-primary/20">
-                              <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-2">
-                                <Users className="w-4 h-4 text-primary" />
-                                <span className="text-xs font-medium">1-6 Pax</span>
-                              </div>
-                              <p className="text-2xl font-bold text-primary">${transfer.price_small_group}</p>
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
+                          <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-safari-cream flex items-center justify-center shrink-0">
+                              <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-safari-gold" />
                             </div>
-                          )}
-                          {transfer.price_large_group && (
-                            <div className="bg-gradient-to-br from-safari-gold/5 to-safari-gold/15 rounded-xl p-4 text-center border border-safari-gold/30">
-                              <div className="flex items-center justify-center gap-1.5 text-muted-foreground mb-2">
-                                <Users className="w-4 h-4 text-safari-gold" />
-                                <span className="text-xs font-medium">7-12 Pax</span>
-                              </div>
-                              <p className="text-2xl font-bold text-safari-gold">${transfer.price_large_group}</p>
+                            <div>
+                              <p className="text-[10px] text-muted-foreground uppercase tracking-tighter">Duration</p>
+                              <p className="text-xs sm:text-sm font-semibold">{transfer.duration || 'N/A'}</p>
                             </div>
-                          )}
+                          </div>
+                          <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-safari-cream flex items-center justify-center shrink-0">
+                              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-safari-gold" />
+                            </div>
+                            <div>
+                              <p className="text-[10px] text-muted-foreground uppercase tracking-tighter">Max Pax</p>
+                              <p className="text-xs sm:text-sm font-semibold">{transfer.max_passengers || '12'} People</p>
+                            </div>
+                          </div>
                         </div>
 
-                        {/* Features */}
-                        {transfer.features && transfer.features.length > 0 && (
-                          <div className="space-y-2.5 mb-6 flex-1">
-                            {transfer.features.slice(0, 4).map((feature, i) => (
-                              <div key={i} className="flex items-center gap-2.5 text-sm">
-                                <div className="w-5 h-5 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0">
-                                  <Check className="w-3 h-3 text-safari-gold" />
-                                </div>
-                                <span>{feature}</span>
-                              </div>
-                            ))}
-                            {transfer.features.length > 4 && (
-                              <p className="text-xs text-muted-foreground pl-7">
-                                +{transfer.features.length - 4} more features
-                              </p>
-                            )}
+                        <div className="flex items-center justify-between pt-5 sm:pt-6 border-t border-border/50 mb-6 sm:mb-8">
+                          <div>
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Starting from</p>
+                            <p className="text-2xl sm:text-3xl font-bold text-primary">${transfer.price_small_group}</p>
                           </div>
-                        )}
+                          <div className="text-right">
+                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Vehicle</p>
+                            <p className="text-xs sm:text-sm font-semibold text-foreground">{transfer.vehicle_type || 'Minivan'}</p>
+                          </div>
+                        </div>
 
-                        {/* Dual Booking Options */}
-                        <div className="flex gap-3 mt-auto pt-4 border-t border-border/50">
+                        <div className="flex flex-col sm:flex-row gap-3">
                           <Button 
-                            size="lg" 
-                            variant="outline"
-                            className="flex-1 border-2 border-safari-gold text-safari-brown hover:bg-safari-gold/10 rounded-xl font-semibold"
                             onClick={() => openBookingForm(transfer)}
+                            className="flex-1 h-11 sm:h-12 bg-safari-night text-white hover:bg-safari-night/90 rounded-xl text-xs sm:text-sm font-bold"
                           >
-                            <Send className="w-4 h-4 mr-2" />
                             Book Now
                           </Button>
                           <Button 
-                            size="lg" 
-                            className="flex-1 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold hover:from-green-500 hover:to-green-600 rounded-xl shadow-lg"
+                            variant="outline"
                             onClick={() => handleWhatsAppBooking(transfer)}
+                            className="flex-1 h-11 sm:h-12 border-2 border-green-500 text-green-600 hover:bg-green-50 rounded-xl text-xs sm:text-sm font-bold"
                           >
                             <MessageCircle className="w-4 h-4 mr-2" />
                             WhatsApp

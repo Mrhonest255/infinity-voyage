@@ -173,14 +173,14 @@ const Gallery = () => {
       <section className="py-20 flex-1">
         <div className="container-wide mx-auto px-4 md:px-8">
           {/* Premium Category Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mb-12">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mb-16">
             <div className="flex justify-center">
-              <TabsList className="bg-white shadow-soft border border-border/50 p-2 flex-wrap h-auto gap-2 rounded-2xl">
+              <TabsList className="bg-white/80 backdrop-blur-md shadow-2xl border border-border/40 p-2 flex-wrap h-auto gap-2 rounded-[2rem]">
                 {categories.map((cat) => (
                   <TabsTrigger 
                     key={cat.id} 
                     value={cat.id}
-                    className="px-5 py-2.5 rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-safari-gold data-[state=active]:to-safari-amber data-[state=active]:text-safari-night data-[state=active]:shadow-lg font-medium transition-all"
+                    className="px-8 py-3.5 rounded-[1.5rem] data-[state=active]:bg-safari-night data-[state=active]:text-white data-[state=active]:shadow-xl font-bold transition-all duration-300"
                   >
                     <cat.icon className="w-4 h-4 mr-2" />
                     {cat.label}
@@ -191,7 +191,7 @@ const Gallery = () => {
           </Tabs>
 
           {isLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
               {[...Array(12)].map((_, i) => (
                 <GalleryImageSkeleton 
                   key={i} 
@@ -202,18 +202,18 @@ const Gallery = () => {
           ) : (
             <motion.div 
               layout
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6"
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8"
             >
               <AnimatePresence mode="popLayout">
                 {filteredImages?.map((image, index) => (
                   <motion.div
                     key={image.id}
                     layout
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                    className={`relative group cursor-pointer overflow-hidden rounded-2xl shadow-soft hover:shadow-luxury transition-all duration-500 ${
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.4, delay: index * 0.05 }}
+                    className={`relative group cursor-pointer overflow-hidden rounded-[2.5rem] shadow-xl hover:shadow-2xl transition-all duration-500 ${
                       index % 5 === 0 ? 'md:col-span-2 md:row-span-2' : ''
                     }`}
                     onClick={() => setSelectedImage(image)}
@@ -222,23 +222,23 @@ const Gallery = () => {
                       <img
                         src={image.url}
                         alt={image.title || 'Gallery image'}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                         loading="lazy"
                       />
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-safari-night/90 via-safari-night/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="absolute bottom-0 left-0 right-0 p-5">
-                        <h3 className="text-white font-display font-semibold text-lg mb-2">{image.title}</h3>
+                    <div className="absolute inset-0 bg-gradient-to-t from-safari-night/90 via-safari-night/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
+                      <div className="absolute bottom-0 left-0 right-0 p-8">
+                        <h3 className="text-white font-display font-bold text-2xl mb-3" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{image.title}</h3>
                         {image.category && (
-                          <Badge className="bg-white/20 backdrop-blur-sm text-white border-0 text-xs">
+                          <Badge className="bg-safari-gold/90 backdrop-blur-sm text-safari-night border-0 text-xs font-bold px-4 py-1 rounded-full">
                             {image.category}
                           </Badge>
                         )}
                       </div>
                     </div>
-                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl">
-                        <ImageIcon className="w-5 h-5 text-white" />
+                    <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
+                      <div className="p-4 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30">
+                        <ImageIcon className="w-6 h-6 text-white" />
                       </div>
                     </div>
                   </motion.div>
@@ -337,53 +337,50 @@ const Gallery = () => {
       </Dialog>
 
       {/* Premium CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-safari-night via-safari-night/95 to-safari-brown/20 relative overflow-hidden">
+      <section className="py-32 bg-safari-night relative overflow-hidden">
         {/* Decorative Elements */}
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-safari-gold/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-safari-sunset/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
-        <div className="absolute top-1/4 right-20 w-20 h-20 border border-white/10 rounded-full" />
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-safari-gold/10 rounded-full blur-[120px] animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-safari-sunset/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        </div>
         
-        <div className="container-wide mx-auto px-4 md:px-8 text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-3xl mx-auto"
-          >
+        <div className="container-wide mx-auto px-4 md:px-8 relative z-10">
+          <div className="max-w-5xl mx-auto bg-white/5 backdrop-blur-xl rounded-[3rem] p-12 md:p-20 border border-white/10 text-center">
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 mb-6 px-5 py-2.5 bg-white/10 backdrop-blur-sm rounded-full border border-white/20"
             >
-              <Camera className="w-5 h-5 text-safari-gold" />
-              <span className="text-white/90 text-sm font-medium">Your Adventure Awaits</span>
+              <div className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-safari-gold/10 rounded-full border border-safari-gold/20">
+                <Camera className="w-5 h-5 text-safari-gold" />
+                <span className="text-safari-gold text-sm font-bold uppercase tracking-widest">Your Adventure Awaits</span>
+              </div>
+              
+              <h2 className="font-display text-4xl md:text-6xl font-bold text-white mb-8" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                Ready to Create Your Own <span className="italic text-safari-gold">Memories</span>?
+              </h2>
+              <p className="text-white/70 text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
+                Join us on an unforgettable African adventure. Book your safari today and capture moments that will last a lifetime.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <Button 
+                  size="xl" 
+                  className="bg-safari-gold hover:bg-safari-amber text-safari-night font-bold rounded-full px-10 h-16 text-lg shadow-2xl shadow-safari-gold/20 transition-all duration-300"
+                  asChild
+                >
+                  <a href="/safaris">Explore Safaris</a>
+                </Button>
+                <Button 
+                  size="xl" 
+                  variant="outline"
+                  className="border-2 border-white/20 text-white hover:bg-white/10 rounded-full px-10 h-16 text-lg font-bold transition-all duration-300"
+                  asChild
+                >
+                  <a href="/contact">Contact Us</a>
+                </Button>
+              </div>
             </motion.div>
-            
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-              Ready to Create Your Own <span className="text-safari-gold">Memories</span>?
-            </h2>
-            <p className="text-white/70 text-lg mb-10 max-w-2xl mx-auto">
-              Join us on an unforgettable African adventure. Book your safari today and capture moments that will last a lifetime.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
-                asChild
-              >
-                <a href="/safaris">Explore Safaris</a>
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="border-2 border-white/30 text-white hover:bg-white/10 rounded-xl font-semibold"
-                asChild
-              >
-                <a href="/contact">Contact Us</a>
-              </Button>
-            </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 

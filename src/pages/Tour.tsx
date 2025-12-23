@@ -204,8 +204,8 @@ const TourPage = () => {
         )}
         <Navbar />
         {/* Premium Hero Image Section */}
-        <div className="relative w-full h-[65vh] min-h-[550px] overflow-hidden bg-gradient-to-br from-safari-cream to-safari-gold/10">
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent z-10" />
+        <div className="relative w-full h-[50vh] sm:h-[65vh] min-h-[400px] sm:min-h-[550px] overflow-hidden bg-gradient-to-br from-safari-cream to-safari-gold/10">
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent z-10" />
           {tour.featured_image ? (
             <img 
               src={tour.featured_image} 
@@ -220,18 +220,18 @@ const TourPage = () => {
           )}
           
           {/* Decorative Elements */}
-          <div className="absolute top-20 right-10 w-32 h-32 border border-white/20 rounded-full z-5" />
-          <div className="absolute bottom-40 left-10 w-24 h-24 border border-safari-gold/30 rounded-full z-5" />
+          <div className="absolute top-20 right-10 w-24 sm:w-32 h-24 sm:h-32 border border-white/20 rounded-full z-5 hidden sm:block" />
+          <div className="absolute bottom-40 left-10 w-16 sm:w-24 h-16 sm:h-24 border border-safari-gold/30 rounded-full z-5 hidden sm:block" />
           
-          <div className="absolute bottom-0 left-0 right-0 z-20 container-wide mx-auto px-4 pb-16">
+          <div className="absolute bottom-0 left-0 right-0 z-20 container-wide mx-auto px-4 pb-8 sm:pb-16">
             <div className="max-w-4xl">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                <Badge className="mb-4 bg-white/90 backdrop-blur-sm text-safari-brown font-semibold border-0 shadow-lg px-4 py-1.5">
-                  <Award className="w-3.5 h-3.5 mr-1.5 text-safari-gold" />
+                <Badge className="mb-3 sm:mb-4 bg-white/90 backdrop-blur-sm text-safari-brown font-semibold border-0 shadow-lg px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs">
+                  <Award className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1 sm:mr-1.5 text-safari-gold" />
                   {tour.category?.toUpperCase() || 'SAFARI'}
                 </Badge>
               </motion.div>
@@ -239,7 +239,7 @@ const TourPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight"
+                className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-3 sm:mb-4 leading-tight"
               >
                 {tour.title}
               </motion.h1>
@@ -247,7 +247,7 @@ const TourPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-lg md:text-xl text-foreground/80 font-medium max-w-2xl leading-relaxed"
+                className="text-base sm:text-lg md:text-xl text-foreground/80 font-medium max-w-2xl leading-relaxed line-clamp-3 sm:line-clamp-none"
               >
                 {tour.short_description}
               </motion.p>
@@ -255,12 +255,12 @@ const TourPage = () => {
           </div>
         </div>
 
-        <div className="container-wide mx-auto px-4 py-12 lg:py-16">
+        <div className="container-wide mx-auto px-4 py-8 sm:py-12 lg:py-16">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
             {/* Main Content */}
-            <div className="lg:col-span-2 space-y-10">
+            <div className="lg:col-span-2 space-y-8 sm:space-y-10">
               {/* Premium Quick Info Cards */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                 {[
                   { icon: Clock, value: tour.duration, label: 'Duration' },
                   { icon: Users, value: tour.max_group_size || 12, label: 'Max Group' },
@@ -275,13 +275,13 @@ const TourPage = () => {
                     transition={{ duration: 0.4, delay: index * 0.1 }}
                     whileHover={{ scale: 1.02, y: -3 }}
                   >
-                    <Card className="border border-border/50 hover:border-safari-gold/50 transition-all bg-white rounded-2xl hover:shadow-luxury cursor-pointer">
-                      <CardContent className="p-5 text-center">
-                        <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center">
-                          <item.icon className="w-6 h-6 text-safari-gold" />
+                    <Card className="border border-border/50 hover:border-safari-gold/50 transition-all bg-white rounded-xl sm:rounded-2xl hover:shadow-luxury cursor-pointer h-full">
+                      <CardContent className="p-4 sm:p-5 text-center flex flex-col items-center justify-center h-full">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 rounded-lg sm:rounded-xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center">
+                          <item.icon className="w-5 h-5 sm:w-6 sm:h-6 text-safari-gold" />
                         </div>
-                        <div className="font-display text-2xl font-bold text-foreground">{item.value}</div>
-                        <div className="text-xs text-muted-foreground mt-1 font-medium">{item.label}</div>
+                        <div className="font-display text-lg sm:text-2xl font-bold text-foreground leading-tight">{item.value}</div>
+                        <div className="text-[10px] sm:text-xs text-muted-foreground mt-1 font-medium uppercase tracking-wider">{item.label}</div>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -295,69 +295,62 @@ const TourPage = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <Card className="border-2 border-border shadow-elevated overflow-hidden hover:shadow-xl transition-shadow">
-                  <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
-                    <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
-                      <motion.div
-                        animate={{ rotate: [0, 10, -10, 0] }}
-                        transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                      >
-                        <Zap className="w-6 h-6 text-primary" />
-                      </motion.div>
+                <Card className="border border-border/50 shadow-soft overflow-hidden hover:shadow-elevated transition-all duration-300 rounded-2xl">
+                  <div className="bg-gradient-to-r from-safari-gold/10 via-safari-gold/5 to-transparent p-5 sm:p-6 border-b border-border/50">
+                    <h2 className="font-display text-xl sm:text-2xl font-bold text-foreground flex items-center gap-3">
+                      <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-safari-gold" />
                       Tour Information
                     </h2>
-                    <p className="text-muted-foreground mt-2">Complete details about your adventure</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">Complete details about your adventure</p>
                   </div>
-                <Table>
-                  <TableBody>
-                    <TableRow className="hover:bg-muted/50 transition-colors">
-                      <TableHead className="font-semibold text-foreground w-1/3">Tour Duration</TableHead>
-                      <TableCell className="text-foreground">{tour.duration || 'Not specified'}</TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-muted/50 transition-colors">
-                      <TableHead className="font-semibold text-foreground">Price per Person</TableHead>
-                      <TableCell className="text-foreground">
-                        {tour.price ? (
-                          <span className="text-xl font-bold text-primary">
-                            ${tour.price.toLocaleString()} {tour.currency || 'USD'}
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground">Contact for pricing</span>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-muted/50 transition-colors">
-                      <TableHead className="font-semibold text-foreground">Difficulty Level</TableHead>
-                      <TableCell>
-                        <Badge variant="outline" className="font-medium">
-                          {tour.difficulty || 'Moderate'}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-muted/50 transition-colors">
-                      <TableHead className="font-semibold text-foreground">Maximum Group Size</TableHead>
-                      <TableCell className="text-foreground">
-                        <span className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-primary" />
-                          {tour.max_group_size || 12} people
-                        </span>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-muted/50 transition-colors">
-                      <TableHead className="font-semibold text-foreground">Category</TableHead>
-                      <TableCell>
-                        <Badge className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">
-                          {tour.category || 'Safari'}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-muted/50 transition-colors">
-                      <TableHead className="font-semibold text-foreground">Currency</TableHead>
-                      <TableCell className="text-foreground">{tour.currency || 'USD'}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </Card>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableBody>
+                        <TableRow className="hover:bg-muted/30 transition-colors">
+                          <TableHead className="font-semibold text-foreground w-1/3 text-xs sm:text-sm">Tour Duration</TableHead>
+                          <TableCell className="text-foreground text-xs sm:text-sm">{tour.duration || 'Not specified'}</TableCell>
+                        </TableRow>
+                        <TableRow className="hover:bg-muted/30 transition-colors">
+                          <TableHead className="font-semibold text-foreground text-xs sm:text-sm">Price per Person</TableHead>
+                          <TableCell className="text-foreground">
+                            {tour.price ? (
+                              <span className="text-lg sm:text-xl font-bold text-safari-gold">
+                                ${tour.price.toLocaleString()} {tour.currency || 'USD'}
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground text-xs sm:text-sm">Contact for pricing</span>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow className="hover:bg-muted/30 transition-colors">
+                          <TableHead className="font-semibold text-foreground text-xs sm:text-sm">Difficulty Level</TableHead>
+                          <TableCell>
+                            <Badge variant="outline" className="font-medium text-[10px] sm:text-xs">
+                              {tour.difficulty || 'Moderate'}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow className="hover:bg-muted/30 transition-colors">
+                          <TableHead className="font-semibold text-foreground text-xs sm:text-sm">Max Group Size</TableHead>
+                          <TableCell className="text-foreground">
+                            <span className="flex items-center gap-2 text-xs sm:text-sm">
+                              <Users className="w-3.5 h-3.5 text-safari-gold" />
+                              {tour.max_group_size || 12} people
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow className="hover:bg-muted/30 transition-colors">
+                          <TableHead className="font-semibold text-foreground text-xs sm:text-sm">Category</TableHead>
+                          <TableCell>
+                            <Badge className="bg-safari-gold/10 text-safari-brown hover:bg-safari-gold/20 border-safari-gold/20 text-[10px] sm:text-xs">
+                              {tour.category || 'Safari'}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
+                </Card>
               </motion.div>
 
               {/* Overview Section */}
@@ -367,40 +360,35 @@ const TourPage = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <Card className="border-2 border-border shadow-elevated hover:shadow-xl transition-shadow">
-                  <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
-                    <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
-                      <motion.div
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                      >
-                        <Heart className="w-6 h-6 text-primary" />
-                      </motion.div>
+                <Card className="border border-border/50 shadow-soft hover:shadow-elevated transition-all duration-300 rounded-2xl">
+                  <div className="bg-gradient-to-r from-safari-gold/10 via-safari-gold/5 to-transparent p-5 sm:p-6 border-b border-border/50">
+                    <h2 className="font-display text-xl sm:text-2xl font-bold text-foreground flex items-center gap-3">
+                      <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-safari-gold" />
                       Overview
                     </h2>
                   </div>
-                <CardContent className="p-6">
-                  <div className="prose prose-lg max-w-none">
-                    <p className="text-foreground/90 leading-relaxed whitespace-pre-line text-base md:text-lg font-body">
-                      {tour.description}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-5 sm:p-6">
+                    <div className="prose prose-sm sm:prose-base max-w-none">
+                      <p className="text-foreground/90 leading-relaxed whitespace-pre-line font-body">
+                        {tour.description}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
               </motion.div>
 
               {/* Gallery Section */}
               {allImages && allImages.length > 0 && (
-                <Card className="border-2 border-border shadow-elevated overflow-hidden">
-                  <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
-                    <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
-                      <Images className="w-6 h-6 text-primary" />
+                <Card className="border border-border/50 shadow-soft overflow-hidden rounded-2xl">
+                  <div className="bg-gradient-to-r from-safari-gold/10 via-safari-gold/5 to-transparent p-5 sm:p-6 border-b border-border/50">
+                    <h2 className="font-display text-xl sm:text-2xl font-bold text-foreground flex items-center gap-3">
+                      <Images className="w-5 h-5 sm:w-6 sm:h-6 text-safari-gold" />
                       Photo Gallery
                     </h2>
-                    <p className="text-muted-foreground mt-2">Explore stunning images from this adventure</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">Explore stunning images from this adventure</p>
                   </div>
-                  <CardContent className="p-6">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                       {allImages.map((image: string, index: number) => (
                         image && (
                           <motion.div
@@ -409,7 +397,7 @@ const TourPage = () => {
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.3, delay: index * 0.05 }}
-                            className="relative aspect-square rounded-lg overflow-hidden cursor-pointer group"
+                            className="relative aspect-square rounded-xl overflow-hidden cursor-pointer group touch-target"
                             onClick={() => openLightbox(index)}
                           >
                             <img
@@ -421,17 +409,11 @@ const TourPage = () => {
                               }}
                             />
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
-                              <motion.div
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                whileHover={{ opacity: 1, scale: 1 }}
-                                className="text-white"
-                              >
-                                <Images className="w-8 h-8" />
-                              </motion.div>
+                              <Images className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                             </div>
                             {index === 0 && tour.featured_image && (
                               <div className="absolute top-2 left-2">
-                                <Badge className="bg-safari-gold text-safari-night text-xs">
+                                <Badge className="bg-safari-gold text-safari-night text-[10px] px-2 py-0">
                                   Featured
                                 </Badge>
                               </div>
@@ -440,8 +422,8 @@ const TourPage = () => {
                         )
                       ))}
                     </div>
-                    <p className="text-sm text-muted-foreground mt-4 text-center">
-                      Click any image to view in full screen
+                    <p className="text-[10px] sm:text-xs text-muted-foreground mt-4 text-center">
+                      Tap any image to view in full screen
                     </p>
                   </CardContent>
                 </Card>
@@ -455,32 +437,27 @@ const TourPage = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
                 >
-                  <Card className="border-2 border-border shadow-elevated">
-                    <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
-                      <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
-                        <Star className="w-6 h-6 text-primary" />
+                  <Card className="border border-border/50 shadow-soft rounded-2xl">
+                    <div className="bg-gradient-to-r from-safari-gold/10 via-safari-gold/5 to-transparent p-5 sm:p-6 border-b border-border/50">
+                      <h2 className="font-display text-xl sm:text-2xl font-bold text-foreground flex items-center gap-3">
+                        <Star className="w-5 h-5 sm:w-6 sm:h-6 text-safari-gold" />
                         Tour Highlights
                       </h2>
-                      <p className="text-muted-foreground mt-2">What makes this adventure special</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground mt-1">What makes this adventure special</p>
                     </div>
-                    <CardContent className="p-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         {safeHighlights.map((highlight: string, index: number) => (
                           <motion.div
                             key={index}
-                            initial={{ opacity: 0, x: -20 }}
+                            initial={{ opacity: 0, x: -10 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.4, delay: index * 0.1 }}
-                            className="flex items-start gap-3 p-4 rounded-xl bg-gradient-to-br from-muted/50 to-transparent hover:from-muted hover:to-muted/50 transition-all border border-border/50 hover:border-primary/50 hover:shadow-md"
+                            transition={{ duration: 0.4, delay: index * 0.05 }}
+                            className="flex items-start gap-3 p-3 sm:p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-all border border-border/30 hover:border-safari-gold/30"
                           >
-                            <motion.div
-                              whileHover={{ scale: 1.2, rotate: 360 }}
-                              transition={{ duration: 0.5 }}
-                            >
-                              <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                            </motion.div>
-                            <span className="text-foreground font-medium">{highlight}</span>
+                            <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-safari-gold flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground font-medium text-xs sm:text-sm">{highlight}</span>
                           </motion.div>
                         ))}
                       </div>
@@ -491,52 +468,44 @@ const TourPage = () => {
 
               {/* Included/Excluded Table */}
               {(safeIncluded.length > 0 || safeExcluded.length > 0) && (
-                <Card className="border-2 border-border shadow-elevated">
-                  <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
-                    <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
+                <Card className="border border-border/50 shadow-soft rounded-2xl overflow-hidden">
+                  <div className="bg-gradient-to-r from-safari-gold/10 via-safari-gold/5 to-transparent p-5 sm:p-6 border-b border-border/50">
+                    <h2 className="font-display text-xl sm:text-2xl font-bold text-foreground">
                       What's Included & Excluded
                     </h2>
-                    <p className="text-muted-foreground mt-2">Know exactly what's covered</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">Know exactly what's covered</p>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border">
+                  <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border/50">
                     {safeIncluded.length > 0 && (
-                      <div className="p-6">
-                        <h3 className="font-heading text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                          <CheckCircle2 className="w-5 h-5 text-green-600" />
+                      <div className="p-4 sm:p-6">
+                        <h3 className="font-display text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-green-600" />
                           Included
                         </h3>
-                        <Table>
-                          <TableBody>
-                            {safeIncluded.map((item: string, index: number) => (
-                              <TableRow key={index} className="hover:bg-green-50/50 dark:hover:bg-green-950/10">
-                                <TableCell className="flex items-center gap-3 text-foreground">
-                                  <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
-                                  {item}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
+                        <div className="space-y-2">
+                          {safeIncluded.map((item: string, index: number) => (
+                            <div key={index} className="flex items-start gap-3 text-xs sm:text-sm text-foreground/80 py-1">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-green-600 flex-shrink-0 mt-0.5" />
+                              {item}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                     {safeExcluded.length > 0 && (
-                      <div className="p-6">
-                        <h3 className="font-heading text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                          <span className="text-red-600">✕</span>
+                      <div className="p-4 sm:p-6">
+                        <h3 className="font-display text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                          <X className="w-4 h-4 text-red-600" />
                           Excluded
                         </h3>
-                        <Table>
-                          <TableBody>
-                            {safeExcluded.map((item: string, index: number) => (
-                              <TableRow key={index} className="hover:bg-red-50/50 dark:hover:bg-red-950/10">
-                                <TableCell className="flex items-center gap-3 text-foreground">
-                                  <span className="w-4 h-4 text-red-600 flex-shrink-0 flex items-center justify-center">✕</span>
-                                  {item}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
+                        <div className="space-y-2">
+                          {safeExcluded.map((item: string, index: number) => (
+                            <div key={index} className="flex items-start gap-3 text-xs sm:text-sm text-foreground/80 py-1">
+                              <X className="w-3.5 h-3.5 text-red-600 flex-shrink-0 mt-0.5" />
+                              {item}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -551,65 +520,47 @@ const TourPage = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
                 >
-                  <Card className="border-2 border-border shadow-elevated hover:shadow-xl transition-shadow">
-                    <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
-                      <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground flex items-center gap-3">
-                        <motion.div
-                          animate={{ rotate: [0, 360] }}
-                          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                        >
-                          <Calendar className="w-6 h-6 text-primary" />
-                        </motion.div>
+                  <Card className="border border-border/50 shadow-soft hover:shadow-elevated transition-all duration-300 rounded-2xl">
+                    <div className="bg-gradient-to-r from-safari-gold/10 via-safari-gold/5 to-transparent p-5 sm:p-6 border-b border-border/50">
+                      <h2 className="font-display text-xl sm:text-2xl font-bold text-foreground flex items-center gap-3">
+                        <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-safari-gold" />
                         Detailed Itinerary
                       </h2>
-                      <p className="text-muted-foreground mt-2">Day-by-day breakdown of your adventure</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground mt-1">Day-by-day breakdown of your adventure</p>
                     </div>
-                    <CardContent className="p-6">
+                    <CardContent className="p-4 sm:p-6">
                       <div className="space-y-6">
                         {safeItinerary.map((day: any, index: number) => (
                           <motion.div
                             key={day.day || index}
-                            initial={{ opacity: 0, x: -20 }}
+                            initial={{ opacity: 0, x: -10 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.4, delay: index * 0.1 }}
-                            className="relative pl-8 pb-6 border-l-2 border-primary/30 last:border-l-0 last:pb-0"
+                            transition={{ duration: 0.4, delay: index * 0.05 }}
+                            className="relative pl-6 sm:pl-8 pb-6 border-l-2 border-safari-gold/30 last:border-l-0 last:pb-0"
                           >
-                            <motion.div
-                              whileHover={{ scale: 1.2 }}
-                              className="absolute -left-3 top-0 w-6 h-6 rounded-full bg-primary border-4 border-background shadow-lg flex items-center justify-center"
-                            >
-                              <span className="text-xs font-bold text-primary-foreground">{day.day || index + 1}</span>
-                            </motion.div>
-                            <motion.div
-                              whileHover={{ scale: 1.02, x: 5 }}
-                              className="bg-gradient-to-br from-card to-card/50 rounded-xl p-6 border border-border/50 hover:shadow-md transition-shadow cursor-pointer"
-                            >
-                              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-3">
-                                <h3 className="font-heading text-xl font-bold text-foreground">
-                                  Day {day.day || index + 1}: {day.title}
-                                </h3>
-                              </div>
-                              <p className="text-foreground/80 leading-relaxed mb-4">{day.description}</p>
+                            <div className="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-safari-gold border-4 border-background shadow-sm flex items-center justify-center">
+                              <span className="text-[8px] font-bold text-safari-night">{day.day || index + 1}</span>
+                            </div>
+                            <div className="bg-muted/20 rounded-xl p-4 sm:p-6 border border-border/30 hover:border-safari-gold/20 transition-all">
+                              <h3 className="font-display text-lg sm:text-xl font-bold text-foreground mb-2">
+                                Day {day.day || index + 1}: {day.title}
+                              </h3>
+                              <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed mb-4">{day.description}</p>
                               {day.activities && day.activities.length > 0 && (
-                                <div className="flex flex-wrap gap-2 mt-4">
+                                <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-4">
                                   {day.activities.map((activity: string, actIndex: number) => (
-                                    <motion.div
+                                    <Badge 
                                       key={actIndex}
-                                      whileHover={{ scale: 1.1 }}
-                                      whileTap={{ scale: 0.95 }}
+                                      variant="outline" 
+                                      className="text-[10px] sm:text-xs bg-white/50 border-border/50 text-foreground/70"
                                     >
-                                      <Badge 
-                                        variant="outline" 
-                                        className="text-xs bg-primary/5 border-primary/20 text-primary cursor-pointer"
-                                      >
-                                        {activity}
-                                      </Badge>
-                                    </motion.div>
+                                      {activity}
+                                    </Badge>
                                   ))}
                                 </div>
                               )}
-                            </motion.div>
+                            </div>
                           </motion.div>
                         ))}
                       </div>
@@ -628,24 +579,24 @@ const TourPage = () => {
                 {/* Premium Booking Card */}
                 <Card className="border border-safari-gold/30 shadow-luxury bg-white rounded-2xl overflow-hidden">
                   <CardContent className="p-0">
-                    <div className="bg-gradient-to-r from-safari-gold to-safari-amber p-6 text-safari-night">
+                    <div className="bg-gradient-to-r from-safari-gold to-safari-amber p-5 sm:p-6 text-safari-night">
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-sm opacity-80 font-medium">Starting from</div>
-                          <div className="text-4xl font-bold mt-1">
+                          <div className="text-[10px] sm:text-xs opacity-80 font-medium uppercase tracking-wider">Starting from</div>
+                          <div className="text-3xl sm:text-4xl font-bold mt-1">
                             {tour.price ? `$${tour.price.toLocaleString()}` : 'Contact'}
                           </div>
-                          <div className="text-sm opacity-80 mt-1">per person</div>
+                          <div className="text-[10px] sm:text-xs opacity-80 mt-1">per person</div>
                         </div>
                         {tour.duration && (
-                          <div className="text-right bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3">
-                            <Clock className="w-5 h-5 mx-auto mb-1" />
-                            <div className="text-sm font-semibold">{tour.duration}</div>
+                          <div className="text-right bg-white/20 backdrop-blur-sm rounded-xl px-3 sm:px-4 py-2 sm:py-3">
+                            <Clock className="w-4 h-4 sm:w-5 sm:h-5 mx-auto mb-1" />
+                            <div className="text-[10px] sm:text-xs font-semibold">{tour.duration}</div>
                           </div>
                         )}
                       </div>
                     </div>
-                    <div className="p-6 space-y-4">
+                    <div className="p-5 sm:p-6 space-y-4">
                       {/* Add to Cart Button */}
                       <AddToCartButton
                         item={{
@@ -656,14 +607,14 @@ const TourPage = () => {
                           price: tour.price || 0,
                           duration: tour.duration,
                         }}
-                        className="w-full h-12"
+                        className="w-full h-11 sm:h-12 rounded-xl font-bold"
                       />
                       
-                      <div className="relative">
+                      <div className="relative py-2">
                         <div className="absolute inset-0 flex items-center">
                           <div className="w-full border-t border-border/50"></div>
                         </div>
-                        <div className="relative flex justify-center text-xs uppercase">
+                        <div className="relative flex justify-center text-[10px] uppercase tracking-widest">
                           <span className="bg-white px-2 text-muted-foreground">or book now</span>
                         </div>
                       </div>
@@ -680,27 +631,27 @@ const TourPage = () => {
 
                 {/* Premium Quick Contact */}
                 <Card className="border border-border/50 bg-gradient-to-br from-safari-cream/30 to-transparent rounded-2xl">
-                  <CardContent className="p-6">
-                    <h3 className="font-display text-lg font-bold text-foreground mb-3">Need Help?</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  <CardContent className="p-5 sm:p-6">
+                    <h3 className="font-display text-base sm:text-lg font-bold text-foreground mb-3">Need Help?</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mb-4">
                       Our travel experts are here to help you plan the perfect adventure. Contact us for:
                     </p>
-                    <ul className="space-y-3 text-sm text-muted-foreground">
+                    <ul className="space-y-3 text-xs sm:text-sm text-muted-foreground">
                       <li className="flex items-center gap-3">
-                        <div className="w-6 h-6 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-safari-gold" />
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0">
+                          <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-safari-gold" />
                         </div>
                         Custom itineraries
                       </li>
                       <li className="flex items-center gap-3">
-                        <div className="w-6 h-6 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-safari-gold" />
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0">
+                          <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-safari-gold" />
                         </div>
                         Group bookings
                       </li>
                       <li className="flex items-center gap-3">
-                        <div className="w-6 h-6 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-safari-gold" />
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-safari-gold/10 flex items-center justify-center shrink-0">
+                          <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-safari-gold" />
                         </div>
                         Special requests
                       </li>

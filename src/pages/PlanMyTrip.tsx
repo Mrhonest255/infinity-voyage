@@ -220,84 +220,70 @@ Additional Notes: ${formData.additionalInfo || 'None'}
       <Navbar />
       
       {/* Premium Hero Section */}
-      <section className="relative pt-32 pb-20 bg-gradient-to-br from-safari-cream via-background to-safari-gold/5 overflow-hidden">
-        {/* Decorative Elements */}
-        <div className="absolute top-20 left-0 w-[500px] h-[500px] bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-gradient-to-tl from-safari-gold/15 to-safari-amber/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/4 right-10 w-24 h-24 border border-safari-gold/20 rounded-full" />
-        <div className="absolute bottom-1/4 left-20 w-16 h-16 border border-primary/20 rounded-full" />
+      <section className="relative pt-32 pb-24 bg-safari-night overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&q=80" 
+            alt="Safari Landscape" 
+            className="w-full h-full object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-safari-night/60 via-safari-night/80 to-background"></div>
+        </div>
         
-        <div className="container-wide mx-auto px-4 md:px-8 relative">
+        <div className="container-wide mx-auto px-4 md:px-8 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
             className="text-center max-w-4xl mx-auto"
           >
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1 }}
-              className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full border border-safari-gold/30 shadow-soft"
-            >
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-safari-gold to-safari-amber flex items-center justify-center">
-                <Compass className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-safari-brown text-sm font-semibold uppercase tracking-[0.2em]">
-                Trip Planner
-              </span>
-            </motion.div>
-            
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6"
+              className="inline-flex items-center gap-2 bg-safari-gold/20 text-safari-gold px-6 py-2 rounded-full text-sm font-bold mb-8 border border-safari-gold/30 uppercase tracking-widest"
             >
-              Plan Your <span className="text-gradient-gold">Dream Trip</span>
-            </motion.h1>
-            
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-lg text-muted-foreground max-w-2xl mx-auto"
-            >
-              Let our travel experts create a personalized itinerary for your perfect
-              Zanzibar and Tanzania adventure.
-            </motion.p>
+              <Compass className="w-4 h-4" /> Trip Planner
+            </motion.div>
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              Plan Your <span className="text-safari-gold italic">Dream Trip</span>
+            </h1>
+            <p className="text-white/80 text-xl md:text-2xl leading-relaxed max-w-2xl mx-auto">
+              Let our travel experts create a personalized itinerary for your perfect Zanzibar and Tanzania adventure.
+            </p>
           </motion.div>
         </div>
       </section>
 
       {/* Premium Form Section */}
-      <section className="py-20 md:py-28">
+      <section className="py-24 relative">
         <div className="container-wide mx-auto px-4 md:px-8">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <Card className="shadow-luxury border border-border/50 rounded-2xl bg-white">
-                <CardContent className="p-8 md:p-12">
-                  <div className="text-center mb-10">
-                    <h2 className="font-display text-2xl font-semibold mb-3">Custom Trip Planning</h2>
-                    <p className="text-muted-foreground">
+              <Card className="shadow-2xl border border-border/40 rounded-[2.5rem] bg-white/80 backdrop-blur-md overflow-hidden">
+                <CardContent className="p-8 md:p-16">
+                  <div className="text-center mb-16">
+                    <h2 className="text-4xl font-bold text-safari-night mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Custom Trip Planning</h2>
+                    <p className="text-muted-foreground text-lg">
                       Fill out the form below with your preferences, and our travel experts will
                       create a personalized itinerary for your Zanzibar adventure.
                     </p>
                   </div>
 
-                  <form onSubmit={handleSubmit} className="space-y-10">
+                  <form onSubmit={handleSubmit} className="space-y-16">
                     {/* Personal Information */}
-                    <div>
-                      <h3 className="font-display text-lg font-semibold mb-5 flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center">
-                          <Users className="w-5 h-5 text-safari-gold" />
+                    <div className="space-y-8">
+                      <h3 className="text-2xl font-bold text-safari-night flex items-center gap-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                        <div className="w-12 h-12 rounded-2xl bg-safari-gold/10 flex items-center justify-center">
+                          <Users className="w-6 h-6 text-safari-gold" />
                         </div>
                         Personal Information
                       </h3>
-                      <div className="grid md:grid-cols-2 gap-5">
+                      <div className="grid md:grid-cols-2 gap-8">
                         <div>
                           <Label htmlFor="fullName" className="text-sm font-medium text-foreground">Full Name *</Label>
                           <Input
@@ -333,28 +319,28 @@ Additional Notes: ${formData.additionalInfo || 'None'}
                     </div>
 
                     {/* Trip Details */}
-                    <div>
-                      <h3 className="font-display text-lg font-semibold mb-5 flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center">
-                          <CalendarIcon className="w-5 h-5 text-safari-gold" />
+                    <div className="space-y-8">
+                      <h3 className="text-2xl font-bold text-safari-night flex items-center gap-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                        <div className="w-12 h-12 rounded-2xl bg-safari-gold/10 flex items-center justify-center">
+                          <CalendarIcon className="w-6 h-6 text-safari-gold" />
                         </div>
                         Trip Details
                       </h3>
-                      <div className="grid md:grid-cols-2 gap-5">
+                      <div className="grid md:grid-cols-2 gap-8">
                         {/* From Date */}
-                        <div>
-                          <Label className="text-sm font-medium text-foreground">From Date *</Label>
+                        <div className="space-y-3">
+                          <Label className="text-sm font-bold text-safari-night uppercase tracking-wider">From Date *</Label>
                           <Popover>
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
-                                className="w-full mt-2 h-12 justify-start text-left font-normal rounded-xl border-border/50 hover:border-safari-gold"
+                                className="w-full h-14 justify-start text-left font-normal rounded-2xl border-border/50 hover:border-safari-gold hover:bg-safari-gold/5 transition-all"
                               >
-                                <CalendarIcon className="mr-2 h-4 w-4 text-safari-gold" />
+                                <CalendarIcon className="mr-3 h-5 w-5 text-safari-gold" />
                                 {formData.fromDate ? format(formData.fromDate, "PPP") : "Select start date"}
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0 rounded-xl" align="start">
+                            <PopoverContent className="w-auto p-0 rounded-2xl shadow-2xl border-border/40" align="start">
                               <Calendar
                                 mode="single"
                                 selected={formData.fromDate}
@@ -367,19 +353,19 @@ Additional Notes: ${formData.additionalInfo || 'None'}
                         </div>
 
                         {/* To Date */}
-                        <div>
-                          <Label className="text-sm font-medium text-foreground">To Date *</Label>
+                        <div className="space-y-3">
+                          <Label className="text-sm font-bold text-safari-night uppercase tracking-wider">To Date *</Label>
                           <Popover>
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
-                                className="w-full mt-2 h-12 justify-start text-left font-normal rounded-xl border-border/50 hover:border-safari-gold"
+                                className="w-full h-14 justify-start text-left font-normal rounded-2xl border-border/50 hover:border-safari-gold hover:bg-safari-gold/5 transition-all"
                               >
-                                <CalendarIcon className="mr-2 h-4 w-4 text-safari-gold" />
+                                <CalendarIcon className="mr-3 h-5 w-5 text-safari-gold" />
                                 {formData.toDate ? format(formData.toDate, "PPP") : "Select end date"}
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0 rounded-xl" align="start">
+                            <PopoverContent className="w-auto p-0 rounded-2xl shadow-2xl border-border/40" align="start">
                               <Calendar
                                 mode="single"
                                 selected={formData.toDate}
@@ -392,39 +378,39 @@ Additional Notes: ${formData.additionalInfo || 'None'}
                         </div>
 
                         {/* Number of Travelers */}
-                        <div>
-                          <Label className="text-sm font-medium text-foreground">Number of Travelers *</Label>
+                        <div className="space-y-3">
+                          <Label className="text-sm font-bold text-safari-night uppercase tracking-wider">Number of Travelers *</Label>
                           <Select
                             value={formData.travelers}
                             onValueChange={(value) => setFormData(prev => ({ ...prev, travelers: value }))}
                           >
-                            <SelectTrigger className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold">
+                            <SelectTrigger className="h-14 rounded-2xl border-border/50 focus:ring-safari-gold/20 focus:border-safari-gold">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="rounded-2xl shadow-2xl border-border/40">
                               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                                <SelectItem key={num} value={num.toString()}>
+                                <SelectItem key={num} value={num.toString()} className="rounded-xl">
                                   {num} {num === 1 ? "person" : "people"}
                                 </SelectItem>
                               ))}
-                              <SelectItem value="10+">10+ people</SelectItem>
+                              <SelectItem value="10+" className="rounded-xl">10+ people</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
 
                         {/* Budget */}
-                        <div>
-                          <Label className="text-sm font-medium text-foreground">Budget Range (USD)</Label>
+                        <div className="space-y-3">
+                          <Label className="text-sm font-bold text-safari-night uppercase tracking-wider">Budget Range (USD)</Label>
                           <Select
                             value={formData.budget}
                             onValueChange={(value) => setFormData(prev => ({ ...prev, budget: value }))}
                           >
-                            <SelectTrigger className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold">
+                            <SelectTrigger className="h-14 rounded-2xl border-border/50 focus:ring-safari-gold/20 focus:border-safari-gold">
                               <SelectValue placeholder="Select budget" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="rounded-2xl shadow-2xl border-border/40">
                               {budgetRanges.map(range => (
-                                <SelectItem key={range.value} value={range.value}>
+                                <SelectItem key={range.value} value={range.value} className="rounded-xl">
                                   {range.label}
                                 </SelectItem>
                               ))}
@@ -433,18 +419,18 @@ Additional Notes: ${formData.additionalInfo || 'None'}
                         </div>
 
                         {/* Accommodation */}
-                        <div className="md:col-span-2">
-                          <Label className="text-sm font-medium text-foreground">Preferred Accommodation Type</Label>
+                        <div className="md:col-span-2 space-y-3">
+                          <Label className="text-sm font-bold text-safari-night uppercase tracking-wider">Preferred Accommodation Type</Label>
                           <Select
                             value={formData.accommodation}
                             onValueChange={(value) => setFormData(prev => ({ ...prev, accommodation: value }))}
                           >
-                            <SelectTrigger className="mt-2 h-12 rounded-xl border-border/50 focus:border-safari-gold">
+                            <SelectTrigger className="h-14 rounded-2xl border-border/50 focus:ring-safari-gold/20 focus:border-safari-gold">
                               <SelectValue placeholder="Select accommodation type" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="rounded-2xl shadow-2xl border-border/40">
                               {accommodationTypes.map(type => (
-                                <SelectItem key={type.value} value={type.value}>
+                                <SelectItem key={type.value} value={type.value} className="rounded-xl">
                                   {type.label}
                                 </SelectItem>
                               ))}
@@ -455,79 +441,77 @@ Additional Notes: ${formData.additionalInfo || 'None'}
                     </div>
 
                     {/* Premium Interests Section */}
-                    <div>
-                      <h3 className="font-display text-lg font-semibold mb-5 flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500/20 to-green-500/10 flex items-center justify-center">
-                          <MapPin className="w-5 h-5 text-green-600" />
+                    <div className="space-y-8">
+                      <h3 className="text-2xl font-bold text-safari-night flex items-center gap-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                        <div className="w-12 h-12 rounded-2xl bg-safari-gold/10 flex items-center justify-center">
+                          <MapPin className="w-6 h-6 text-safari-gold" />
                         </div>
                         Interests & Activities *
                       </h3>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         {interests.map(interest => (
                           <button
                             key={interest.id}
                             type="button"
                             onClick={() => handleInterestToggle(interest.id)}
-                            className={`p-4 rounded-2xl border-2 text-left transition-all flex items-center gap-3 ${
+                            className={`p-6 rounded-[2rem] border-2 text-left transition-all duration-300 flex items-center gap-4 group ${
                               formData.interests.includes(interest.id)
-                                ? "border-safari-gold bg-safari-gold/5 shadow-soft"
-                                : "border-border/50 hover:border-safari-gold/50"
+                                ? "border-safari-gold bg-safari-gold/5 shadow-xl shadow-safari-gold/5"
+                                : "border-border/40 hover:border-safari-gold/30 hover:bg-muted/30"
                             }`}
                           >
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 ${
                               formData.interests.includes(interest.id) 
-                                ? "bg-safari-gold/20" 
-                                : "bg-muted"
+                                ? "bg-safari-gold text-safari-night" 
+                                : "bg-muted group-hover:bg-safari-gold/10 group-hover:text-safari-gold"
                             }`}>
-                              <interest.icon className={`w-5 h-5 ${
-                                formData.interests.includes(interest.id) ? "text-safari-gold" : "text-muted-foreground"
-                              }`} />
+                              <interest.icon className="w-7 h-7" />
                             </div>
-                            <span className="text-sm font-medium">{interest.label}</span>
+                            <span className={`font-bold transition-colors ${
+                              formData.interests.includes(interest.id) ? "text-safari-night" : "text-muted-foreground"
+                            }`}>{interest.label}</span>
                           </button>
                         ))}
                       </div>
                     </div>
 
                     {/* Additional Info */}
-                    <div>
-                      <Label htmlFor="additionalInfo" className="text-sm font-medium text-foreground">Additional Information</Label>
+                    <div className="space-y-3">
+                      <Label htmlFor="additionalInfo" className="text-sm font-bold text-safari-night uppercase tracking-wider">Additional Information</Label>
                       <Textarea
                         id="additionalInfo"
                         value={formData.additionalInfo}
                         onChange={(e) => setFormData(prev => ({ ...prev, additionalInfo: e.target.value }))}
                         placeholder="Tell us more about your dream trip, special requirements, or any questions..."
-                        className="mt-2 min-h-[140px] rounded-xl border-border/50 focus:border-safari-gold resize-none"
+                        className="min-h-[180px] rounded-[2rem] border-border/50 focus:ring-safari-gold/20 focus:border-safari-gold resize-none p-6 text-lg"
                       />
                     </div>
 
                     {/* Premium Submit Options */}
-                    <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                    <div className="flex flex-col sm:flex-row gap-6 pt-8">
                       <Button
                         type="submit"
-                        size="xl"
                         disabled={loading}
-                        className="flex-1 h-14 bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-bold shadow-lg hover:shadow-xl rounded-xl"
+                        className="flex-1 h-20 bg-safari-night hover:bg-safari-gold hover:text-safari-night text-white font-bold shadow-2xl rounded-full text-xl transition-all duration-300 group"
                       >
                         {loading ? (
                           <>
-                            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                            <Loader2 className="w-6 h-6 mr-3 animate-spin" />
                             Submitting...
                           </>
                         ) : (
                           <>
-                            <Mail className="w-5 h-5 mr-2" />
+                            <Mail className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
                             Submit via Email
                           </>
                         )}
                       </Button>
                       <Button
                         type="button"
-                        size="xl"
                         onClick={handleWhatsAppSubmit}
-                        className="flex-1 h-14 bg-gradient-to-r from-green-600 to-green-500 text-white font-bold shadow-lg hover:shadow-xl rounded-xl"
+                        className="flex-1 h-20 bg-green-600 hover:bg-green-500 text-white font-bold shadow-2xl rounded-full text-xl transition-all duration-300 group"
                       >
-                        <MessageCircle className="w-5 h-5 mr-2" />
+                        <MessageCircle className="w-6 h-6 mr-3 group-hover:scale-110 transition-transform" />
                         Submit via WhatsApp
                       </Button>
                     </div>

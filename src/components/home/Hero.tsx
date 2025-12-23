@@ -72,13 +72,13 @@ export const Hero = () => {
           <img
             src={heroImage}
             alt="African Safari"
-            className={`w-full h-full object-cover scale-110 transition-opacity duration-1000 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}
+            className={`w-full h-full object-cover scale-105 transition-opacity duration-1000 ${videoLoaded ? 'opacity-0' : 'opacity-100'}`}
           />
         </div>
 
         {/* YouTube Video Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 scale-[1.3]">
+          <div className="absolute inset-0 scale-[1.25]">
             <iframe
               src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1&origin=${window.location.origin}&disablekb=1&fs=0`}
               title="Background Video"
@@ -97,44 +97,44 @@ export const Hero = () => {
 
       {/* Premium Multi-Layer Overlay */}
       <div className="absolute inset-0 z-[1]">
-        <div className="absolute inset-0 bg-gradient-to-b from-safari-night/60 via-safari-night/30 to-safari-night/80" />
-        <div className="absolute inset-0 bg-gradient-to-r from-safari-night/40 via-transparent to-safari-night/40" />
-        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-safari-night/50 via-safari-night/25 to-safari-night/75" />
+        <div className="absolute inset-0 bg-gradient-to-r from-safari-night/30 via-transparent to-safari-night/30" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 sm:h-40 md:h-48 bg-gradient-to-t from-background to-transparent" />
       </div>
 
       {/* Decorative Elements */}
       <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden">
-        {/* Corner decorations */}
+        {/* Corner decorations - hidden on very small screens */}
         <motion.div 
           initial={{ opacity: 0 }} 
-          animate={{ opacity: 0.15 }} 
+          animate={{ opacity: 0.2 }} 
           transition={{ delay: 1, duration: 1 }}
-          className="absolute top-20 left-8 md:left-16"
+          className="absolute top-16 sm:top-20 left-4 sm:left-8 md:left-16 hidden sm:block"
         >
-          <div className="w-24 h-24 md:w-32 md:h-32 border-l-2 border-t-2 border-safari-gold/40" />
+          <div className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 border-l-2 border-t-2 border-safari-gold/50" />
         </motion.div>
         <motion.div 
           initial={{ opacity: 0 }} 
-          animate={{ opacity: 0.15 }} 
+          animate={{ opacity: 0.2 }} 
           transition={{ delay: 1, duration: 1 }}
-          className="absolute bottom-32 right-8 md:right-16"
+          className="absolute bottom-24 sm:bottom-32 right-4 sm:right-8 md:right-16 hidden sm:block"
         >
-          <div className="w-24 h-24 md:w-32 md:h-32 border-r-2 border-b-2 border-safari-gold/40" />
+          <div className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 border-r-2 border-b-2 border-safari-gold/50" />
         </motion.div>
         
         {/* Floating compass icon */}
         <motion.div
           initial={{ opacity: 0, rotate: -30 }}
-          animate={{ opacity: 0.1, rotate: 0 }}
+          animate={{ opacity: 0.08, rotate: 0 }}
           transition={{ delay: 1.5, duration: 1 }}
-          className="absolute top-1/4 right-[10%] hidden lg:block"
+          className="absolute top-1/4 right-[8%] hidden xl:block"
         >
-          <Compass className="w-48 h-48 text-safari-gold" strokeWidth={0.5} />
+          <Compass className="w-40 h-40 2xl:w-48 2xl:h-48 text-safari-gold" strokeWidth={0.5} />
         </motion.div>
       </div>
 
       {/* Main Content */}
-      <motion.div style={{ opacity }} className="relative z-10 container-wide mx-auto px-4 md:px-8 pt-32 pb-24">
+      <motion.div style={{ opacity }} className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-24 sm:pt-28 md:pt-32 pb-20 sm:pb-24">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -146,23 +146,23 @@ export const Hero = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="inline-flex items-center gap-4 mb-10"
+            className="inline-flex items-center gap-2 sm:gap-4 mb-6 sm:mb-10"
           >
             <motion.span 
               initial={{ width: 0 }}
-              animate={{ width: 60 }}
+              animate={{ width: 40 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="h-px bg-gradient-to-r from-transparent via-safari-gold to-safari-gold" 
+              className="h-px bg-gradient-to-r from-transparent via-safari-gold to-safari-gold hidden sm:block sm:w-10 md:w-16" 
             />
-            <span className="text-safari-gold text-xs md:text-sm font-medium uppercase tracking-[0.4em] flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              Tanzania's Premier Safari Experts
+            <span className="text-safari-gold text-[10px] sm:text-xs md:text-sm font-medium uppercase tracking-[0.2em] sm:tracking-[0.4em] flex items-center gap-1.5 sm:gap-2">
+              <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="whitespace-nowrap">Tanzania's Premier Safari Experts</span>
             </span>
             <motion.span 
               initial={{ width: 0 }}
-              animate={{ width: 60 }}
+              animate={{ width: 40 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="h-px bg-gradient-to-l from-transparent via-safari-gold to-safari-gold" 
+              className="h-px bg-gradient-to-l from-transparent via-safari-gold to-safari-gold hidden sm:block sm:w-10 md:w-16" 
             />
           </motion.div>
 
@@ -193,7 +193,7 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-base sm:text-lg md:text-xl lg:text-2xl text-primary-foreground/85 tracking-wide font-light max-w-3xl mx-auto leading-relaxed mb-12"
+            className="text-sm sm:text-base md:text-lg lg:text-xl text-primary-foreground/85 tracking-wide font-light max-w-2xl lg:max-w-3xl mx-auto leading-relaxed mb-8 sm:mb-10 md:mb-12 px-2"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
             Embark on an extraordinary journey through the <span className="text-safari-gold font-medium">Serengeti</span>,
@@ -205,11 +205,11 @@ export const Hero = () => {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 1, delay: 0.8 }}
-            className="flex items-center justify-center gap-4 mb-12"
+            className="flex items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-10 md:mb-12"
           >
-            <span className="w-16 md:w-24 h-px bg-gradient-to-r from-transparent to-safari-gold/60" />
-            <div className="w-2 h-2 rounded-full bg-safari-gold" />
-            <span className="w-16 md:w-24 h-px bg-gradient-to-l from-transparent to-safari-gold/60" />
+            <span className="w-12 sm:w-16 md:w-24 h-px bg-gradient-to-r from-transparent to-safari-gold/60" />
+            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-safari-gold" />
+            <span className="w-12 sm:w-16 md:w-24 h-px bg-gradient-to-l from-transparent to-safari-gold/60" />
           </motion.div>
 
           {/* CTA Buttons */}
@@ -217,12 +217,12 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12 sm:mb-14 md:mb-16 px-4"
           >
             <Button 
               size="lg"
               onClick={() => navigate('/safaris')}
-              className="h-14 px-10 text-base font-semibold rounded-full bg-gradient-to-r from-safari-gold via-safari-amber to-safari-gold text-safari-night shadow-gold hover:shadow-glow transition-all duration-500 hover:scale-105 group"
+              className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-10 text-sm sm:text-base font-semibold rounded-full bg-gradient-to-r from-safari-gold via-safari-amber to-safari-gold text-safari-night shadow-gold hover:shadow-glow transition-all duration-500 hover:scale-105 group btn-shine"
             >
               Explore Safaris
               <motion.span
@@ -237,7 +237,7 @@ export const Hero = () => {
               size="lg"
               variant="outline"
               onClick={() => navigate('/plan-my-trip')}
-              className="h-14 px-10 text-base font-semibold rounded-full border-2 border-primary-foreground/30 text-primary-foreground bg-transparent hover:bg-primary-foreground/10 hover:border-safari-gold transition-all duration-300"
+              className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-10 text-sm sm:text-base font-semibold rounded-full border-2 border-primary-foreground/30 text-primary-foreground bg-transparent hover:bg-primary-foreground/10 hover:border-safari-gold transition-all duration-300"
             >
               Plan Your Journey
             </Button>
@@ -249,21 +249,21 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="max-w-5xl mx-auto"
+          className="max-w-5xl mx-auto px-2 sm:px-0"
         >
-          <div className="glass-light rounded-3xl shadow-luxury p-2 md:p-3 border border-white/20">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+          <div className="glass-premium rounded-2xl sm:rounded-3xl shadow-luxury p-2 sm:p-3">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-1 sm:gap-2">
               {/* Destination */}
               <div className="relative">
                 <div 
-                  className="flex items-center gap-4 p-4 rounded-2xl hover:bg-primary/5 transition-all duration-300 cursor-pointer group"
+                  className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl hover:bg-primary/5 transition-all duration-300 cursor-pointer group"
                   onClick={() => setShowDestinations(!showDestinations)}
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-sunset flex items-center justify-center shadow-soft group-hover:shadow-elevated transition-all duration-300">
-                    <Search className="w-5 h-5 text-primary-foreground" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-sunset flex items-center justify-center shadow-soft group-hover:shadow-elevated transition-all duration-300 flex-shrink-0">
+                    <Search className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">
+                    <p className="text-[10px] sm:text-xs font-semibold text-primary uppercase tracking-wider mb-0.5 sm:mb-1">
                       Destinations
                     </p>
                     <Input
@@ -274,7 +274,7 @@ export const Hero = () => {
                       }}
                       onFocus={() => setShowDestinations(true)}
                       placeholder="Serengeti, Zanzibar..."
-                      className="border-0 p-0 h-auto text-base font-medium focus-visible:ring-0 bg-transparent placeholder:text-muted-foreground/60"
+                      className="border-0 p-0 h-auto text-sm sm:text-base font-medium focus-visible:ring-0 bg-transparent placeholder:text-muted-foreground/60"
                     />
                   </div>
                 </div>
@@ -388,25 +388,25 @@ export const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 hidden sm:block"
         >
           <button 
             onClick={() => {
               const nextSection = document.querySelector('section:nth-of-type(2)');
               nextSection?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="flex flex-col items-center gap-3 text-primary-foreground/80 hover:text-safari-gold transition-colors group cursor-pointer"
+            className="flex flex-col items-center gap-2 sm:gap-3 text-primary-foreground/80 hover:text-safari-gold transition-colors group cursor-pointer"
           >
-            <span className="text-[10px] font-medium uppercase tracking-[0.3em]">Scroll to Explore</span>
+            <span className="text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.2em] sm:tracking-[0.3em]">Scroll to Explore</span>
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="w-8 h-14 rounded-full border-2 border-safari-gold/40 group-hover:border-safari-gold flex justify-center pt-3 backdrop-blur-sm transition-colors"
+              className="w-6 h-10 sm:w-8 sm:h-14 rounded-full border-2 border-safari-gold/40 group-hover:border-safari-gold flex justify-center pt-2 sm:pt-3 backdrop-blur-sm transition-colors"
             >
               <motion.div 
-                animate={{ opacity: [0.4, 1, 0.4], y: [0, 8, 0] }}
+                animate={{ opacity: [0.4, 1, 0.4], y: [0, 6, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="w-1.5 h-4 rounded-full bg-gradient-to-b from-safari-gold to-safari-amber" 
+                className="w-1 h-3 sm:w-1.5 sm:h-4 rounded-full bg-gradient-to-b from-safari-gold to-safari-amber" 
               />
             </motion.div>
           </button>

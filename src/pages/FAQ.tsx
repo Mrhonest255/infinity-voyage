@@ -135,40 +135,44 @@ const FAQ = () => {
       <Navbar />
       
       {/* Premium Hero Section */}
-      <section className="relative pt-32 pb-20 bg-gradient-to-br from-safari-night via-safari-night/95 to-safari-brown/20 overflow-hidden">
+      <section className="relative pt-32 pb-24 bg-safari-night overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-20 right-10 w-72 h-72 bg-safari-gold/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 left-20 w-60 h-60 bg-safari-amber/10 rounded-full blur-3xl"></div>
+          <img 
+            src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&q=80" 
+            alt="Safari Landscape" 
+            className="w-full h-full object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-safari-night/60 via-safari-night/80 to-background"></div>
         </div>
+        
         <div className="container-wide mx-auto px-4 md:px-8 relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto"
+            transition={{ duration: 0.8 }}
+            className="text-center max-w-4xl mx-auto"
           >
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 bg-safari-gold/20 text-safari-gold px-5 py-2 rounded-full text-sm font-semibold mb-6 border border-safari-gold/30"
+              className="inline-flex items-center gap-2 bg-safari-gold/20 text-safari-gold px-6 py-2 rounded-full text-sm font-bold mb-8 border border-safari-gold/30 uppercase tracking-widest"
             >
               <HelpCircle className="w-4 h-4" /> Help Center
             </motion.div>
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              Frequently Asked <span className="text-gradient-gold">Questions</span>
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              Frequently Asked <span className="text-safari-gold italic">Questions</span>
             </h1>
-            <p className="text-white/80 text-lg md:text-xl leading-relaxed">
-              Find answers to common questions about our safaris, Zanzibar excursions, 
-              booking process, and travel tips.
+            <p className="text-white/80 text-xl md:text-2xl leading-relaxed max-w-2xl mx-auto">
+              Everything you need to know about your upcoming African adventure, from booking to the bush.
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* FAQ Content - Premium Design */}
-      <section className="py-20 flex-1 bg-gradient-to-b from-background to-muted/20">
-        <div className="container-wide mx-auto px-4 md:px-8 max-w-4xl">
+      <section className="py-24 flex-1 bg-background relative">
+        <div className="container-wide mx-auto px-4 md:px-8 max-w-4xl relative z-10">
           {faqs.map((category, categoryIndex) => {
             const CategoryIcon = categoryIcons[category.category] || HelpCircle;
             return (
@@ -178,27 +182,27 @@ const FAQ = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: categoryIndex * 0.1 }}
-                className="mb-14"
+                className="mb-20 last:mb-0"
               >
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-safari-gold/20 to-safari-amber/10 flex items-center justify-center">
-                    <CategoryIcon className="w-6 h-6 text-safari-gold" />
+                <div className="flex items-center gap-6 mb-10">
+                  <div className="w-16 h-16 rounded-2xl bg-safari-gold/10 flex items-center justify-center shrink-0">
+                    <CategoryIcon className="w-8 h-8 text-safari-gold" />
                   </div>
-                  <h2 className="text-2xl md:text-3xl font-semibold text-foreground" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  <h2 className="text-3xl md:text-4xl font-bold text-safari-night" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                     {category.category}
                   </h2>
                 </div>
-                <Accordion type="single" collapsible className="space-y-4">
+                <Accordion type="single" collapsible className="space-y-6">
                   {category.questions.map((faq, index) => (
                     <AccordionItem 
                       key={index} 
                       value={`${categoryIndex}-${index}`}
-                      className="border border-border/50 rounded-2xl px-6 bg-background shadow-soft hover:shadow-elevated transition-all duration-300 data-[state=open]:border-safari-gold/30 data-[state=open]:shadow-luxury"
+                      className="border border-border/40 rounded-[2rem] px-8 bg-white shadow-xl hover:shadow-2xl transition-all duration-500 data-[state=open]:border-safari-gold/30 data-[state=open]:shadow-safari-gold/5 overflow-hidden"
                     >
-                      <AccordionTrigger className="text-left font-semibold hover:text-safari-gold transition-colors py-5 text-base">
+                      <AccordionTrigger className="text-left font-bold hover:text-safari-gold transition-colors py-7 text-lg md:text-xl no-underline hover:no-underline">
                         {faq.q}
                       </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground leading-relaxed pb-5">
+                      <AccordionContent className="text-muted-foreground leading-relaxed pb-8 text-lg">
                         {faq.a}
                       </AccordionContent>
                     </AccordionItem>
@@ -208,28 +212,39 @@ const FAQ = () => {
             );
           })}
         </div>
+        
+        {/* Decorative background elements */}
+        <div className="absolute top-1/4 -left-20 w-64 h-64 bg-safari-gold/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-safari-amber/5 rounded-full blur-3xl" />
       </section>
 
       {/* Contact CTA */}
-      <section className="py-16 bg-muted/30">
-        <div className="container-wide mx-auto px-4 md:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <MessageCircle className="w-12 h-12 mx-auto text-safari-gold mb-4" />
-            <h2 className="font-display text-3xl font-bold mb-4">
-              Still Have Questions?
+      <section className="py-24 bg-safari-night relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+        </div>
+        
+        <div className="container-wide mx-auto px-4 md:px-8 relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="w-20 h-20 bg-safari-gold/20 rounded-full flex items-center justify-center mx-auto mb-8">
+              <MessageCircle className="w-10 h-10 text-safari-gold" />
+            </div>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+              Still Have <span className="text-safari-gold italic">Questions?</span>
             </h2>
-            <p className="text-muted-foreground mb-8">
-              Our friendly team is here to help you plan your perfect African adventure.
+            <p className="text-white/70 text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
+              Our travel experts are available 24/7 to help you plan your perfect African adventure. 
+              No question is too small for our team.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Link to="/contact">
-                <Button size="lg" className="bg-safari-gold hover:bg-safari-amber text-safari-night">
-                  <Mail className="w-4 h-4 mr-2" /> Contact Us
+                <Button size="lg" className="bg-safari-gold hover:bg-safari-amber text-safari-night px-10 py-8 rounded-full text-lg font-bold shadow-xl hover:scale-105 transition-all duration-300">
+                  <Mail className="w-5 h-5 mr-3" /> Send an Inquiry
                 </Button>
               </Link>
               <a href="tel:+255123456789">
-                <Button size="lg" variant="outline">
-                  <Phone className="w-4 h-4 mr-2" /> Call Us
+                <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-10 py-8 rounded-full text-lg font-bold backdrop-blur-sm">
+                  <Phone className="w-5 h-5 mr-3" /> Call Our Experts
                 </Button>
               </a>
             </div>

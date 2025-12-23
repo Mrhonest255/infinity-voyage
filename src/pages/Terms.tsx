@@ -102,52 +102,69 @@ Address: Arusha, Tanzania`
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative pt-32 pb-16 bg-gradient-to-br from-safari-night via-safari-night/95 to-safari-brown/20">
+      <section className="relative pt-32 pb-24 bg-safari-night overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&q=80" 
+            alt="Safari Landscape" 
+            className="w-full h-full object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-safari-night/60 via-safari-night/80 to-background"></div>
+        </div>
+        
         <div className="container-wide mx-auto px-4 md:px-8 relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto"
+            transition={{ duration: 0.8 }}
+            className="text-center max-w-4xl mx-auto"
           >
-            <Badge className="bg-safari-gold/20 text-safari-gold border-safari-gold/30 mb-4">
-              <FileText className="w-3 h-3 mr-1" /> Legal
-            </Badge>
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-primary-foreground mb-6">
-              Terms of <span className="text-safari-gold">Service</span>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 bg-safari-gold/20 text-safari-gold px-6 py-2 rounded-full text-sm font-bold mb-8 border border-safari-gold/30 uppercase tracking-widest"
+            >
+              <FileText className="w-4 h-4" /> Legal Information
+            </motion.div>
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              Terms of <span className="text-safari-gold italic">Service</span>
             </h1>
-            <p className="text-primary-foreground/80 text-lg">
-              Last updated: December 2025
+            <p className="text-white/80 text-xl md:text-2xl leading-relaxed max-w-2xl mx-auto">
+              Last updated: December 2025. Please read these terms carefully before booking your journey.
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* Content */}
-      <section className="py-16 flex-1">
+      <section className="py-24 flex-1 bg-background">
         <div className="container-wide mx-auto px-4 md:px-8 max-w-4xl">
           <div className="prose prose-lg max-w-none">
-            <p className="text-muted-foreground mb-8 text-lg">
-              Welcome to Infinity Voyage Tours & Safaris. These Terms of Service govern your use of our 
-              website and services. Please read them carefully before booking.
+            <p className="text-muted-foreground mb-16 text-xl leading-relaxed text-center italic">
+              "Welcome to Infinity Voyage Tours & Safaris. These Terms of Service govern your use of our 
+              website and services. We are committed to providing you with an exceptional and transparent experience."
             </p>
 
-            {sections.map((section, index) => (
-              <motion.div
-                key={section.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="mb-10"
-              >
-                <h2 className="font-display text-xl font-bold mb-4 text-foreground">
-                  {section.title}
-                </h2>
-                <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                  {section.content}
-                </div>
-              </motion.div>
-            ))}
+            <div className="space-y-16">
+              {sections.map((section, index) => (
+                <motion.div
+                  key={section.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  className="p-10 bg-white rounded-[2rem] shadow-xl border border-border/40 hover:border-safari-gold/30 transition-all duration-500"
+                >
+                  <h2 className="text-3xl font-bold mb-6 text-safari-night" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                    {section.title}
+                  </h2>
+                  <div className="text-muted-foreground leading-relaxed whitespace-pre-line text-lg">
+                    {section.content}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

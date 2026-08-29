@@ -17,12 +17,12 @@ const placeholderImages = [serengetiImg, zanzibarImg, kilimanjaroImg, ngorongoro
 
 export const Destinations = () => {
   const [activeCategory, setActiveCategory] = useState("All Destinations");
-  const { data: tours = [], isLoading } = useTours({ limit: 6 });
+  const { data: tours = [], isLoading } = useTours();
 
   const filteredTours = tours.filter((tour) => {
     if (activeCategory === "All Destinations") return true;
     return (tour.category || "").toLowerCase().includes(activeCategory.toLowerCase());
-  });
+  }).slice(0, 6);
 
   const getPlaceholderImage = (index: number) => {
     return placeholderImages[index % placeholderImages.length];

@@ -17,14 +17,12 @@ export const TourPackages = () => {
   const [activeFilter, setActiveFilter] = useState<"all" | "safari" | "zanzibar">("all");
   const { data: allTours = [], isLoading } = useTours();
 
-  const featuredTours = allTours.slice(0, 4);
-
-  const filtered = featuredTours.filter((tour) => {
+  const filtered = allTours.filter((tour) => {
     if (activeFilter === "all") return true;
     const cat = (tour.category || "").toLowerCase();
     if (activeFilter === "safari") return cat.includes("safari") || cat.includes("wildlife");
     return cat.includes("zanzibar") || cat.includes("beach") || cat.includes("island");
-  });
+  }).slice(0, 4);
 
   const getPlaceholderImage = (index: number) => {
     return placeholderImages[index % placeholderImages.length];

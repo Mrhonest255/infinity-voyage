@@ -25,7 +25,6 @@ export const useTours = (options?: { isFeaturedOnly?: boolean; limit?: number })
       let query = supabase
         .from("tours")
         .select("id, title, slug, short_description, featured_image, category, price, currency, duration, is_featured, is_published, highlights, included, created_at")
-        .eq("is_published", true)
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false });
 

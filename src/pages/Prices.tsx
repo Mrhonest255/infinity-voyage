@@ -20,7 +20,6 @@ const Prices = () => {
       const { data, error } = await supabase
         .from('tours')
         .select('*')
-        .eq('is_published', true)
         .order('price', { ascending: true });
       if (error) throw error;
       return data;

@@ -42,14 +42,9 @@ const Safaris = () => {
       .select("id,title,slug,duration,featured_image,price,category,highlights,short_description")
       .order("created_at", { ascending: false });
 
-    if (!isAdmin) {
-      query = query.eq("is_published", true);
-    }
-
     const { data, error } = await query;
     if (!error && data) {
-      const safariOnly = data.filter((t) => (t.category || "").toLowerCase().includes("safari"));
-      setTours(safariOnly as SafariTour[]);
+      setTours(data as SafariTour[]);
     }
     setLoading(false);
   };

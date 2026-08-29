@@ -43,11 +43,6 @@ const Zanzibar = () => {
         .from('activities')
         .select('id, title, slug, duration, featured_image, price, category, highlights, short_description');
 
-      // For non-admins only show published activities
-      if (!isAdmin) {
-        query = query.eq('is_published', true);
-      }
-
       const { data, error } = await query.order('created_at', { ascending: false });
       
       if (error) {

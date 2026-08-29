@@ -135,7 +135,6 @@ export default function Transfers() {
       const { data, error } = await supabase
         .from('transfers')
         .select('*')
-        .eq('is_published', true)
         .order('is_featured', { ascending: false });
       
       if (error) {

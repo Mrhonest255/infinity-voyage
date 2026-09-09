@@ -30,6 +30,53 @@ export const Footer = () => {
   const phone = settings?.general?.phone || "+255 758 241 294";
   const address = settings?.general?.address || "Stone Town, Zanzibar & Arusha, Tanzania";
 
+  const companyBlurb =
+    settings?.footer?.companyBlurb ||
+    "Premier Tanzania & Zanzibar tour operator. We create unforgettable tailor-made wildlife safaris, Kilimanjaro climbs, and tropical beach getaways with licensed expert local guides.";
+
+  const newsletterTitle =
+    settings?.footer?.newsletterTitle ||
+    "Subscribe for Safari Travel Deals & Guides";
+
+  const newsletterSubtitle =
+    settings?.footer?.newsletterSubtitle ||
+    "Get seasonal migration updates, park fee tips, and exclusive package discounts.";
+
+  const defaultQuickLinks = [
+    { label: "Home", href: "/" },
+    { label: "Safari Tours", href: "/safaris" },
+    { label: "Zanzibar Excursions", href: "/zanzibar" },
+    { label: "Airport Transfers", href: "/transfers" },
+    { label: "Safari Calculator", href: "/safari-calculator" },
+    { label: "Plan Custom Trip", href: "/plan-my-trip" },
+    { label: "Photo Gallery", href: "/gallery" },
+    { label: "Track My Booking", href: "/track-booking" },
+    { label: "About Infinity", href: "/about" },
+    { label: "Contact Us", href: "/contact" },
+  ];
+
+  const quickLinks =
+    settings?.footer?.quickLinks && settings.footer.quickLinks.length > 0
+      ? settings.footer.quickLinks
+      : defaultQuickLinks;
+
+  const defaultDestinationLinks = [
+    { label: "Serengeti National Park", href: "/safaris?destination=Serengeti" },
+    { label: "Ngorongoro Crater", href: "/safaris?destination=Ngorongoro" },
+    { label: "Mount Kilimanjaro", href: "/safaris?destination=Kilimanjaro" },
+    { label: "Tarangire National Park", href: "/safaris?destination=Tarangire" },
+    { label: "Lake Manyara", href: "/safaris?destination=Manyara" },
+  ];
+
+  const destinationLinks =
+    settings?.footer?.destinationLinks && settings.footer.destinationLinks.length > 0
+      ? settings.footer.destinationLinks
+      : defaultDestinationLinks;
+
+  const halfLength = Math.ceil(quickLinks.length / 2);
+  const firstHalfLinks = quickLinks.slice(0, halfLength);
+  const secondHalfLinks = quickLinks.slice(halfLength);
+
   const socialLinks = [
     { icon: Facebook, href: settings?.social?.facebook || "https://facebook.com", label: "Facebook" },
     { icon: Instagram, href: settings?.social?.instagram || "https://instagram.com", label: "Instagram" },
@@ -56,30 +103,6 @@ export const Footer = () => {
     setEmail("");
   };
 
-  const quickLinks = [
-    { label: "Home", path: "/" },
-    { label: "Safari Tours", path: "/safaris" },
-    { label: "Zanzibar Excursions", path: "/zanzibar" },
-    { label: "Airport Transfers", path: "/transfers" },
-    { label: "Safari Calculator", path: "/safari-calculator" },
-    { label: "Plan Custom Trip", path: "/plan-my-trip" },
-    { label: "Photo Gallery", path: "/gallery" },
-    { label: "Track My Booking", path: "/track-booking" },
-    { label: "About Infinity", path: "/about" },
-    { label: "Contact Us", path: "/contact" },
-  ];
-
-  const destinationLinks = [
-    { name: "Serengeti National Park", query: "Serengeti" },
-    { name: "Ngorongoro Crater", query: "Ngorongoro" },
-    { name: "Mount Kilimanjaro", query: "Kilimanjaro" },
-    { name: "Tarangire National Park", query: "Tarangire" },
-    { name: "Lake Manyara", query: "Manyara" },
-    { name: "Zanzibar Beach Holidays", query: "Zanzibar" },
-    { name: "Stone Town Historical Tour", query: "Stone Town" },
-    { name: "Mnemba Island Snorkeling", query: "Mnemba" },
-  ];
-
   return (
     <footer className="bg-slate-950 text-slate-200 border-t border-slate-800">
       {/* Newsletter Strip */}
@@ -87,10 +110,10 @@ export const Footer = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-xl font-bold font-display text-white mb-1">
-              Subscribe for Safari Travel Deals & Guides
+              {newsletterTitle}
             </h3>
             <p className="text-xs sm:text-sm text-slate-400">
-              Get seasonal migration updates, park fee tips, and exclusive package discounts.
+              {newsletterSubtitle}
             </p>
           </div>
 
@@ -136,7 +159,7 @@ export const Footer = () => {
             </Link>
 
             <p className="text-sm text-slate-400 leading-relaxed mb-6">
-              Premier Tanzania & Zanzibar tour operator. We create unforgettable tailor-made wildlife safaris, Kilimanjaro climbs, and tropical beach getaways with licensed expert local guides.
+              {companyBlurb}
             </p>
 
             <div className="flex items-center gap-2 mb-4">
@@ -161,9 +184,9 @@ export const Footer = () => {
               Explore
             </h4>
             <ul className="space-y-2 text-sm text-slate-400">
-              {quickLinks.slice(0, 5).map((l) => (
-                <li key={l.path}>
-                  <Link to={l.path} className="hover:text-amber-400 transition-colors">
+              {firstHalfLinks.map((l, idx) => (
+                <li key={`${l.label}-${idx}`}>
+                  <Link to={l.href} className="hover:text-amber-400 transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -176,9 +199,9 @@ export const Footer = () => {
               Services
             </h4>
             <ul className="space-y-2 text-sm text-slate-400">
-              {quickLinks.slice(5).map((l) => (
-                <li key={l.path}>
-                  <Link to={l.path} className="hover:text-amber-400 transition-colors">
+              {secondHalfLinks.map((l, idx) => (
+                <li key={`${l.label}-${idx}`}>
+                  <Link to={l.href} className="hover:text-amber-400 transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -192,13 +215,13 @@ export const Footer = () => {
               Destinations
             </h4>
             <ul className="space-y-2 text-sm text-slate-400">
-              {destinationLinks.slice(0, 5).map((d) => (
-                <li key={d.name}>
+              {destinationLinks.slice(0, 5).map((d, idx) => (
+                <li key={`${d.label}-${idx}`}>
                   <Link
-                    to={`/safaris?destination=${encodeURIComponent(d.query)}`}
+                    to={d.href}
                     className="hover:text-amber-400 transition-colors block truncate"
                   >
-                    {d.name}
+                    {d.label}
                   </Link>
                 </li>
               ))}

@@ -1,15 +1,19 @@
+import { SEO, SEO_KEYWORDS } from "@/components/SEO";
 import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/home/Hero";
 import { WhyChooseUs } from "@/components/home/WhyChooseUs";
+import { StatsCounter } from "@/components/home/StatsCounter";
 import { Destinations } from "@/components/home/Destinations";
 import { TourPackages } from "@/components/home/TourPackages";
 import { Testimonials } from "@/components/home/Testimonials";
 import { CallToAction } from "@/components/home/CallToAction";
-import { StatsCounter } from "@/components/home/StatsCounter";
-import { SEO, SEO_KEYWORDS } from "@/components/SEO";
+import { Footer } from "@/components/layout/Footer";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const Index = () => {
+  const { data: settings } = useSiteSettings();
+  const homepage = settings?.homepage;
+
   return (
     <div className="min-h-screen bg-background">
       <SEO 
@@ -21,12 +25,12 @@ const Index = () => {
       <Navbar />
       <main>
         <Hero />
-        <WhyChooseUs />
-        <StatsCounter />
-        <Destinations />
-        <TourPackages />
-        <Testimonials />
-        <CallToAction />
+        {homepage?.showWhyChooseUs !== false && <WhyChooseUs />}
+        {homepage?.showStats !== false && <StatsCounter />}
+        {homepage?.showDestinations !== false && <Destinations />}
+        {homepage?.showPackages !== false && <TourPackages />}
+        {homepage?.showTestimonials !== false && <Testimonials />}
+        {homepage?.showCallToAction !== false && <CallToAction />}
       </main>
       <Footer />
     </div>

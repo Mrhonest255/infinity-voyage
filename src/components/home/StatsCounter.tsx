@@ -1,40 +1,45 @@
 import { useEffect, useState, useRef } from "react";
 import { Users, Compass, Award, CheckCircle2 } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
-const stats = [
-  {
-    icon: Users,
-    value: 1500,
-    suffix: "+",
-    label: "Happy Travelers",
-    description: "From 40+ countries",
-  },
-  {
-    icon: Compass,
-    value: 50,
-    suffix: "+",
-    label: "Tour Packages",
-    description: "Safaris, treks & beaches",
-  },
-  {
-    icon: Award,
-    value: 10,
-    suffix: "+",
-    label: "Years Experience",
-    description: "In Tanzania tourism",
-  },
-  {
-    icon: CheckCircle2,
-    value: 100,
-    suffix: "%",
-    label: "Tailor-Made",
-    description: "Customized journeys",
-  },
+const defaultStats = [
+  { icon: Users, value: 1500, suffix: "+", label: "Happy Travelers", description: "From 40+ countries" },
+  { icon: Compass, value: 50, suffix: "+", label: "Tour Packages", description: "Safaris, treks & beaches" },
+  { icon: Award, value: 10, suffix: "+", label: "Years Experience", description: "In Tanzania tourism" },
+  { icon: CheckCircle2, value: 100, suffix: "%", label: "Tailor-Made", description: "Customized journeys" },
 ];
+
+function parseStatValue(raw: string | undefined, fallback: number): { value: number; suffix: string } {
+  if (!raw) return { value: fallback, suffix: "+" };
+  const match = raw.match(/^([\d,]+)\s*(\D*)$/);
+  if (match) {
+    return { value: parseInt(match[1].replace(/,/g, ""), 10) || fallback, suffix: match[2] || "+" };
+  }
+  return { value: fallback, suffix: "+" };
+}
 
 export const StatsCounter = () => {
   const [inView, setInView] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const { data: settings } = useSiteSettings();
+
+  const aboutStats = settings?.about?.stats;
+
+  const stats = [
+    {
+      ...defaultStats[0],
+      ...parseStatValue(aboutStats?.travelers, defaultStats[0].value),
+    },
+    {
+      ...defaultStats[1],
+      ...parseStatValue(aboutStats?.destinations, defaultStats[1].value),
+    },
+    {
+      ...defaultStats[2],
+      ...parseStatValue(aboutStats?.experience, defaultStats[2].value),
+    },
+    defaultStats[3],
+  ];
 
   useEffect(() => {
     const observer = new IntersectionObserver(

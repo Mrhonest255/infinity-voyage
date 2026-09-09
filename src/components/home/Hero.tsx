@@ -6,7 +6,7 @@ import { Search, MapPin, Users, ArrowRight, ShieldCheck, Star, Award } from "luc
 import heroImage from "@/assets/hero-safari.jpg";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
-const topDestinations = [
+const defaultDestinations = [
   "Serengeti National Park",
   "Ngorongoro Crater",
   "Zanzibar Island",
@@ -14,6 +14,19 @@ const topDestinations = [
   "Tarangire National Park",
   "Stone Town",
 ];
+
+const defaultTrustBadges = [
+  { icon: "ShieldCheck", text: "100% Tailor-Made" },
+  { icon: "Star", text: "Top Rated Guides" },
+  { icon: "MapPin", text: "Local Experts in Arusha & Zanzibar" },
+];
+
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  ShieldCheck,
+  Star,
+  MapPin,
+  Award,
+};
 
 export const Hero = () => {
   const navigate = useNavigate();
@@ -27,6 +40,11 @@ export const Hero = () => {
     settings?.homepage?.heroSubtitle?.trim() ||
     "From Serengeti Great Migration to Mount Kilimanjaro summits and Zanzibar's turquoise waters, we craft bespoke African safari experiences.";
 
+  const badgeText = settings?.hero?.badgeText || "Tanzania & Zanzibar Luxury Tour Operator";
+  const topDestinations = settings?.hero?.topDestinations?.length ? settings.hero.topDestinations : defaultDestinations;
+  const trustBadges = settings?.hero?.trustBadges?.length ? settings.hero.trustBadges : defaultTrustBadges;
+  const searchPlaceholder = settings?.hero?.searchPlaceholder || "Serengeti, Zanzibar, Kilimanjaro...";
+
   const handleSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const params = new URLSearchParams();
@@ -38,6 +56,8 @@ export const Hero = () => {
   const filtered = topDestinations.filter((d) =>
     d.toLowerCase().includes(destination.toLowerCase())
   );
+
+  const getIcon = (name: string) => iconMap[name] || ShieldCheck;
 
   return (
     <section className="relative min-h-[90vh] md:min-h-[94vh] flex items-center justify-center pt-24 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-slate-950">
@@ -59,7 +79,7 @@ export const Hero = () => {
         {/* Subtle pill badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-6">
           <Award className="w-3.5 h-3.5" />
-          <span>Tanzania & Zanzibar Luxury Tour Operator</span>
+          <span>{badgeText}</span>
         </div>
 
         {/* Main Headline */}
@@ -84,7 +104,7 @@ export const Hero = () => {
                 <MapPin className="w-4 h-4 text-amber-600 absolute left-3 pointer-events-none" />
                 <Input
                   type="text"
-                  placeholder="Serengeti, Zanzibar, Kilimanjaro..."
+                  placeholder={searchPlaceholder}
                   value={destination}
                   onChange={(e) => {
                     setDestination(e.target.value);
@@ -149,20 +169,17 @@ export const Hero = () => {
           </form>
         </div>
 
-        {/* Action Buttons & Trust indicators */}
+        {/* Trust indicators */}
         <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-slate-300 text-xs sm:text-sm font-medium">
-          <div className="flex items-center gap-1.5 text-white">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>100% Tailor-Made</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-white">
-            <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-            <span>Top Rated Guides</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-white">
-            <MapPin className="w-4 h-4 text-amber-400" />
-            <span>Local Experts in Arusha & Zanzibar</span>
-          </div>
+          {trustBadges.map((badge, idx) => {
+            const Icon = getIcon(badge.icon);
+            return (
+              <div key={idx} className="flex items-center gap-1.5 text-white">
+                <Icon className={`w-4 h-4 ${badge.icon === 'Star' ? 'text-amber-400 fill-amber-400' : badge.icon === 'MapPin' ? 'text-amber-400' : 'text-emerald-400'}`} />
+                <span>{badge.text}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

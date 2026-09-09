@@ -8,22 +8,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GalleryImageSkeleton } from "@/components/ui/skeleton";
+import { INITIAL_GALLERY_PHOTOS, CustomGalleryImage } from "@/pages/admin/Gallery";
 import { 
   Camera, 
   X, 
   ChevronLeft, 
   ChevronRight, 
-  Loader2, 
   Image as ImageIcon,
   Mountain,
   Waves,
   TreePine,
-  Bird
+  Bird,
+  Landmark
 } from "lucide-react";
 
-interface GalleryImage {
+export interface GalleryImage {
   id: string;
   url: string;
   title?: string;
@@ -35,22 +36,22 @@ const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [activeTab, setActiveTab] = useState("all");
 
-  // Fetch gallery images from Supabase (custom bulk uploads + tour photos)
+  // Fetch gallery images from Supabase site_settings (key: 'custom_gallery')
   const { data: galleryImages, isLoading } = useQuery({
     queryKey: ['gallery-images'],
     queryFn: async () => {
-      // 1. Fetch custom uploaded photos from Admin Gallery
-      let customPhotos: GalleryImage[] = [];
       try {
-        const { data: customData } = await supabase
+        const { data: customData, error } = await supabase
           .from('site_settings')
           .select('value')
           .eq('key', 'custom_gallery')
           .maybeSingle();
 
-        if (customData?.value && Array.isArray(customData.value)) {
-          customPhotos = customData.value.map((item: any) => ({
-            id: item.id || `custom-${Math.random()}`,
+        // If custom_gallery has been saved in site_settings (even if fewer items or 0 items because user deleted some),
+        // HONOR the user's saved list instead of re-injecting deleted placeholders!
+        if (!error && customData && customData.value !== null && customData.value !== undefined && Array.isArray(customData.value)) {
+          return (customData.value as CustomGalleryImage[]).map((item) => ({
+            id: item.id || `photo-${Math.random()}`,
             url: item.url,
             title: item.title || 'Safari & Zanzibar',
             category: item.category || 'safari',
@@ -61,53 +62,16 @@ const Gallery = () => {
         console.error('Failed fetching custom gallery:', err);
       }
 
-      // 2. Fetch tour featured images
-      let tourImages: GalleryImage[] = [];
-      try {
-        const { data, error } = await supabase
-          .from('tours')
-          .select('id, title, featured_image, category, description')
-          .not('featured_image', 'is', null);
-
-        if (!error && data) {
-          tourImages = data.map((tour: any) => ({
-            id: tour.id,
-            url: tour.featured_image || '',
-            title: tour.title,
-            category: tour.category || 'safari',
-            description: tour.description,
-          }));
-        }
-      } catch (err) {
-        console.error('Gallery tour fetch error:', err);
-      }
-
-      // Combine custom uploaded images first (most recent), then tour images
-      const combined = [...customPhotos, ...tourImages];
-
-      // Add placeholder images if still fewer than 12
-      if (combined.length < 12) {
-        return [...combined, ...getPlaceholderImages().slice(0, 12 - combined.length)];
-      }
-
-      return combined;
+      // If custom_gallery has never been touched or saved, fall back to initial 12 photos
+      return INITIAL_GALLERY_PHOTOS.map((item) => ({
+        id: item.id,
+        url: item.url,
+        title: item.title,
+        category: item.category,
+        description: item.description || '',
+      }));
     },
   });
-
-  const getPlaceholderImages = (): GalleryImage[] => [
-    { id: '1', url: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800', title: 'Serengeti Sunset', category: 'safari', description: 'Beautiful sunset over the Serengeti plains' },
-    { id: '2', url: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=800', title: 'Lion Pride', category: 'wildlife', description: 'Majestic lions in their natural habitat' },
-    { id: '3', url: 'https://images.unsplash.com/photo-1489392191049-fc10c97e64b6?w=800', title: 'African Elephant', category: 'wildlife', description: 'Elephant at a watering hole' },
-    { id: '4', url: 'https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=800', title: 'Zanzibar Beach', category: 'beach', description: 'Crystal clear waters of Zanzibar' },
-    { id: '5', url: 'https://images.unsplash.com/photo-1523805009345-7448845a9e53?w=800', title: 'Mount Kilimanjaro', category: 'mountain', description: 'Africa\'s highest peak' },
-    { id: '6', url: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800', title: 'Safari Drive', category: 'safari', description: 'Game drive in the savanna' },
-    { id: '7', url: 'https://images.unsplash.com/photo-1534177616064-ef1f0a6f8b97?w=800', title: 'Giraffe Family', category: 'wildlife', description: 'Graceful giraffes at sunset' },
-    { id: '8', url: 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800', title: 'Stone Town', category: 'culture', description: 'Historic Stone Town architecture' },
-    { id: '9', url: 'https://images.unsplash.com/photo-1504945005722-33670dcaf685?w=800', title: 'Ngorongoro Crater', category: 'safari', description: 'The world\'s largest intact caldera' },
-    { id: '10', url: 'https://images.unsplash.com/photo-1549366021-9f761d450615?w=800', title: 'Zanzibar Sunset', category: 'beach', description: 'Magical sunset over the Indian Ocean' },
-    { id: '11', url: 'https://images.unsplash.com/photo-1517960413843-0aee8e2b3285?w=800', title: 'Flamingos', category: 'wildlife', description: 'Pink flamingos at Lake Manyara' },
-    { id: '12', url: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800', title: 'Hot Air Balloon', category: 'safari', description: 'Balloon safari over the Serengeti' },
-  ];
 
   const categories = [
     { id: 'all', label: 'All Photos', icon: Camera },
@@ -115,11 +79,15 @@ const Gallery = () => {
     { id: 'wildlife', label: 'Wildlife', icon: TreePine },
     { id: 'beach', label: 'Beach', icon: Waves },
     { id: 'mountain', label: 'Mountains', icon: Mountain },
+    { id: 'culture', label: 'Culture & Towns', icon: Landmark },
   ];
 
   const filteredImages = activeTab === 'all' 
     ? galleryImages 
-    : galleryImages?.filter(img => img.category?.toLowerCase().includes(activeTab));
+    : galleryImages?.filter(img => {
+        const cat = (img.category || '').toLowerCase();
+        return cat === activeTab || cat.includes(activeTab);
+      });
 
   const currentIndex = selectedImage 
     ? (filteredImages?.findIndex(img => img.id === selectedImage.id) ?? -1)
@@ -256,6 +224,9 @@ const Gallery = () => {
                         alt={image.title || 'Gallery image'}
                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                         loading="lazy"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800';
+                        }}
                       />
                     </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-safari-night/90 via-safari-night/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">

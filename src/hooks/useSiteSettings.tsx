@@ -102,6 +102,36 @@ export interface FooterSettings {
   destinationLinks: Array<{ label: string; href: string }>;
 }
 
+export interface FAQItem {
+  question?: string;
+  q?: string;
+  answer?: string;
+  a?: string;
+  category?: string;
+}
+
+export interface FAQCategoryItem {
+  category: string;
+  questions: Array<{
+    q?: string;
+    question?: string;
+    a?: string;
+    answer?: string;
+  }>;
+}
+
+export interface FAQSettings {
+  title?: string;
+  subtitle?: string;
+  items?: FAQItem[];
+  categories?: FAQCategoryItem[];
+}
+
+
+export interface NavigationSettings {
+  links: Array<{ label: string; href: string }>;
+}
+
 export interface SiteSettings {
   general: GeneralSettings | null;
   social: SocialSettings | null;
@@ -112,6 +142,8 @@ export interface SiteSettings {
   testimonials: TestimonialsSettings | null;
   callToAction: CallToActionSettings | null;
   footer: FooterSettings | null;
+  faq: FAQSettings | null;
+  navigation: NavigationSettings | null;
 }
 
 export const useSiteSettings = () => {
@@ -134,6 +166,8 @@ export const useSiteSettings = () => {
         testimonials: null,
         callToAction: null,
         footer: null,
+        faq: null,
+        navigation: null,
       };
 
       data?.forEach((setting) => {
@@ -165,6 +199,12 @@ export const useSiteSettings = () => {
             break;
           case 'footer':
             settings.footer = value as unknown as FooterSettings;
+            break;
+          case 'faq':
+            settings.faq = value as unknown as FAQSettings;
+            break;
+          case 'navigation':
+            settings.navigation = value as unknown as NavigationSettings;
             break;
         }
       });

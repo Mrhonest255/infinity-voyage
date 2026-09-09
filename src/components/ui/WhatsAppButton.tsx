@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 interface WhatsAppButtonProps {
   phoneNumber?: string;
@@ -7,12 +8,16 @@ interface WhatsAppButtonProps {
 }
 
 export const WhatsAppButton = ({ 
-  phoneNumber = "255758241294", 
+  phoneNumber, 
   message = "Hello! I'm interested in your tour packages. Can you help me plan my trip?" 
 }: WhatsAppButtonProps) => {
+  const { data: settings } = useSiteSettings();
+  const phone = settings?.general?.whatsapp || settings?.general?.phone || phoneNumber || "255758241294";
+  const cleanPhone = phone.replace(/[^0-9]/g, "");
+
   const handleClick = () => {
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
     window.open(whatsappUrl, "_blank");
   };
 

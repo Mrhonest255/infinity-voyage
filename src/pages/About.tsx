@@ -28,7 +28,8 @@ const defaultValues = [
 ];
 
 const About = () => {
-  const { settings: aboutSettings } = useSiteSettings('about');
+  const { data: settings } = useSiteSettings();
+  const aboutSettings = settings?.about;
   
   // Dynamic content from database with fallbacks
   const heroTitle = aboutSettings?.heroTitle || 'Our Story';
@@ -36,7 +37,7 @@ const About = () => {
   const foundedYear = aboutSettings?.foundedYear || '2009';
   const story = aboutSettings?.story || `Founded in ${foundedYear} by a group of passionate Tanzanian travel enthusiasts, Infinity Voyage Tours & Safaris was born from a simple belief: everyone deserves to experience the magic of Africa in its purest form.\n\nWhat started as a small operation with just two Land Cruisers has grown into one of Tanzania's most trusted tour operators, serving thousands of travelers from around the globe while maintaining our boutique, personal touch.\n\nOur team of over 50 dedicated professionals—from expert guides to logistics coordinators—works tirelessly to ensure every journey with us becomes a cherished memory that lasts a lifetime.`;
   const mission = aboutSettings?.mission || "We don't just show you Tanzania; we invite you to feel it, taste it, and become part of its eternal story.";
-  const values = aboutSettings?.values || defaultValues;
+  const values = (aboutSettings?.values && aboutSettings.values.length > 0) ? aboutSettings.values : defaultValues;
   
   // Stats from database
   const stats = [

@@ -1,3 +1,19 @@
+import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  HelpCircle,
+  MessageCircle,
+  Mail,
+  Phone,
+  Sparkles,
+  Search,
+  Calendar,
+  Plane,
+  Heart,
+  Shield,
+  X,
+} from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Badge } from "@/components/ui/badge";
@@ -8,11 +24,18 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { HelpCircle, MessageCircle, Mail, Phone, Sparkles, Search, Calendar, Plane, Heart, Shield } from "lucide-react";
-import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
-import { useState } from "react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+
+export interface FAQQuestion {
+  q: string;
+  a: string;
+}
+
+export interface FAQCategory {
+  category: string;
+  questions: FAQQuestion[];
+}
 
 // Category icons mapping
 const categoryIcons: Record<string, React.ElementType> = {
@@ -23,136 +46,253 @@ const categoryIcons: Record<string, React.ElementType> = {
   "Practical Information": HelpCircle,
 };
 
+// Fallback resolver for dynamic or custom category names
+const getCategoryIcon = (categoryName: string): React.ElementType => {
+  if (categoryIcons[categoryName]) {
+    return categoryIcons[categoryName];
+  }
+  const lower = categoryName.toLowerCase();
+  if (lower.includes("book") || lower.includes("reserv")) return Calendar;
+  if (lower.includes("safari") || lower.includes("wildlife")) return Sparkles;
+  if (lower.includes("zanzibar") || lower.includes("flight") || lower.includes("travel")) return Plane;
+  if (lower.includes("health") || lower.includes("safe") || lower.includes("insur")) return Shield;
+  if (lower.includes("love") || lower.includes("honeymoon")) return Heart;
+  return HelpCircle;
+};
+
+// 18 standard default FAQs categorized for seamless fallback
+export const defaultFaqs: FAQCategory[] = [
+  {
+    category: "Booking & Reservations",
+    questions: [
+      {
+        q: "How far in advance should I book my safari?",
+        a: "We recommend booking at least 3-6 months in advance, especially for peak season (July-October and December-February). For high-demand destinations like the Serengeti during the Great Migration, booking 6-12 months ahead is advisable.",
+      },
+      {
+        q: "What payment methods do you accept?",
+        a: "We accept major credit cards (Visa, MasterCard, American Express), bank transfers, and PayPal. A 30% deposit is required to confirm your booking, with the balance due 60 days before departure.",
+      },
+      {
+        q: "What is your cancellation policy?",
+        a: "Cancellations made 60+ days before departure receive a full refund minus a $100 admin fee. 30-59 days: 50% refund. Less than 30 days: No refund. We strongly recommend travel insurance.",
+      },
+      {
+        q: "Can I customize my safari itinerary?",
+        a: "Absolutely! All our safaris can be customized to your preferences. Contact us with your interests, travel dates, and budget, and we'll create a personalized itinerary for you.",
+      },
+    ],
+  },
+  {
+    category: "Safari Experience",
+    questions: [
+      {
+        q: "What is the best time to visit Tanzania for a safari?",
+        a: "The dry season (June-October) offers the best wildlife viewing as animals gather around water sources. The Great Migration in Serengeti is spectacular from July-October. The green season (November-May) offers lush landscapes and fewer crowds.",
+      },
+      {
+        q: "What should I pack for a safari?",
+        a: "Essential items include: neutral-colored clothing (khaki, olive, brown), comfortable walking shoes, sun hat, sunscreen, insect repellent, binoculars, camera with zoom lens, light jacket for early mornings, and any personal medications.",
+      },
+      {
+        q: "Is it safe to go on a safari?",
+        a: "Yes, safaris are very safe when conducted with professional guides. Our guides are highly trained and experienced. You'll always be accompanied, and we follow strict safety protocols. Wildlife is observed from safe distances.",
+      },
+      {
+        q: "What type of accommodation is available?",
+        a: "We offer various options from luxury lodges and tented camps to budget camping. Lodges offer hotel-like amenities, while tented camps provide an authentic bush experience with comfortable beds and en-suite facilities.",
+      },
+    ],
+  },
+  {
+    category: "Zanzibar Excursions",
+    questions: [
+      {
+        q: "How do I get to Zanzibar from mainland Tanzania?",
+        a: "You can fly directly to Zanzibar from Dar es Salaam (20 min), Arusha, or Kilimanjaro. Alternatively, take a ferry from Dar es Salaam (2 hours). We can arrange all transfers for you.",
+      },
+      {
+        q: "What activities are available in Zanzibar?",
+        a: "Popular activities include: Stone Town cultural tours, spice farm visits, dolphin watching, snorkeling and diving, sunset dhow cruises, Prison Island trips, Jozani Forest visits, and beach relaxation.",
+      },
+      {
+        q: "Is Zanzibar suitable for families with children?",
+        a: "Yes! Zanzibar is family-friendly with many kid-appropriate activities like beach time, swimming with dolphins, visiting the turtle sanctuary, and exploring spice farms. We can customize family-friendly itineraries.",
+      },
+    ],
+  },
+  {
+    category: "Health & Safety",
+    questions: [
+      {
+        q: "Do I need vaccinations to visit Tanzania?",
+        a: "Yellow fever vaccination is required if arriving from an endemic country. Recommended vaccines include Hepatitis A & B, Typhoid, and Tetanus. Malaria prophylaxis is strongly advised. Consult your doctor 6-8 weeks before travel.",
+      },
+      {
+        q: "Is travel insurance required?",
+        a: "Yes, comprehensive travel insurance is mandatory for all our tours. It should cover medical evacuation, trip cancellation, and personal belongings. We can recommend trusted insurance providers.",
+      },
+      {
+        q: "What about COVID-19 requirements?",
+        a: "Requirements change frequently. Currently, Tanzania has minimal restrictions. Check the latest guidelines before travel. We'll provide updated information during the booking process.",
+      },
+    ],
+  },
+  {
+    category: "Practical Information",
+    questions: [
+      {
+        q: "What currency is used in Tanzania?",
+        a: "The Tanzanian Shilling (TZS) is the local currency, but US Dollars are widely accepted. Credit cards work in major hotels and lodges. ATMs are available in cities. Bring some cash for tips and small purchases.",
+      },
+      {
+        q: "Do I need a visa to visit Tanzania?",
+        a: "Most nationalities need a visa. Tourist visas can be obtained online (e-visa) or on arrival at major entry points. Single-entry visas cost $50 USD. Check requirements for your nationality.",
+      },
+      {
+        q: "What language is spoken in Tanzania?",
+        a: "Swahili and English are the official languages. English is widely spoken in tourist areas. Our guides speak fluent English. Learning a few Swahili phrases like 'Jambo' (Hello) and 'Asante' (Thank you) is appreciated!",
+      },
+      {
+        q: "How much should I budget for tips?",
+        a: "Tipping is customary in Tanzania. Guidelines: Safari guides $20-25/day, camp/lodge staff $10-15/day shared, hotel porters $1-2/bag. Tips are pooled and shared among staff at most establishments.",
+      },
+    ],
+  },
+];
+
 const FAQ = () => {
-  const faqs = [
-    {
-      category: "Booking & Reservations",
-      questions: [
-        {
-          q: "How far in advance should I book my safari?",
-          a: "We recommend booking at least 3-6 months in advance, especially for peak season (July-October and December-February). For high-demand destinations like the Serengeti during the Great Migration, booking 6-12 months ahead is advisable."
-        },
-        {
-          q: "What payment methods do you accept?",
-          a: "We accept major credit cards (Visa, MasterCard, American Express), bank transfers, and PayPal. A 30% deposit is required to confirm your booking, with the balance due 60 days before departure."
-        },
-        {
-          q: "What is your cancellation policy?",
-          a: "Cancellations made 60+ days before departure receive a full refund minus a $100 admin fee. 30-59 days: 50% refund. Less than 30 days: No refund. We strongly recommend travel insurance."
-        },
-        {
-          q: "Can I customize my safari itinerary?",
-          a: "Absolutely! All our safaris can be customized to your preferences. Contact us with your interests, travel dates, and budget, and we'll create a personalized itinerary for you."
-        },
-      ]
-    },
-    {
-      category: "Safari Experience",
-      questions: [
-        {
-          q: "What is the best time to visit Tanzania for a safari?",
-          a: "The dry season (June-October) offers the best wildlife viewing as animals gather around water sources. The Great Migration in Serengeti is spectacular from July-October. The green season (November-May) offers lush landscapes and fewer crowds."
-        },
-        {
-          q: "What should I pack for a safari?",
-          a: "Essential items include: neutral-colored clothing (khaki, olive, brown), comfortable walking shoes, sun hat, sunscreen, insect repellent, binoculars, camera with zoom lens, light jacket for early mornings, and any personal medications."
-        },
-        {
-          q: "Is it safe to go on a safari?",
-          a: "Yes, safaris are very safe when conducted with professional guides. Our guides are highly trained and experienced. You'll always be accompanied, and we follow strict safety protocols. Wildlife is observed from safe distances."
-        },
-        {
-          q: "What type of accommodation is available?",
-          a: "We offer various options from luxury lodges and tented camps to budget camping. Lodges offer hotel-like amenities, while tented camps provide an authentic bush experience with comfortable beds and en-suite facilities."
-        },
-      ]
-    },
-    {
-      category: "Zanzibar Excursions",
-      questions: [
-        {
-          q: "How do I get to Zanzibar from mainland Tanzania?",
-          a: "You can fly directly to Zanzibar from Dar es Salaam (20 min), Arusha, or Kilimanjaro. Alternatively, take a ferry from Dar es Salaam (2 hours). We can arrange all transfers for you."
-        },
-        {
-          q: "What activities are available in Zanzibar?",
-          a: "Popular activities include: Stone Town cultural tours, spice farm visits, dolphin watching, snorkeling and diving, sunset dhow cruises, Prison Island trips, Jozani Forest visits, and beach relaxation."
-        },
-        {
-          q: "Is Zanzibar suitable for families with children?",
-          a: "Yes! Zanzibar is family-friendly with many kid-appropriate activities like beach time, swimming with dolphins, visiting the turtle sanctuary, and exploring spice farms. We can customize family-friendly itineraries."
-        },
-      ]
-    },
-    {
-      category: "Health & Safety",
-      questions: [
-        {
-          q: "Do I need vaccinations to visit Tanzania?",
-          a: "Yellow fever vaccination is required if arriving from an endemic country. Recommended vaccines include Hepatitis A & B, Typhoid, and Tetanus. Malaria prophylaxis is strongly advised. Consult your doctor 6-8 weeks before travel."
-        },
-        {
-          q: "Is travel insurance required?",
-          a: "Yes, comprehensive travel insurance is mandatory for all our tours. It should cover medical evacuation, trip cancellation, and personal belongings. We can recommend trusted insurance providers."
-        },
-        {
-          q: "What about COVID-19 requirements?",
-          a: "Requirements change frequently. Currently, Tanzania has minimal restrictions. Check the latest guidelines before travel. We'll provide updated information during the booking process."
-        },
-      ]
-    },
-    {
-      category: "Practical Information",
-      questions: [
-        {
-          q: "What currency is used in Tanzania?",
-          a: "The Tanzanian Shilling (TZS) is the local currency, but US Dollars are widely accepted. Credit cards work in major hotels and lodges. ATMs are available in cities. Bring some cash for tips and small purchases."
-        },
-        {
-          q: "Do I need a visa to visit Tanzania?",
-          a: "Most nationalities need a visa. Tourist visas can be obtained online (e-visa) or on arrival at major entry points. Single-entry visas cost $50 USD. Check requirements for your nationality."
-        },
-        {
-          q: "What language is spoken in Tanzania?",
-          a: "Swahili and English are the official languages. English is widely spoken in tourist areas. Our guides speak fluent English. Learning a few Swahili phrases like 'Jambo' (Hello) and 'Asante' (Thank you) is appreciated!"
-        },
-        {
-          q: "How much should I budget for tips?",
-          a: "Tipping is customary in Tanzania. Guidelines: Safari guides $20-25/day, camp/lodge staff $10-15/day shared, hotel porters $1-2/bag. Tips are pooled and shared among staff at most establishments."
-        },
-      ]
-    },
-  ];
+  const { data: settings } = useSiteSettings();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const phone = settings?.general?.phone || "+255 758 241 294";
+  const email = settings?.general?.email || "info@infinityvoyagetours.com";
+  const phoneHref = `tel:${phone.replace(/\s+/g, "")}`;
+
+  // Process FAQs from settings (categories or flat items) or fallback to defaultFaqs
+  const faqs = useMemo<FAQCategory[]>(() => {
+    const faqData = settings?.faq;
+
+    // 1. Check nested categories first
+    if (faqData?.categories && Array.isArray(faqData.categories) && faqData.categories.length > 0) {
+      const parsedCategories: FAQCategory[] = faqData.categories
+        .map((cat) => ({
+          category: cat.category || "General",
+          questions: (cat.questions || [])
+            .map((item) => ({
+              q: item.q || item.question || "",
+              a: item.a || item.answer || "",
+            }))
+            .filter((item) => Boolean(item.q && item.a)),
+        }))
+        .filter((cat) => cat.questions.length > 0);
+
+      if (parsedCategories.length > 0) {
+        return parsedCategories;
+      }
+    }
+
+    // 2. Check flat items list
+    if (faqData?.items && Array.isArray(faqData.items) && faqData.items.length > 0) {
+      const categoryMap: Record<string, FAQQuestion[]> = {};
+
+      faqData.items.forEach((item) => {
+        const q = item.q || item.question || "";
+        const a = item.a || item.answer || "";
+        const cat = item.category?.trim() || "General Information";
+
+        if (q && a) {
+          if (!categoryMap[cat]) {
+            categoryMap[cat] = [];
+          }
+          categoryMap[cat].push({ q, a });
+        }
+      });
+
+      const parsedCategories = Object.entries(categoryMap).map(([category, questions]) => ({
+        category,
+        questions,
+      }));
+
+      if (parsedCategories.length > 0) {
+        return parsedCategories;
+      }
+    }
+
+    // 3. Fallback to default 18 FAQs
+    return defaultFaqs;
+  }, [settings?.faq]);
+
+  // Extract all categories available
+  const allCategories = useMemo(() => {
+    return faqs.map((f) => f.category);
+  }, [faqs]);
+
+  // Filter FAQs according to search query and active category
+  const filteredFaqs = useMemo(() => {
+    const query = searchQuery.toLowerCase().trim();
+
+    return faqs
+      .filter((group) => {
+        if (selectedCategory === "All") return true;
+        return group.category.toLowerCase() === selectedCategory.toLowerCase();
+      })
+      .map((group) => {
+        if (!query) return group;
+        const matchingQuestions = group.questions.filter(
+          (faq) =>
+            faq.q.toLowerCase().includes(query) ||
+            faq.a.toLowerCase().includes(query)
+        );
+        return {
+          ...group,
+          questions: matchingQuestions,
+        };
+      })
+      .filter((group) => group.questions.length > 0);
+  }, [faqs, searchQuery, selectedCategory]);
+
+  const totalQuestionsCount = useMemo(() => {
+    return filteredFaqs.reduce((sum, cat) => sum + cat.questions.length, 0);
+  }, [filteredFaqs]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <SEO 
-        title="Tanzania Safari FAQ - Common Questions Answered"
-        description="Find answers to frequently asked questions about Tanzania safaris and Zanzibar tours. Booking policies, visa requirements, best time to visit, what to pack, and more."
+      <SEO
+        title={
+          settings?.faq?.title
+            ? `${settings.faq.title} - Infinity Voyage Tours`
+            : "Tanzania Safari FAQ - Common Questions Answered"
+        }
+        description={
+          settings?.faq?.subtitle ||
+          "Find answers to frequently asked questions about Tanzania safaris and Zanzibar tours. Booking policies, visa requirements, best time to visit, what to pack, and more."
+        }
         keywords="Tanzania safari FAQ, safari questions, Tanzania visa, best time safari, what to pack safari, safari cancellation policy"
         url="/faq"
       />
       <Navbar />
-      
+
       {/* Premium Hero Section */}
       <section className="relative pt-32 pb-24 bg-safari-night overflow-hidden">
         <div className="absolute inset-0">
-          <img 
-            src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&q=80" 
-            alt="Safari Landscape" 
+          <img
+            src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&q=80"
+            alt="Safari Landscape"
             className="w-full h-full object-cover opacity-20"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-safari-night/60 via-safari-night/80 to-background"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-safari-night/60 via-safari-night/80 to-background" />
         </div>
-        
+
         <div className="container-wide mx-auto px-4 md:px-8 relative z-10">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
@@ -160,59 +300,164 @@ const FAQ = () => {
             >
               <HelpCircle className="w-4 h-4" /> Help Center
             </motion.div>
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-              Frequently Asked <span className="text-safari-gold italic">Questions</span>
+            <h1
+              className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            >
+              {settings?.faq?.title ? (
+                settings.faq.title
+              ) : (
+                <>
+                  Frequently Asked{" "}
+                  <span className="text-safari-gold italic">Questions</span>
+                </>
+              )}
             </h1>
-            <p className="text-white/80 text-xl md:text-2xl leading-relaxed max-w-2xl mx-auto">
-              Everything you need to know about your upcoming African adventure, from booking to the bush.
+            <p className="text-white/80 text-xl md:text-2xl leading-relaxed max-w-2xl mx-auto mb-10">
+              {settings?.faq?.subtitle ||
+                "Everything you need to know about your upcoming African adventure, from booking to the bush."}
             </p>
+
+            {/* Interactive Search Bar */}
+            <div className="max-w-xl mx-auto relative">
+              <div className="relative flex items-center">
+                <Search className="w-5 h-5 text-safari-gold absolute left-5 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Search questions (e.g. visa, packing, payment, cancellation)..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-14 pr-12 py-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-safari-gold focus:border-transparent transition-all shadow-xl text-base"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-4 text-white/70 hover:text-white transition-colors p-1"
+                    aria-label="Clear search"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* FAQ Content - Premium Design */}
-      <section className="py-24 flex-1 bg-background relative">
+      <section className="py-20 flex-1 bg-background relative">
         <div className="container-wide mx-auto px-4 md:px-8 max-w-4xl relative z-10">
-          {faqs.map((category, categoryIndex) => {
-            const CategoryIcon = categoryIcons[category.category] || HelpCircle;
-            return (
-              <motion.div
-                key={category.category}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: categoryIndex * 0.1 }}
-                className="mb-20 last:mb-0"
+          {/* Category Filter Pills */}
+          {allCategories.length > 1 && (
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+              <button
+                onClick={() => setSelectedCategory("All")}
+                className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  selectedCategory === "All"
+                    ? "bg-safari-gold text-safari-night shadow-md shadow-safari-gold/20 scale-105"
+                    : "bg-white hover:bg-safari-gold/10 text-muted-foreground hover:text-foreground border border-border/50"
+                }`}
               >
-                <div className="flex items-center gap-6 mb-10">
-                  <div className="w-16 h-16 rounded-2xl bg-safari-gold/10 flex items-center justify-center shrink-0">
-                    <CategoryIcon className="w-8 h-8 text-safari-gold" />
+                All Questions
+              </button>
+              {allCategories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                    selectedCategory === cat
+                      ? "bg-safari-gold text-safari-night shadow-md shadow-safari-gold/20 scale-105"
+                      : "bg-white hover:bg-safari-gold/10 text-muted-foreground hover:text-foreground border border-border/50"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Search Result Summary if searching */}
+          {searchQuery && (
+            <div className="mb-10 text-center">
+              <Badge variant="outline" className="px-4 py-1.5 text-sm border-safari-gold/30 bg-safari-gold/5 text-safari-night">
+                Found {totalQuestionsCount} question{totalQuestionsCount === 1 ? "" : "s"} matching "{searchQuery}"
+              </Badge>
+            </div>
+          )}
+
+          {/* Empty Search State */}
+          {filteredFaqs.length === 0 ? (
+            <div className="text-center py-16 px-4 bg-white rounded-3xl border border-border/40 shadow-xl max-w-lg mx-auto">
+              <div className="w-16 h-16 rounded-2xl bg-safari-gold/10 flex items-center justify-center mx-auto mb-4">
+                <HelpCircle className="w-8 h-8 text-safari-gold" />
+              </div>
+              <h3 className="text-2xl font-bold text-safari-night mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                No Questions Found
+              </h3>
+              <p className="text-muted-foreground mb-6 text-base">
+                We couldn't find any questions matching "{searchQuery}". Try using different terms or reach out to our team directly.
+              </p>
+              <Button
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedCategory("All");
+                }}
+                className="bg-safari-gold hover:bg-safari-amber text-safari-night font-bold rounded-full px-8 py-3"
+              >
+                Clear Search & Filters
+              </Button>
+            </div>
+          ) : (
+            filteredFaqs.map((category, categoryIndex) => {
+              const CategoryIcon = getCategoryIcon(category.category);
+              return (
+                <motion.div
+                  key={category.category}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: categoryIndex * 0.08 }}
+                  className="mb-16 last:mb-0"
+                >
+                  <div className="flex items-center gap-5 mb-8">
+                    <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-safari-gold/10 flex items-center justify-center shrink-0">
+                      <CategoryIcon className="w-7 h-7 md:w-8 md:h-8 text-safari-gold" />
+                    </div>
+                    <div>
+                      <h2
+                        className="text-3xl md:text-4xl font-bold text-safari-night"
+                        style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                      >
+                        {category.category}
+                      </h2>
+                      <span className="text-xs text-muted-foreground font-medium">
+                        {category.questions.length} question{category.questions.length === 1 ? "" : "s"}
+                      </span>
+                    </div>
                   </div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-safari-night" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                    {category.category}
-                  </h2>
-                </div>
-                <Accordion type="single" collapsible className="space-y-6">
-                  {category.questions.map((faq, index) => (
-                    <AccordionItem 
-                      key={index} 
-                      value={`${categoryIndex}-${index}`}
-                      className="border border-border/40 rounded-[2rem] px-8 bg-white shadow-xl hover:shadow-2xl transition-all duration-500 data-[state=open]:border-safari-gold/30 data-[state=open]:shadow-safari-gold/5 overflow-hidden"
-                    >
-                      <AccordionTrigger className="text-left font-bold hover:text-safari-gold transition-colors py-7 text-lg md:text-xl no-underline hover:no-underline">
-                        {faq.q}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground leading-relaxed pb-8 text-lg">
-                        {faq.a}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </motion.div>
-            );
-          })}
+
+                  <Accordion type="single" collapsible className="space-y-5">
+                    {category.questions.map((faq, index) => (
+                      <AccordionItem
+                        key={index}
+                        value={`${categoryIndex}-${index}`}
+                        className="border border-border/40 rounded-[2rem] px-8 bg-white shadow-xl hover:shadow-2xl transition-all duration-500 data-[state=open]:border-safari-gold/30 data-[state=open]:shadow-safari-gold/5 overflow-hidden"
+                      >
+                        <AccordionTrigger className="text-left font-bold hover:text-safari-gold transition-colors py-7 text-lg md:text-xl no-underline hover:no-underline">
+                          {faq.q}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-muted-foreground leading-relaxed pb-8 text-lg">
+                          {faq.a}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </motion.div>
+              );
+            })
+          )}
         </div>
-        
+
         {/* Decorative background elements */}
         <div className="absolute top-1/4 -left-20 w-64 h-64 bg-safari-gold/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-safari-amber/5 rounded-full blur-3xl" />
@@ -223,7 +468,7 @@ const FAQ = () => {
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
         </div>
-        
+
         <div className="container-wide mx-auto px-4 md:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="w-20 h-20 bg-safari-gold/20 rounded-full flex items-center justify-center mx-auto mb-8">
@@ -233,19 +478,45 @@ const FAQ = () => {
               Still Have <span className="text-safari-gold italic">Questions?</span>
             </h2>
             <p className="text-white/70 text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
-              Our travel experts are available 24/7 to help you plan your perfect African adventure. 
+              Our travel experts are available 24/7 to help you plan your perfect African adventure.
               No question is too small for our team.
             </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Link to="/contact">
-                <Button size="lg" className="bg-safari-gold hover:bg-safari-amber text-safari-night px-10 py-8 rounded-full text-lg font-bold shadow-xl hover:scale-105 transition-all duration-300">
+                <Button
+                  size="lg"
+                  className="bg-safari-gold hover:bg-safari-amber text-safari-night px-10 py-8 rounded-full text-lg font-bold shadow-xl hover:scale-105 transition-all duration-300"
+                >
                   <Mail className="w-5 h-5 mr-3" /> Send an Inquiry
                 </Button>
               </Link>
-              <a href="tel:+255123456789">
-                <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 px-10 py-8 rounded-full text-lg font-bold backdrop-blur-sm">
+              <a href={phoneHref}>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white/30 text-white hover:bg-white/10 px-10 py-8 rounded-full text-lg font-bold backdrop-blur-sm"
+                >
                   <Phone className="w-5 h-5 mr-3" /> Call Our Experts
                 </Button>
+              </a>
+            </div>
+
+            {/* Direct contact info display */}
+            <div className="mt-8 flex flex-wrap justify-center items-center gap-6 text-sm text-white/60">
+              <a
+                href={`mailto:${email}`}
+                className="flex items-center gap-2 hover:text-safari-gold transition-colors"
+              >
+                <Mail className="w-4 h-4 text-safari-gold" />
+                <span>{email}</span>
+              </a>
+              <span className="hidden sm:inline text-white/30">•</span>
+              <a
+                href={phoneHref}
+                className="flex items-center gap-2 hover:text-safari-gold transition-colors"
+              >
+                <Phone className="w-4 h-4 text-safari-gold" />
+                <span>{phone}</span>
               </a>
             </div>
           </div>

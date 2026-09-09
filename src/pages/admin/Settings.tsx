@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import ImageUpload from '@/components/admin/ImageUpload';
@@ -15,7 +16,8 @@ import {
   Settings, Globe, Mail, Phone, MapPin, Facebook, Instagram, Twitter, Youtube,
   Home, Loader2, Save, Palette, Users, MessageSquare, Eye, Plus, Trash2, Star,
   ShieldCheck, Compass, Headphones, Award, CheckCircle2, Clock, Heart, Zap,
-  Quote, ChevronUp, ChevronDown, FootprintsIcon
+  Quote, ChevronUp, ChevronDown, FootprintsIcon, HelpCircle, Menu, Search,
+  RotateCcw, Sparkles, Plane, ExternalLink, Link2, Filter
 } from 'lucide-react';
 
 // ── Interfaces ──────────────────────────────────────────
@@ -65,8 +67,49 @@ interface FooterSettings {
   quickLinks: Array<{ label: string; href: string }>;
   destinationLinks: Array<{ label: string; href: string }>;
 }
+export interface AdminFAQItem {
+  id: string;
+  category: string;
+  question: string;
+  answer: string;
+}
+export interface AdminFAQSettings {
+  title: string;
+  subtitle: string;
+  items: AdminFAQItem[];
+}
+export interface AdminNavLink {
+  id?: string;
+  label: string;
+  href: string;
+}
+export interface AdminNavigationSettings {
+  links: AdminNavLink[];
+}
 
 const ICON_OPTIONS = ['ShieldCheck','MapPin','Compass','Headphones','Globe','Heart','Zap','Users','Star','Phone','Clock','Award','CheckCircle2','Eye'];
+
+const SUGGESTED_FAQ_CATEGORIES = [
+  'Booking & Reservations',
+  'Safari Experience',
+  'Zanzibar Excursions',
+  'Health & Safety',
+  'Practical Information',
+  'General Information',
+];
+
+const COMMON_NAV_SUGGESTIONS = [
+  { label: 'Zanzibar', href: '/zanzibar' },
+  { label: 'Safaris', href: '/safaris' },
+  { label: 'Transfers', href: '/transfers' },
+  { label: 'Safari Calculator', href: '/safari-calculator' },
+  { label: 'Gallery', href: '/gallery' },
+  { label: 'Plan Trip', href: '/plan-my-trip' },
+  { label: 'Track Booking', href: '/track-booking' },
+  { label: 'FAQ', href: '/faq' },
+  { label: 'About Us', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+];
 
 // ── Defaults ──────────────────────────────────────────
 const defaultHero: HeroSettings = {
@@ -119,6 +162,136 @@ const defaultFooter: FooterSettings = {
     { label: 'Mount Kilimanjaro', href: '/safaris?destination=Kilimanjaro' },
     { label: 'Tarangire National Park', href: '/safaris?destination=Tarangire' },
     { label: 'Lake Manyara', href: '/safaris?destination=Manyara' },
+  ],
+};
+
+const defaultFAQItems: AdminFAQItem[] = [
+  {
+    id: 'faq-1',
+    category: 'Booking & Reservations',
+    question: 'How far in advance should I book my safari?',
+    answer: 'We recommend booking at least 3-6 months in advance, especially for peak season (July-October and December-February). For high-demand destinations like the Serengeti during the Great Migration, booking 6-12 months ahead is advisable.',
+  },
+  {
+    id: 'faq-2',
+    category: 'Booking & Reservations',
+    question: 'What payment methods do you accept?',
+    answer: 'We accept major credit cards (Visa, MasterCard, American Express), bank transfers, and PayPal. A 30% deposit is required to confirm your booking, with the balance due 60 days before departure.',
+  },
+  {
+    id: 'faq-3',
+    category: 'Booking & Reservations',
+    question: 'What is your cancellation policy?',
+    answer: 'Cancellations made 60+ days before departure receive a full refund minus a $100 admin fee. 30-59 days: 50% refund. Less than 30 days: No refund. We strongly recommend travel insurance.',
+  },
+  {
+    id: 'faq-4',
+    category: 'Booking & Reservations',
+    question: 'Can I customize my safari itinerary?',
+    answer: "Absolutely! All our safaris can be customized to your preferences. Contact us with your interests, travel dates, and budget, and we'll create a personalized itinerary for you.",
+  },
+  {
+    id: 'faq-5',
+    category: 'Safari Experience',
+    question: 'What is the best time to visit Tanzania for a safari?',
+    answer: 'The dry season (June-October) offers the best wildlife viewing as animals gather around water sources. The Great Migration in Serengeti is spectacular from July-October. The green season (November-May) offers lush landscapes and fewer crowds.',
+  },
+  {
+    id: 'faq-6',
+    category: 'Safari Experience',
+    question: 'What should I pack for a safari?',
+    answer: 'Essential items include: neutral-colored clothing (khaki, olive, brown), comfortable walking shoes, sun hat, sunscreen, insect repellent, binoculars, camera with zoom lens, light jacket for early mornings, and any personal medications.',
+  },
+  {
+    id: 'faq-7',
+    category: 'Safari Experience',
+    question: 'Is it safe to go on a safari?',
+    answer: "Yes, safaris are very safe when conducted with professional guides. Our guides are highly trained and experienced. You'll always be accompanied, and we follow strict safety protocols. Wildlife is observed from safe distances.",
+  },
+  {
+    id: 'faq-8',
+    category: 'Safari Experience',
+    question: 'What type of accommodation is available?',
+    answer: 'We offer various options from luxury lodges and tented camps to budget camping. Lodges offer hotel-like amenities, while tented camps provide an authentic bush experience with comfortable beds and en-suite facilities.',
+  },
+  {
+    id: 'faq-9',
+    category: 'Zanzibar Excursions',
+    question: 'How do I get to Zanzibar from mainland Tanzania?',
+    answer: 'You can fly directly to Zanzibar from Dar es Salaam (20 min), Arusha, or Kilimanjaro. Alternatively, take a ferry from Dar es Salaam (2 hours). We can arrange all transfers for you.',
+  },
+  {
+    id: 'faq-10',
+    category: 'Zanzibar Excursions',
+    question: 'What activities are available in Zanzibar?',
+    answer: 'Popular activities include: Stone Town cultural tours, spice farm visits, dolphin watching, snorkeling and diving, sunset dhow cruises, Prison Island trips, Jozani Forest visits, and beach relaxation.',
+  },
+  {
+    id: 'faq-11',
+    category: 'Zanzibar Excursions',
+    question: 'Is Zanzibar suitable for families with children?',
+    answer: 'Yes! Zanzibar is family-friendly with many kid-appropriate activities like beach time, swimming with dolphins, visiting the turtle sanctuary, and exploring spice farms. We can customize family-friendly itineraries.',
+  },
+  {
+    id: 'faq-12',
+    category: 'Health & Safety',
+    question: 'Do I need vaccinations to visit Tanzania?',
+    answer: 'Yellow fever vaccination is required if arriving from an endemic country. Recommended vaccines include Hepatitis A & B, Typhoid, and Tetanus. Malaria prophylaxis is strongly advised. Consult your doctor 6-8 weeks before travel.',
+  },
+  {
+    id: 'faq-13',
+    category: 'Health & Safety',
+    question: 'Is travel insurance required?',
+    answer: 'Yes, comprehensive travel insurance is mandatory for all our tours. It should cover medical evacuation, trip cancellation, and personal belongings. We can recommend trusted insurance providers.',
+  },
+  {
+    id: 'faq-14',
+    category: 'Health & Safety',
+    question: 'What about COVID-19 requirements?',
+    answer: "Requirements change frequently. Currently, Tanzania has minimal restrictions. Check the latest guidelines before travel. We'll provide updated information during the booking process.",
+  },
+  {
+    id: 'faq-15',
+    category: 'Practical Information',
+    question: 'What currency is used in Tanzania?',
+    answer: 'The Tanzanian Shilling (TZS) is the local currency, but US Dollars are widely accepted. Credit cards work in major hotels and lodges. ATMs are available in cities. Bring some cash for tips and small purchases.',
+  },
+  {
+    id: 'faq-16',
+    category: 'Practical Information',
+    question: 'Do I need a visa to visit Tanzania?',
+    answer: 'Most nationalities need a visa. Tourist visas can be obtained online (e-visa) or on arrival at major entry points. Single-entry visas cost $50 USD. Check requirements for your nationality.',
+  },
+  {
+    id: 'faq-17',
+    category: 'Practical Information',
+    question: 'What language is spoken in Tanzania?',
+    answer: "Swahili and English are the official languages. English is widely spoken in tourist areas. Our guides speak fluent English. Learning a few Swahili phrases like 'Jambo' (Hello) and 'Asante' (Thank you) is appreciated!",
+  },
+  {
+    id: 'faq-18',
+    category: 'Practical Information',
+    question: 'How much should I budget for tips?',
+    answer: 'Tipping is customary in Tanzania. Guidelines: Safari guides $20-25/day, camp/lodge staff $10-15/day shared, hotel porters $1-2/bag. Tips are pooled and shared among staff at most establishments.',
+  },
+];
+
+const defaultFAQ: AdminFAQSettings = {
+  title: 'Frequently Asked Questions',
+  subtitle: 'Find answers to common questions about our safari tours, Zanzibar holidays, booking process, and travel preparation in Tanzania.',
+  items: defaultFAQItems,
+};
+
+const defaultNavigation: AdminNavigationSettings = {
+  links: [
+    { label: 'Zanzibar', href: '/zanzibar' },
+    { label: 'Safaris', href: '/safaris' },
+    { label: 'Transfers', href: '/transfers' },
+    { label: 'Calculator', href: '/safari-calculator' },
+    { label: 'Gallery', href: '/gallery' },
+    { label: 'Plan Trip', href: '/plan-my-trip' },
+    { label: 'Track Booking', href: '/track-booking' },
+    { label: 'Contact', href: '/contact' },
   ],
 };
 
@@ -188,6 +361,151 @@ const PreviewFooter = ({ data }: { data: FooterSettings }) => (
   </div>
 );
 
+const PreviewFAQ = ({ data }: { data: AdminFAQSettings }) => {
+  const [selectedCat, setSelectedCat] = useState<string>('all');
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const categories = Array.from(new Set(data.items.map(i => i.category || 'General Information')));
+  const filteredItems = selectedCat === 'all'
+    ? data.items
+    : data.items.filter(i => (i.category || 'General Information') === selectedCat);
+
+  return (
+    <div className="bg-slate-900 text-white rounded-xl p-4 border border-slate-800 space-y-3">
+      <div>
+        <span className="text-[9px] font-bold uppercase tracking-wider text-amber-400">Help & Support Preview</span>
+        <h4 className="text-xs font-bold text-white mt-0.5">{data.title || 'FAQ'}</h4>
+        <p className="text-[9px] text-slate-400 line-clamp-2 mt-0.5">{data.subtitle}</p>
+      </div>
+
+      {/* Category Pills */}
+      <div className="flex flex-wrap gap-1">
+        <button
+          type="button"
+          onClick={() => setSelectedCat('all')}
+          className={`text-[8px] px-2 py-0.5 rounded-full font-medium transition-colors ${
+            selectedCat === 'all' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+          }`}
+        >
+          All ({data.items.length})
+        </button>
+        {categories.slice(0, 4).map((cat) => (
+          <button
+            key={cat}
+            type="button"
+            onClick={() => setSelectedCat(cat)}
+            className={`text-[8px] px-2 py-0.5 rounded-full font-medium transition-colors truncate max-w-[120px] ${
+              selectedCat === cat ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Accordion List */}
+      <div className="space-y-1.5 max-h-[360px] overflow-y-auto pr-1">
+        {filteredItems.length === 0 ? (
+          <p className="text-[9px] text-slate-400 italic py-2 text-center">No questions in this category</p>
+        ) : (
+          filteredItems.slice(0, 6).map((item, idx) => {
+            const isOpen = openIndex === idx;
+            return (
+              <div key={item.id || idx} className="rounded-lg border border-slate-800 bg-slate-950/60 overflow-hidden text-left">
+                <button
+                  type="button"
+                  onClick={() => setOpenIndex(isOpen ? null : idx)}
+                  className="w-full text-left p-2 flex items-start justify-between gap-2 hover:bg-slate-800/40 transition-colors"
+                >
+                  <div className="flex-1">
+                    <span className="text-[7px] text-amber-400 font-semibold uppercase block">{item.category}</span>
+                    <span className="text-[10px] font-medium text-slate-200 line-clamp-1">{item.question || 'Untitled Question'}</span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 mt-0.5">{isOpen ? '−' : '+'}</span>
+                </button>
+                {isOpen && (
+                  <div className="px-2 pb-2 pt-0 text-[9px] text-slate-400 border-t border-slate-800/50">
+                    <p className="line-clamp-3 mt-1">{item.answer || 'No answer provided yet.'}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+        {filteredItems.length > 6 && (
+          <p className="text-[8px] text-slate-500 text-center pt-1">+{filteredItems.length - 6} more questions in list</p>
+        )}
+      </div>
+
+      <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[8px] text-slate-400">
+        <span>Total: {data.items.length} questions</span>
+        <span className="text-emerald-400 font-medium">✓ Ready for public FAQ page</span>
+      </div>
+    </div>
+  );
+};
+
+const PreviewNavigation = ({ data, siteName }: { data: AdminNavigationSettings; siteName: string }) => {
+  return (
+    <div className="bg-slate-900 text-white rounded-xl p-4 border border-slate-800 space-y-4">
+      <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+        <span className="text-[9px] font-bold uppercase tracking-wider text-amber-400">Navbar Preview</span>
+        <span className="text-[8px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full">{data.links.length} Links</span>
+      </div>
+
+      {/* Mock Desktop Navbar */}
+      <div className="space-y-1">
+        <span className="text-[8px] text-slate-400 font-medium">Desktop View</span>
+        <div className="bg-slate-950 rounded-lg p-2.5 border border-slate-800 flex items-center justify-between gap-2 overflow-hidden">
+          {/* Logo / Site Name */}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <div className="w-5 h-5 rounded bg-amber-500 flex items-center justify-center text-slate-950 font-black text-[9px]">IV</div>
+            <span className="text-[10px] font-bold text-white tracking-tight truncate max-w-[80px]">
+              {siteName || 'Infinity Voyage'}
+            </span>
+          </div>
+
+          {/* Nav Links */}
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
+            {data.links.map((link, idx) => (
+              <span
+                key={idx}
+                className={`text-[8px] whitespace-nowrap px-1.5 py-0.5 rounded transition-colors ${
+                  idx === 0 ? 'text-amber-400 font-bold bg-amber-400/10' : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                {link.label || 'Link'}
+              </span>
+            ))}
+          </div>
+
+          {/* Action button */}
+          <div className="bg-amber-500 text-slate-950 font-bold text-[7px] px-2 py-1 rounded flex-shrink-0">
+            Book
+          </div>
+        </div>
+      </div>
+
+      {/* Mock Mobile Navigation Drawer */}
+      <div className="space-y-1">
+        <span className="text-[8px] text-slate-400 font-medium">Mobile Drawer Links</span>
+        <div className="bg-slate-950 rounded-lg p-2 border border-slate-800 divide-y divide-slate-800/60 max-h-[160px] overflow-y-auto">
+          {data.links.map((link, idx) => (
+            <div key={idx} className="py-1 flex items-center justify-between text-[9px]">
+              <span className="text-slate-200">{link.label || 'Untitled Link'}</span>
+              <span className="text-[8px] text-slate-500 font-mono">{link.href || '#'}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <p className="text-[8px] text-slate-400 text-center">
+        Navbar updates automatically reflect across the entire website.
+      </p>
+    </div>
+  );
+};
+
 // ── Main Component ──────────────────────────────────────
 const AdminSettings = () => {
   const [loading, setLoading] = useState(true);
@@ -203,6 +521,12 @@ const AdminSettings = () => {
   const [testimonials, setTestimonials] = useState<TestimonialsSettings>(defaultTestimonials);
   const [callToAction, setCallToAction] = useState<CallToActionSettings>(defaultCTA);
   const [footer, setFooter] = useState<FooterSettings>(defaultFooter);
+
+  // New states for FAQ Manager & Navigation
+  const [faq, setFaq] = useState<AdminFAQSettings>(defaultFAQ);
+  const [navigation, setNavigation] = useState<AdminNavigationSettings>(defaultNavigation);
+  const [faqSearchQuery, setFaqSearchQuery] = useState<string>('');
+  const [faqFilterCategory, setFaqFilterCategory] = useState<string>('all');
 
   useEffect(() => { fetchSettings(); }, []);
 
@@ -224,6 +548,49 @@ const AdminSettings = () => {
           case 'testimonials': setTestimonials(v as unknown as TestimonialsSettings); break;
           case 'callToAction': setCallToAction(v as unknown as CallToActionSettings); break;
           case 'footer': setFooter(v as unknown as FooterSettings); break;
+          case 'faq': {
+            const faqData = v as any;
+            let parsedItems: AdminFAQItem[] = [];
+            if (faqData?.items && Array.isArray(faqData.items) && faqData.items.length > 0) {
+              parsedItems = faqData.items.map((item: any, idx: number) => ({
+                id: item.id ? String(item.id) : `faq-${idx + 1}`,
+                category: item.category || 'General Information',
+                question: item.question || item.q || '',
+                answer: item.answer || item.a || '',
+              }));
+            } else if (faqData?.categories && Array.isArray(faqData.categories) && faqData.categories.length > 0) {
+              let count = 1;
+              faqData.categories.forEach((cat: any) => {
+                const catName = cat.category || 'General Information';
+                (cat.questions || []).forEach((q: any) => {
+                  parsedItems.push({
+                    id: `faq-${count++}`,
+                    category: catName,
+                    question: q.question || q.q || '',
+                    answer: q.answer || q.a || '',
+                  });
+                });
+              });
+            }
+            setFaq({
+              title: faqData?.title || defaultFAQ.title,
+              subtitle: faqData?.subtitle || defaultFAQ.subtitle,
+              items: parsedItems.length > 0 ? parsedItems : defaultFAQ.items,
+            });
+            break;
+          }
+          case 'navigation': {
+            const navData = v as any;
+            if (navData?.links && Array.isArray(navData.links) && navData.links.length > 0) {
+              setNavigation({
+                links: navData.links.map((link: any) => ({
+                  label: link.label || link.name || '',
+                  href: link.href || link.path || '',
+                })),
+              });
+            }
+            break;
+          }
         }
       });
     } catch (error) {
@@ -235,7 +602,7 @@ const AdminSettings = () => {
   const saveSettings = async (key: string, value: any) => {
     setSaving(true);
     try {
-      const { data: existing } = await supabase.from('site_settings').select('id').eq('key', key).single();
+      const { data: existing } = await supabase.from('site_settings').select('id').eq('key', key).maybeSingle();
       if (existing) {
         const { error } = await supabase.from('site_settings').update({ value: value as unknown as Json }).eq('key', key);
         if (error) throw error;
@@ -251,7 +618,131 @@ const AdminSettings = () => {
     } finally { setSaving(false); }
   };
 
-  // Testimonial helpers
+  // ── FAQ helpers ───────────────────────────────────────
+  const addFaqItem = (category?: string) => {
+    const newId = `faq-${Date.now()}`;
+    const newItem: AdminFAQItem = {
+      id: newId,
+      category: category || (faqFilterCategory !== 'all' ? faqFilterCategory : 'Booking & Reservations'),
+      question: '',
+      answer: '',
+    };
+    setFaq({ ...faq, items: [newItem, ...faq.items] });
+  };
+
+  const removeFaqItem = (id: string) => {
+    setFaq({ ...faq, items: faq.items.filter(item => item.id !== id) });
+  };
+
+  const updateFaqItem = (id: string, field: keyof AdminFAQItem, value: string) => {
+    setFaq({
+      ...faq,
+      items: faq.items.map(item => (item.id === id ? { ...item, [field]: value } : item)),
+    });
+  };
+
+  const moveFaqItem = (id: string, direction: 'up' | 'down') => {
+    const index = faq.items.findIndex(i => i.id === id);
+    if (index === -1) return;
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= faq.items.length) return;
+    const newItems = [...faq.items];
+    const temp = newItems[index];
+    newItems[index] = newItems[targetIndex];
+    newItems[targetIndex] = temp;
+    setFaq({ ...faq, items: newItems });
+  };
+
+  const resetFaqToDefaults = () => {
+    if (window.confirm('Reset all FAQs to the default 18 items? Any unsaved edits will be replaced.')) {
+      setFaq(defaultFAQ);
+    }
+  };
+
+  const saveFAQSettings = async () => {
+    // Generate both nested categories array and flat items array so any hook/page works seamlessly
+    const categoryMap: Record<string, Array<{ q: string; question: string; a: string; answer: string }>> = {};
+    faq.items.forEach(item => {
+      const cat = item.category?.trim() || 'General Information';
+      if (!categoryMap[cat]) categoryMap[cat] = [];
+      categoryMap[cat].push({
+        q: item.question,
+        question: item.question,
+        a: item.answer,
+        answer: item.answer,
+      });
+    });
+
+    const categories = Object.entries(categoryMap).map(([category, questions]) => ({
+      category,
+      questions,
+    }));
+
+    const payload = {
+      title: faq.title,
+      subtitle: faq.subtitle,
+      items: faq.items.map(item => ({
+        id: item.id,
+        category: item.category,
+        question: item.question,
+        q: item.question,
+        answer: item.answer,
+        a: item.answer,
+      })),
+      categories,
+    };
+
+    await saveSettings('faq', payload);
+  };
+
+  // ── Navigation helpers ────────────────────────────────
+  const addNavLink = (custom?: { label: string; href: string }) => {
+    setNavigation({
+      ...navigation,
+      links: [...navigation.links, custom || { label: '', href: '/' }],
+    });
+  };
+
+  const removeNavLink = (index: number) => {
+    setNavigation({
+      ...navigation,
+      links: navigation.links.filter((_, i) => i !== index),
+    });
+  };
+
+  const updateNavLink = (index: number, field: keyof AdminNavLink, value: string) => {
+    const updated = [...navigation.links];
+    updated[index] = { ...updated[index], [field]: value };
+    setNavigation({ ...navigation, links: updated });
+  };
+
+  const moveNavLink = (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= navigation.links.length) return;
+    const newLinks = [...navigation.links];
+    const temp = newLinks[index];
+    newLinks[index] = newLinks[targetIndex];
+    newLinks[targetIndex] = temp;
+    setNavigation({ ...navigation, links: newLinks });
+  };
+
+  const resetNavigationToDefaults = () => {
+    if (window.confirm('Reset navigation links to the default menu items?')) {
+      setNavigation(defaultNavigation);
+    }
+  };
+
+  const saveNavigationSettings = async () => {
+    const payload = {
+      links: navigation.links.map(l => ({
+        label: l.label.trim(),
+        href: l.href.trim(),
+      })),
+    };
+    await saveSettings('navigation', payload);
+  };
+
+  // ── Testimonial helpers ───────────────────────────────
   const addReview = () => {
     const newId = Math.max(0, ...testimonials.reviews.map(r => r.id)) + 1;
     setTestimonials({ ...testimonials, reviews: [...testimonials.reviews, { id: newId, name: '', location: '', initials: '', tourType: '', text: '', rating: 5, date: '' }] });
@@ -266,13 +757,13 @@ const AdminSettings = () => {
     })});
   };
 
-  // Footer link helpers
+  // ── Footer link helpers ───────────────────────────────
   const addQuickLink = () => setFooter({ ...footer, quickLinks: [...footer.quickLinks, { label: '', href: '/' }] });
   const removeQuickLink = (i: number) => setFooter({ ...footer, quickLinks: footer.quickLinks.filter((_, idx) => idx !== i) });
   const addDestLink = () => setFooter({ ...footer, destinationLinks: [...footer.destinationLinks, { label: '', href: '/safaris?destination=' }] });
   const removeDestLink = (i: number) => setFooter({ ...footer, destinationLinks: footer.destinationLinks.filter((_, idx) => idx !== i) });
 
-  // WhyChooseUs helpers
+  // ── WhyChooseUs helpers ───────────────────────────────
   const updateCard = (i: number, field: string, value: string) => {
     const cards = [...whyChooseUs.cards];
     cards[i] = { ...cards[i], [field]: value };
@@ -281,15 +772,27 @@ const AdminSettings = () => {
   const addCard = () => setWhyChooseUs({ ...whyChooseUs, cards: [...whyChooseUs.cards, { icon: 'Star', title: '', description: '' }] });
   const removeCard = (i: number) => setWhyChooseUs({ ...whyChooseUs, cards: whyChooseUs.cards.filter((_, idx) => idx !== i) });
 
-  // CTA helpers
+  // ── CTA helpers ───────────────────────────────────────
   const addValueBadge = () => setCallToAction({ ...callToAction, valueBadges: [...callToAction.valueBadges, ''] });
   const removeValueBadge = (i: number) => setCallToAction({ ...callToAction, valueBadges: callToAction.valueBadges.filter((_, idx) => idx !== i) });
 
-  // Hero helpers
+  // ── Hero helpers ──────────────────────────────────────
   const addTrustBadge = () => setHero({ ...hero, trustBadges: [...hero.trustBadges, { icon: 'Star', text: '' }] });
   const removeTrustBadge = (i: number) => setHero({ ...hero, trustBadges: hero.trustBadges.filter((_, idx) => idx !== i) });
   const addDestination = () => setHero({ ...hero, topDestinations: [...hero.topDestinations, ''] });
   const removeDestination = (i: number) => setHero({ ...hero, topDestinations: hero.topDestinations.filter((_, idx) => idx !== i) });
+
+  // Filtered FAQs for editor
+  const allFaqCategories = Array.from(new Set(faq.items.map(i => i.category || 'General Information')));
+  const displayedFaqItems = faq.items.filter(item => {
+    const qLower = faqSearchQuery.toLowerCase();
+    const matchesSearch = !faqSearchQuery ||
+      item.question.toLowerCase().includes(qLower) ||
+      item.answer.toLowerCase().includes(qLower) ||
+      item.category.toLowerCase().includes(qLower);
+    const matchesCategory = faqFilterCategory === 'all' || item.category === faqFilterCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   if (loading) return <AdminLayout><div className="flex items-center justify-center h-64"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div></AdminLayout>;
 
@@ -298,12 +801,14 @@ const AdminSettings = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-display font-bold text-foreground">Website Settings</h1>
-          <p className="text-muted-foreground mt-1">Control every aspect of your website</p>
+          <p className="text-muted-foreground mt-1">Control and customize every aspect of your website</p>
         </div>
 
         <Tabs defaultValue="general" className="space-y-6">
-          <TabsList className="flex flex-wrap gap-1 h-auto">
+          <TabsList className="flex flex-wrap gap-1 h-auto bg-muted/60 p-1">
             <TabsTrigger value="general" className="gap-2"><Settings className="h-4 w-4" />General</TabsTrigger>
+            <TabsTrigger value="navigation" className="gap-2"><Menu className="h-4 w-4" />Navigation / Menus</TabsTrigger>
+            <TabsTrigger value="faq" className="gap-2"><HelpCircle className="h-4 w-4" />FAQ Manager</TabsTrigger>
             <TabsTrigger value="social" className="gap-2"><Globe className="h-4 w-4" />Social</TabsTrigger>
             <TabsTrigger value="homepage" className="gap-2"><Home className="h-4 w-4" />Homepage</TabsTrigger>
             <TabsTrigger value="footer" className="gap-2"><FootprintsIcon className="h-4 w-4" />Footer</TabsTrigger>
@@ -343,6 +848,426 @@ const AdminSettings = () => {
             </Button>
           </TabsContent>
 
+          {/* ═══════════════════════ NAVIGATION / MENUS ═══════════════════════ */}
+          <TabsContent value="navigation" className="space-y-6">
+            <Card className="shadow-soft">
+              <CardHeader>
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Menu className="h-5 w-5 text-primary" />
+                      Header Navigation Menu
+                    </CardTitle>
+                    <CardDescription>
+                      Customize the links and order of items displayed on the top navigation bar and mobile drawer.
+                    </CardDescription>
+                  </div>
+                  <Badge variant="outline" className="text-xs bg-amber-500/10 text-amber-600 border-amber-500/20 font-medium">
+                    {navigation.links.length} Links Active
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-4">
+                  {/* Quick Add Common Links */}
+                  <div className="p-3 bg-muted/40 rounded-xl border space-y-2">
+                    <Label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                      <Plus className="w-3.5 h-3.5" />
+                      Quick-Add Standard Site Routes:
+                    </Label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {COMMON_NAV_SUGGESTIONS.map((sug) => {
+                        const exists = navigation.links.some(l => l.href === sug.href);
+                        return (
+                          <button
+                            key={sug.href}
+                            type="button"
+                            onClick={() => addNavLink(sug)}
+                            className={`text-xs px-2.5 py-1 rounded-md border font-medium transition-all ${
+                              exists 
+                                ? 'bg-secondary/40 text-muted-foreground border-border opacity-60 hover:opacity-100'
+                                : 'bg-background hover:bg-primary/10 hover:text-primary hover:border-primary/40 text-foreground shadow-xs'
+                            }`}
+                          >
+                            + {sug.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Links List */}
+                  <div className="space-y-2.5">
+                    {navigation.links.map((link, idx) => (
+                      <div key={idx} className="p-3 bg-card border rounded-xl shadow-xs flex flex-col sm:flex-row sm:items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-md bg-muted text-foreground/80 font-bold text-xs flex items-center justify-center">
+                            {idx + 1}
+                          </span>
+                          <div className="flex sm:flex-col gap-1">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6"
+                              disabled={idx === 0}
+                              onClick={() => moveNavLink(idx, 'up')}
+                              title="Move up"
+                            >
+                              <ChevronUp className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6"
+                              disabled={idx === navigation.links.length - 1}
+                              onClick={() => moveNavLink(idx, 'down')}
+                              title="Move down"
+                            >
+                              <ChevronDown className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1">
+                          <div className="space-y-1">
+                            <Label className="text-[11px] text-muted-foreground">Label</Label>
+                            <Input
+                              value={link.label}
+                              onChange={e => updateNavLink(idx, 'label', e.target.value)}
+                              placeholder="Menu title (e.g. Safaris)"
+                              className="h-9"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-[11px] text-muted-foreground">Destination URL / Path</Label>
+                            <Input
+                              value={link.href}
+                              onChange={e => updateNavLink(idx, 'href', e.target.value)}
+                              placeholder="/safaris or https://..."
+                              className="h-9 font-mono text-xs"
+                            />
+                          </div>
+                        </div>
+
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeNavLink(idx)}
+                          className="h-9 w-9 text-red-500 hover:text-red-700 hover:bg-red-50 sm:self-center"
+                          title="Delete link"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+
+                    {navigation.links.length === 0 && (
+                      <div className="p-8 text-center border border-dashed rounded-xl bg-muted/20">
+                        <p className="text-sm text-muted-foreground">No navigation links added yet.</p>
+                        <Button variant="outline" size="sm" onClick={() => addNavLink()} className="mt-3">
+                          <Plus className="h-4 w-4 mr-1.5" />Add First Link
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <Button variant="outline" onClick={() => addNavLink()}>
+                      <Plus className="h-4 w-4 mr-1.5" />Add Custom Link
+                    </Button>
+                    <Button variant="ghost" onClick={resetNavigationToDefaults} className="text-muted-foreground hover:text-foreground">
+                      <RotateCcw className="h-4 w-4 mr-1.5" />Restore Standard Defaults
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
+                    <Eye className="w-3.5 h-3.5 text-primary" />LIVE NAVBAR PREVIEW
+                  </Label>
+                  <PreviewNavigation data={navigation} siteName={general.siteName} />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Button onClick={saveNavigationSettings} disabled={saving} className="w-full md:w-auto">
+              {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}Save Navigation Settings
+            </Button>
+          </TabsContent>
+
+          {/* ═══════════════════════ FAQ MANAGER ═══════════════════════ */}
+          <TabsContent value="faq" className="space-y-6">
+            {/* FAQ Page Header Card */}
+            <Card className="shadow-soft">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <HelpCircle className="h-5 w-5 text-primary" />
+                  FAQ Page Header & Meta
+                </CardTitle>
+                <CardDescription>
+                  Configure the banner text shown at the top of the public /faq page
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Page Title</Label>
+                  <Input
+                    value={faq.title}
+                    onChange={e => setFaq({ ...faq, title: e.target.value })}
+                    placeholder="Frequently Asked Questions"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Subtitle / Description</Label>
+                  <Textarea
+                    value={faq.subtitle}
+                    onChange={e => setFaq({ ...faq, subtitle: e.target.value })}
+                    placeholder="Find answers to common questions about our safari tours, Zanzibar holidays, booking process, and travel preparation in Tanzania."
+                    rows={2}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* FAQ Items Editor Card */}
+            <Card className="shadow-soft">
+              <CardHeader>
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                      Questions & Answers Manager
+                    </CardTitle>
+                    <CardDescription>
+                      Add, edit, reorder, categorize, and delete frequently asked questions.
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs bg-amber-500/10 text-amber-600 border-amber-500/20 font-medium">
+                      {faq.items.length} Questions
+                    </Badge>
+                    <Badge variant="outline" className="text-xs bg-blue-500/10 text-blue-600 border-blue-500/20 font-medium">
+                      {allFaqCategories.length} Categories
+                    </Badge>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-4">
+                  {/* Search and Category Filter Toolbar */}
+                  <div className="p-3 bg-muted/40 rounded-xl border space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="relative flex-1">
+                        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                          value={faqSearchQuery}
+                          onChange={e => setFaqSearchQuery(e.target.value)}
+                          placeholder="Search questions, answers, or tags..."
+                          className="pl-9 h-9 bg-background"
+                        />
+                      </div>
+                      {faqSearchQuery && (
+                        <Button variant="ghost" size="sm" onClick={() => setFaqSearchQuery('')} className="h-9 px-2 text-xs">
+                          Clear
+                        </Button>
+                      )}
+                      <Button size="sm" onClick={() => addFaqItem()} className="h-9">
+                        <Plus className="w-4 h-4 mr-1" />Add FAQ
+                      </Button>
+                    </div>
+
+                    {/* Category Filter Pills */}
+                    <div className="flex flex-wrap gap-1.5 items-center">
+                      <span className="text-[11px] text-muted-foreground font-medium mr-1 flex items-center gap-1">
+                        <Filter className="w-3 h-3" />Category:
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setFaqFilterCategory('all')}
+                        className={`text-xs px-2.5 py-1 rounded-md font-medium transition-all ${
+                          faqFilterCategory === 'all'
+                            ? 'bg-primary text-primary-foreground shadow-xs'
+                            : 'bg-background hover:bg-muted text-muted-foreground border'
+                        }`}
+                      >
+                        All ({faq.items.length})
+                      </button>
+                      {allFaqCategories.map(cat => {
+                        const count = faq.items.filter(i => (i.category || 'General Information') === cat).length;
+                        return (
+                          <button
+                            key={cat}
+                            type="button"
+                            onClick={() => setFaqFilterCategory(cat)}
+                            className={`text-xs px-2.5 py-1 rounded-md font-medium transition-all truncate max-w-[170px] ${
+                              faqFilterCategory === cat
+                                ? 'bg-primary text-primary-foreground shadow-xs'
+                                : 'bg-background hover:bg-muted text-muted-foreground border'
+                            }`}
+                          >
+                            {cat} ({count})
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* FAQ Items List */}
+                  <div className="space-y-4">
+                    {displayedFaqItems.length === 0 ? (
+                      <div className="p-8 text-center border border-dashed rounded-xl bg-muted/20 space-y-2">
+                        <p className="text-sm font-medium text-foreground">No questions found</p>
+                        <p className="text-xs text-muted-foreground">
+                          {faqSearchQuery ? `No FAQ matches "${faqSearchQuery}". Try clearing search or add a new question.` : 'No questions in this category.'}
+                        </p>
+                        <div className="flex justify-center gap-2 pt-2">
+                          {faqSearchQuery && (
+                            <Button variant="outline" size="sm" onClick={() => setFaqSearchQuery('')}>Clear Search</Button>
+                          )}
+                          <Button size="sm" onClick={() => addFaqItem(faqFilterCategory !== 'all' ? faqFilterCategory : undefined)}>
+                            <Plus className="w-4 h-4 mr-1" />Add FAQ Here
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      displayedFaqItems.map((item) => {
+                        const originalIndex = faq.items.findIndex(i => i.id === item.id);
+                        return (
+                          <div key={item.id} className="p-4 border rounded-xl bg-card space-y-3 shadow-xs">
+                            {/* Card Header Row */}
+                            <div className="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-border/60">
+                              <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="font-mono text-xs font-semibold">
+                                  #{originalIndex + 1}
+                                </Badge>
+                                <Badge variant="outline" className="bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30 text-xs">
+                                  {item.category || 'General Information'}
+                                </Badge>
+                              </div>
+
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  disabled={originalIndex === 0}
+                                  onClick={() => moveFaqItem(item.id, 'up')}
+                                  title="Move up in list"
+                                >
+                                  <ChevronUp className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  disabled={originalIndex === faq.items.length - 1}
+                                  onClick={() => moveFaqItem(item.id, 'down')}
+                                  title="Move down in list"
+                                >
+                                  <ChevronDown className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => removeFaqItem(item.id)}
+                                  className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                  title="Delete question"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+
+                            {/* Question and Category */}
+                            <div className="grid gap-3 sm:grid-cols-3">
+                              <div className="sm:col-span-2 space-y-1">
+                                <Label className="text-xs font-semibold">Question</Label>
+                                <Input
+                                  value={item.question}
+                                  onChange={e => updateFaqItem(item.id, 'question', e.target.value)}
+                                  placeholder="e.g. What should I pack for a safari?"
+                                  className="h-9 font-medium"
+                                />
+                              </div>
+
+                              <div className="space-y-1">
+                                <Label className="text-xs font-semibold">Category Tag</Label>
+                                <Input
+                                  value={item.category}
+                                  onChange={e => updateFaqItem(item.id, 'category', e.target.value)}
+                                  placeholder="Category Name"
+                                  className="h-9"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Suggested Category Quick Tags */}
+                            <div className="flex flex-wrap items-center gap-1 text-[10px]">
+                              <span className="text-muted-foreground mr-1">Tag Suggestions:</span>
+                              {SUGGESTED_FAQ_CATEGORIES.map(cat => (
+                                <button
+                                  key={cat}
+                                  type="button"
+                                  onClick={() => updateFaqItem(item.id, 'category', cat)}
+                                  className={`px-1.5 py-0.5 rounded border transition-colors ${
+                                    item.category === cat
+                                      ? 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-500/40 font-semibold'
+                                      : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                                  }`}
+                                >
+                                  {cat}
+                                </button>
+                              ))}
+                            </div>
+
+                            {/* Answer */}
+                            <div className="space-y-1">
+                              <Label className="text-xs font-semibold">Answer</Label>
+                              <Textarea
+                                value={item.answer}
+                                onChange={e => updateFaqItem(item.id, 'answer', e.target.value)}
+                                placeholder="Detailed answer displayed when visitor opens this question..."
+                                rows={3}
+                                className="text-xs leading-relaxed"
+                              />
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+
+                  {/* Actions Footer */}
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <Button variant="outline" onClick={() => addFaqItem()}>
+                      <Plus className="h-4 w-4 mr-1.5" />Add Another Question
+                    </Button>
+                    <Button variant="ghost" onClick={resetFaqToDefaults} className="text-muted-foreground hover:text-foreground">
+                      <RotateCcw className="h-4 w-4 mr-1.5" />Reset to Default 18 FAQs
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
+                    <Eye className="w-3.5 h-3.5 text-primary" />LIVE FAQ PREVIEW
+                  </Label>
+                  <PreviewFAQ data={faq} />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Button onClick={saveFAQSettings} disabled={saving} className="w-full md:w-auto">
+              {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}Save FAQ Settings
+            </Button>
+          </TabsContent>
+
           {/* ═══════════════════════ SOCIAL ═══════════════════════ */}
           <TabsContent value="social" className="space-y-6">
             <Card className="shadow-soft">
@@ -378,7 +1303,7 @@ const AdminSettings = () => {
                   <Label>Trust Badges</Label>
                   {hero.trustBadges.map((b, i) => (
                     <div key={i} className="flex gap-2 items-center">
-                      <select value={b.icon} onChange={e => { const t = [...hero.trustBadges]; t[i] = { ...t[i], icon: e.target.value }; setHero({ ...hero, trustBadges: t }); }} className="w-40 h-9 border rounded-md px-2 text-sm">
+                      <select value={b.icon} onChange={e => { const t = [...hero.trustBadges]; t[i] = { ...t[i], icon: e.target.value }; setHero({ ...hero, trustBadges: t }); }} className="w-40 h-9 border rounded-md px-2 text-sm bg-background">
                         {ICON_OPTIONS.map(ic => <option key={ic} value={ic}>{ic}</option>)}
                       </select>
                       <Input value={b.text} onChange={e => { const t = [...hero.trustBadges]; t[i] = { ...t[i], text: e.target.value }; setHero({ ...hero, trustBadges: t }); }} className="flex-1" />
@@ -420,7 +1345,7 @@ const AdminSettings = () => {
                     { key: 'showTestimonials', label: 'Testimonials' },
                     { key: 'showCallToAction', label: 'Call to Action' },
                   ].map(({ key, label }) => (
-                    <div key={key} className="flex items-center justify-between p-3 rounded-lg border bg-white">
+                    <div key={key} className="flex items-center justify-between p-3 rounded-lg border bg-white dark:bg-card">
                       <Label>{label}</Label>
                       <Switch checked={(homepage as any)[key]} onCheckedChange={checked => setHomepage({ ...homepage, [key]: checked })} />
                     </div>
@@ -444,14 +1369,14 @@ const AdminSettings = () => {
                   <div className="space-y-2"><Label>Description</Label><Textarea value={whyChooseUs.description} onChange={e => setWhyChooseUs({ ...whyChooseUs, description: e.target.value })} rows={2} /></div>
                   <Label className="font-bold">Feature Cards</Label>
                   {whyChooseUs.cards.map((card, i) => (
-                    <div key={i} className="p-4 border rounded-xl bg-white space-y-3">
+                    <div key={i} className="p-4 border rounded-xl bg-card space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-400">Card {i + 1}</span>
+                        <span className="text-xs font-bold text-muted-foreground">Card {i + 1}</span>
                         <Button variant="ghost" size="sm" onClick={() => removeCard(i)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
                       </div>
                       <div className="grid gap-3 sm:grid-cols-2">
                         <div className="space-y-1"><Label className="text-xs">Icon</Label>
-                          <select value={card.icon} onChange={e => updateCard(i, 'icon', e.target.value)} className="w-full h-9 border rounded-md px-2 text-sm">
+                          <select value={card.icon} onChange={e => updateCard(i, 'icon', e.target.value)} className="w-full h-9 border rounded-md px-2 text-sm bg-background">
                             {ICON_OPTIONS.map(ic => <option key={ic} value={ic}>{ic}</option>)}
                           </select>
                         </div>
@@ -463,7 +1388,7 @@ const AdminSettings = () => {
                   <Button variant="outline" onClick={addCard}><Plus className="h-4 w-4 mr-1" />Add Card</Button>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold text-slate-500 flex items-center gap-1"><Eye className="w-3 h-3" />LIVE PREVIEW</Label>
+                  <Label className="text-xs font-bold text-muted-foreground flex items-center gap-1"><Eye className="w-3 h-3" />LIVE PREVIEW</Label>
                   <PreviewWhyChooseUs data={whyChooseUs} />
                 </div>
               </CardContent>
@@ -484,7 +1409,7 @@ const AdminSettings = () => {
                   </div>
                   <Label className="font-bold">Reviews</Label>
                   {testimonials.reviews.map((r) => (
-                    <div key={r.id} className="p-4 border rounded-xl bg-white space-y-3">
+                    <div key={r.id} className="p-4 border rounded-xl bg-card space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <div className="w-8 h-8 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center">{r.initials || '??'}</div>
@@ -508,7 +1433,7 @@ const AdminSettings = () => {
                   <Button variant="outline" onClick={addReview}><Plus className="h-4 w-4 mr-1" />Add Review</Button>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold text-slate-500 flex items-center gap-1"><Eye className="w-3 h-3" />LIVE PREVIEW</Label>
+                  <Label className="text-xs font-bold text-muted-foreground flex items-center gap-1"><Eye className="w-3 h-3" />LIVE PREVIEW</Label>
                   <PreviewTestimonial data={testimonials} />
                 </div>
               </CardContent>
@@ -541,7 +1466,7 @@ const AdminSettings = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold text-slate-500 flex items-center gap-1"><Eye className="w-3 h-3" />LIVE PREVIEW</Label>
+                  <Label className="text-xs font-bold text-muted-foreground flex items-center gap-1"><Eye className="w-3 h-3" />LIVE PREVIEW</Label>
                   <PreviewCTA data={callToAction} />
                 </div>
               </CardContent>
@@ -590,7 +1515,7 @@ const AdminSettings = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold text-slate-500 flex items-center gap-1"><Eye className="w-3 h-3" />LIVE PREVIEW</Label>
+                  <Label className="text-xs font-bold text-muted-foreground flex items-center gap-1"><Eye className="w-3 h-3" />LIVE PREVIEW</Label>
                   <PreviewFooter data={footer} />
                 </div>
               </CardContent>
@@ -646,8 +1571,8 @@ const AdminSettings = () => {
                 <div className="space-y-2"><Label>Google Maps Embed URL</Label><Input value={contact.mapEmbed} onChange={e => setContact({ ...contact, mapEmbed: e.target.value })} placeholder="https://www.google.com/maps/embed?..." /></div>
               </CardContent>
             </Card>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-blue-800"><strong>Tip:</strong> Contact information (email, phone, address) is managed in the General settings tab.</p>
+            <div className="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 rounded-lg p-4">
+              <p className="text-sm text-blue-800 dark:text-blue-300"><strong>Tip:</strong> Contact information (email, phone, address) is managed in the General settings tab.</p>
             </div>
             <Button onClick={() => saveSettings('contact', contact)} disabled={saving} className="w-full md:w-auto">
               {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}Save Contact Settings
@@ -675,16 +1600,16 @@ const AdminSettings = () => {
                     </div>
                   ))}
                 </div>
-                <div className="mt-6 p-6 rounded-xl border">
+                <div className="mt-6 p-6 rounded-xl border bg-card">
                   <Label className="mb-4 block">Preview</Label>
                   <div className="flex gap-4 items-center flex-wrap">
-                    <div className="px-6 py-3 rounded-lg text-white font-medium" style={{ backgroundColor: theme.primaryColor }}>Primary Button</div>
-                    <div className="px-6 py-3 rounded-lg text-black font-medium" style={{ backgroundColor: theme.accentColor }}>Gold Accent</div>
+                    <div className="px-6 py-3 rounded-lg text-white font-medium shadow-xs" style={{ backgroundColor: theme.primaryColor }}>Primary Button</div>
+                    <div className="px-6 py-3 rounded-lg text-black font-medium shadow-xs" style={{ backgroundColor: theme.accentColor }}>Gold Accent</div>
                     <div className="px-6 py-3 rounded-lg border-2 font-medium" style={{ backgroundColor: theme.backgroundColor, borderColor: theme.primaryColor, color: theme.primaryColor }}>Outlined</div>
                   </div>
                 </div>
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                  <p className="text-sm text-amber-800"><strong>Note:</strong> Color changes require a website rebuild to take effect.</p>
+                <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 rounded-lg p-4">
+                  <p className="text-sm text-amber-800 dark:text-amber-300"><strong>Note:</strong> Color changes require a website rebuild to take effect.</p>
                 </div>
               </CardContent>
             </Card>

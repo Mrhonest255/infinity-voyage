@@ -44,6 +44,7 @@ const AdminBookings = lazy(() => import("./pages/admin/Bookings"));
 const AdminSettings = lazy(() => import("./pages/admin/Settings"));
 const AdminTransfers = lazy(() => import("./pages/admin/Transfers"));
 const TransferEditor = lazy(() => import("./pages/admin/TransferEditor"));
+const AdminGallery = lazy(() => import("./pages/admin/Gallery"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -164,6 +165,7 @@ const AppRoutes = () => {
         <Route path="/admin/bookings" element={<AdminBookings />} />
         <Route path="/admin/transfers" element={<AdminTransfers />} />
         <Route path="/admin/transfers/:id" element={<TransferEditor />} />
+        <Route path="/admin/gallery" element={<AdminGallery />} />
         <Route path="/admin/settings" element={<AdminSettings />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
@@ -182,7 +184,7 @@ const App = () => (
             <BrowserRouter>
               <AppRoutes />
               <CartDrawer />
-              <WhatsAppButton phoneNumber="255758241294" />
+              <WhatsAppButton />
             </BrowserRouter>
           </TooltipProvider>
         </CartProvider>

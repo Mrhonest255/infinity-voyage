@@ -13,7 +13,8 @@ import {
   Menu,
   ExternalLink,
   X,
-  Car
+  Car,
+  Images
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -25,6 +26,7 @@ const navItems = [
   { icon: Map, label: 'Safari Tours', path: '/admin/tours' },
   { icon: Compass, label: 'Activities', path: '/admin/activities' },
   { icon: Car, label: 'Transfers', path: '/admin/transfers' },
+  { icon: Images, label: 'Photo Gallery', path: '/admin/gallery' },
   { icon: CalendarCheck, label: 'Bookings', path: '/admin/bookings' },
   { icon: Settings, label: 'Settings', path: '/admin/settings' },
 ];

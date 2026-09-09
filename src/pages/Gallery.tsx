@@ -35,36 +35,62 @@ const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [activeTab, setActiveTab] = useState("all");
 
-  // Fetch gallery images from Supabase or use placeholder images
+  // Fetch gallery images from Supabase (custom bulk uploads + tour photos)
   const { data: galleryImages, isLoading } = useQuery({
     queryKey: ['gallery-images'],
     queryFn: async () => {
-      // Try to fetch from a gallery table if it exists
-      const { data, error } = await supabase
-        .from('tours')
-        .select('id, title, featured_image, category, description')
-        .not('featured_image', 'is', null);
-      
-      if (error) {
-        console.error('Gallery fetch error:', error);
-        return getPlaceholderImages();
-      }
-      
-      // Transform tour images to gallery format
-      const tourImages: GalleryImage[] = (data || []).map((tour: any) => ({
-        id: tour.id,
-        url: tour.featured_image || '',
-        title: tour.title,
-        category: tour.category || 'safari',
-        description: tour.description
-      }));
+      // 1. Fetch custom uploaded photos from Admin Gallery
+      let customPhotos: GalleryImage[] = [];
+      try {
+        const { data: customData } = await supabase
+          .from('site_settings')
+          .select('value')
+          .eq('key', 'custom_gallery')
+          .maybeSingle();
 
-      // Add placeholder images if not enough
-      if (tourImages.length < 12) {
-        return [...tourImages, ...getPlaceholderImages().slice(0, 12 - tourImages.length)];
+        if (customData?.value && Array.isArray(customData.value)) {
+          customPhotos = customData.value.map((item: any) => ({
+            id: item.id || `custom-${Math.random()}`,
+            url: item.url,
+            title: item.title || 'Safari & Zanzibar',
+            category: item.category || 'safari',
+            description: item.description || '',
+          }));
+        }
+      } catch (err) {
+        console.error('Failed fetching custom gallery:', err);
       }
 
-      return tourImages;
+      // 2. Fetch tour featured images
+      let tourImages: GalleryImage[] = [];
+      try {
+        const { data, error } = await supabase
+          .from('tours')
+          .select('id, title, featured_image, category, description')
+          .not('featured_image', 'is', null);
+
+        if (!error && data) {
+          tourImages = data.map((tour: any) => ({
+            id: tour.id,
+            url: tour.featured_image || '',
+            title: tour.title,
+            category: tour.category || 'safari',
+            description: tour.description,
+          }));
+        }
+      } catch (err) {
+        console.error('Gallery tour fetch error:', err);
+      }
+
+      // Combine custom uploaded images first (most recent), then tour images
+      const combined = [...customPhotos, ...tourImages];
+
+      // Add placeholder images if still fewer than 12
+      if (combined.length < 12) {
+        return [...combined, ...getPlaceholderImages().slice(0, 12 - combined.length)];
+      }
+
+      return combined;
     },
   });
 

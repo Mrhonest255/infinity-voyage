@@ -14,7 +14,29 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, Save, Sparkles, Loader2, Plus, X, MapPin, DollarSign } from 'lucide-react';
+import { 
+  ArrowLeft, 
+  Save, 
+  Sparkles, 
+  Loader2, 
+  Plus, 
+  X, 
+  MapPin, 
+  DollarSign,
+  Tag,
+  Check,
+  Info
+} from 'lucide-react';
+
+// Standard categories matching safaris page filters
+const STANDARD_CATEGORIES = [
+  'Wildlife',
+  'Trekking',
+  'Combo',
+  'Package',
+  'Safari',
+  'Zanzibar',
+];
 
 // Define pickup zones for pricing
 const PICKUP_ZONES = [
@@ -57,7 +79,7 @@ const initialFormData: TourFormData = {
   duration: '',
   price: null,
   zone_prices: {},
-  category: 'safari',
+  category: 'Wildlife',
   difficulty: 'moderate',
   max_group_size: 12,
   included: [],
@@ -106,7 +128,7 @@ const TourEditor = () => {
         duration: tour.duration || '',
         price: tour.price,
         zone_prices: (tour as any).zone_prices || {},
-        category: tour.category || 'safari',
+        category: tour.category || 'Wildlife',
         difficulty: tour.difficulty || 'moderate',
         max_group_size: tour.max_group_size || 12,
         included: tour.included || [],
@@ -181,6 +203,7 @@ const TourEditor = () => {
     mutationFn: async () => {
       const tourData = {
         ...formData,
+        category: formData.category?.trim() || 'Wildlife',
         slug: formData.slug || generateSlug(formData.title),
         created_by: user?.id,
       } as any;
@@ -287,8 +310,8 @@ const TourEditor = () => {
                 <CardTitle>Basic Information</CardTitle>
                 <CardDescription>Essential tour details</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <CardContent className="space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Title *</Label>
                     <Input
@@ -308,6 +331,70 @@ const TourEditor = () => {
                       onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
                       placeholder="serengeti-migration-safari"
                     />
+                  </div>
+                </div>
+
+                {/* Tour Category Selector */}
+                <div className="space-y-3 p-4 rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <Label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                      <Tag className="h-4 w-4 text-primary" />
+                      Tour Category / Kundi la Safari *
+                    </Label>
+                    {formData.category && (
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/30">
+                        <Check className="h-3 w-3" />
+                        Iliyochaguliwa: <strong className="ml-1">{formData.category}</strong>
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Standard Category Pill Buttons */}
+                  <div className="space-y-1.5">
+                    <p className="text-xs text-muted-foreground">
+                      Chagua kundi lililo tayari (Standard categories):
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {STANDARD_CATEGORIES.map((cat) => {
+                        const isSelected = formData.category?.toLowerCase() === cat.toLowerCase();
+                        return (
+                          <button
+                            key={cat}
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, category: cat }))}
+                            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border cursor-pointer ${
+                              isSelected
+                                ? "bg-primary text-primary-foreground border-primary shadow-sm font-semibold scale-105"
+                                : "bg-background text-foreground/80 border-border hover:border-primary/50 hover:bg-muted/60"
+                            }`}
+                          >
+                            {isSelected && <Check className="h-3 w-3" />}
+                            {cat}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Custom Category Input */}
+                  <div className="space-y-1.5 pt-1">
+                    <Label className="text-xs text-muted-foreground">
+                      Au andika jina lingine la Category (Custom category name):
+                    </Label>
+                    <Input
+                      value={formData.category}
+                      onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                      placeholder="e.g., Wildlife, Trekking, Combo, Day Trip..."
+                      className="bg-background max-w-md"
+                    />
+                  </div>
+
+                  {/* Clear help text */}
+                  <div className="flex items-start gap-2 pt-1 text-xs text-muted-foreground">
+                    <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span>
+                      Hii category ndio itakayoamua tour hii itaonekana chini ya filter ipi kwenye ukurasa wa Safaris (Wildlife, Trekking, Combo, Package).
+                    </span>
                   </div>
                 </div>
 
@@ -331,7 +418,7 @@ const TourEditor = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label>Duration</Label>
                     <Input
@@ -472,7 +559,7 @@ const TourEditor = () => {
                       formData.included.map((item, index) => (
                         <div key={index} className="flex items-center gap-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 px-3 py-1 rounded-full text-sm">
                           {item}
-                          <button type="button" onClick={() => removeArrayItem('included', index)} className="ml-1 hover:text-destructive">
+                          <button type="button" onClick={() => removeArrayItem('included', index)} className="ml-1 hover:text-destructive cursor-pointer">
                             <X className="h-3 w-3" />
                           </button>
                         </div>
@@ -509,7 +596,7 @@ const TourEditor = () => {
                       formData.excluded.map((item, index) => (
                         <div key={index} className="flex items-center gap-1 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 px-3 py-1 rounded-full text-sm">
                           {item}
-                          <button type="button" onClick={() => removeArrayItem('excluded', index)} className="ml-1 hover:text-destructive">
+                          <button type="button" onClick={() => removeArrayItem('excluded', index)} className="ml-1 hover:text-destructive cursor-pointer">
                             <X className="h-3 w-3" />
                           </button>
                         </div>
@@ -545,7 +632,7 @@ const TourEditor = () => {
                     {formData.highlights.map((item, index) => (
                       <div key={index} className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
                         {item}
-                        <button type="button" onClick={() => removeArrayItem('highlights', index)} className="ml-1 hover:text-destructive">
+                        <button type="button" onClick={() => removeArrayItem('highlights', index)} className="ml-1 hover:text-destructive cursor-pointer">
                           <X className="h-3 w-3" />
                         </button>
                       </div>

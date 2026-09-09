@@ -4,7 +4,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Clock, Check, MapPin, Filter, Sparkles, Search, Users, Star } from "lucide-react";
+import { ArrowRight, Clock, Check, MapPin, Filter, Sparkles, Search, Star, RotateCcw } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,7 +37,7 @@ const Safaris = () => {
 
   const fetchSafaris = async () => {
     setLoading(true);
-    let query = supabase
+    const query = supabase
       .from("tours")
       .select("id,title,slug,duration,featured_image,price,category,highlights,short_description")
       .order("created_at", { ascending: false });
@@ -49,12 +49,56 @@ const Safaris = () => {
     setLoading(false);
   };
 
-  const filteredSafaris =
-    activeCategory === "All"
-      ? tours
-      : tours.filter((s) =>
-          (s.category || "").toLowerCase().includes(activeCategory.toLowerCase().replace("wildlife", "safari"))
-        );
+  const filteredSafaris = tours.filter((tour) => {
+    if (activeCategory === "All") {
+      return true;
+    }
+
+    const cat = (tour.category || "").toLowerCase();
+    const title = (tour.title || "").toLowerCase();
+    const duration = (tour.duration || "").trim().toLowerCase();
+
+    if (activeCategory === "Wildlife") {
+      return (
+        cat.includes("wildlife") ||
+        cat.includes("safari") ||
+        title.includes("safari") ||
+        title.includes("serengeti") ||
+        title.includes("ngorongoro") ||
+        title.includes("tarangire")
+      );
+    }
+
+    if (activeCategory === "Trekking") {
+      return (
+        cat.includes("trek") ||
+        cat.includes("climb") ||
+        cat.includes("mountain") ||
+        title.includes("kilimanjaro") ||
+        title.includes("meru") ||
+        title.includes("trek")
+      );
+    }
+
+    if (activeCategory === "Combo") {
+      return (
+        cat.includes("combo") ||
+        title.includes("combo") ||
+        (title.includes("safari") && title.includes("zanzibar"))
+      );
+    }
+
+    if (activeCategory === "Package") {
+      return (
+        cat.includes("package") ||
+        duration.length > 0 ||
+        title.includes("package") ||
+        title.includes("day")
+      );
+    }
+
+    return cat.includes(activeCategory.toLowerCase());
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -165,12 +209,21 @@ const Safaris = () => {
               ))}
             </div>
           ) : filteredSafaris.length === 0 ? (
-            <div className="text-center py-16 sm:py-20">
+            <div className="text-center py-16 sm:py-20 max-w-md mx-auto">
               <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 rounded-full bg-muted flex items-center justify-center">
                 <Search className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground" />
               </div>
               <h3 className="text-xl sm:text-2xl font-semibold mb-2">No safaris found</h3>
-              <p className="text-muted-foreground text-sm sm:text-base">Try selecting a different category</p>
+              <p className="text-muted-foreground text-sm sm:text-base mb-6">
+                No tours found matching &quot;{activeCategory}&quot;. Try selecting a different category or reset the filter.
+              </p>
+              <Button
+                onClick={() => setActiveCategory("All")}
+                className="rounded-xl bg-gradient-to-r from-safari-gold to-safari-amber text-safari-night font-semibold hover:shadow-gold transition-all"
+              >
+                <RotateCcw className="w-4 h-4 mr-2" />
+                Reset Filter
+              </Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
